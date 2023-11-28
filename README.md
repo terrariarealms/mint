@@ -1,3 +1,7 @@
+Mint is powerful (yes not today we are in development) server API for Terraria.
+Mint uses custom server engine Mintoza, that provides better experience and less RAM usage.
+Mintoza builts on Linux Terraria version with changes like .NET 6.0 + FNA and custom tile map.
+
 # Installation
 1. Create new directory.
 2. Open command prompt or terminal in that directory.
