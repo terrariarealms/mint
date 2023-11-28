@@ -1,0 +1,85 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/vxlhat/Рабочий стол/MintAPI/src/Mint.Core.csproj": {}
+  },
+  "projects": {
+    "/home/vxlhat/Рабочий стол/MintAPI/src/Mint.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/vxlhat/Рабочий стол/MintAPI/src/Mint.Core.csproj",
+        "projectName": "Mint.Core",
+        "projectPath": "/home/vxlhat/Рабочий стол/MintAPI/src/Mint.Core.csproj",
+        "packagesPath": "/home/vxlhat/.nuget/packages/",
+        "outputPath": "/home/vxlhat/Рабочий стол/MintAPI/src/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/vxlhat/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.22.0, )"
+            },
+            "MonoMod.RuntimeDetour": {
+              "target": "Package",
+              "version": "[25.0.2, )"
+            },
+            "MonoMod.RuntimeDetour.HookGen": {
+              "target": "Package",
+              "version": "[22.7.31.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[6.0.25, 6.0.25]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.114/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

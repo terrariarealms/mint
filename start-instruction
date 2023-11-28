@@ -1,0 +1,7 @@
+make new file with that content:
+
+[.sh]
+dotnet build src/ && bin/net6.0/Mint.Core
+
+[.bat]
+dotnet build /src && bin/net6.0/Mint.Core.exe
