@@ -1,0 +1,15 @@
+*.cache
+*.pdb
+
+bin/
+bin/net6.0
+modules/
+data/
+
+src/obj/
+src/obj/project.nuget.cache
+src/obj/project.assets.json
+src/obj/Mint.Core.csproj.nuget.dgspec.json
+src/obj/Debug/net6.0/Mint.Core.GeneratedMSBuildEditorConfig.editorconfig
+src/obj/Debug/net6.0/Mint.Core.csproj.AssemblyReference.cache
+src/obj/Debug/net6.0/Mint.Core.assets.cache
