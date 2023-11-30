@@ -7,7 +7,7 @@ Mint is a modern, powerful core for your Terraria server, providing many improve
 A package is required for development .NET 6.0 SDK, which can be found on [Microsoft's official website](https://dotnet.microsoft.com/en-us/download/dotnet/6.0 ).
 
 It can also be installed via `sudo apt-get install dotnet-sdk-6.0` on many Linux distributions.
-But don't forget to update the package repositories via `sudo apt-get update && sudo apt-get upgrade'.
+But don't forget to update the package repositories via `sudo apt-get update && sudo apt-get upgrade`.
 
 In order to change the kernel for yourself, you must first install the server (instructions below).
 
@@ -17,8 +17,8 @@ The kernel source code is always located in the `src/` folder, and the compiled 
 ### Development of modules for the kernel
 Modules are loaded from the `modules/` folder (at least if your hands haven't gotten around to changing the modules folder in the kernel).
 Modules can be loaded:
-* From already compiled binaries, for example `modules/MyModule.dll `
-* From projects, for example `modules/MyModule/src/MyModule.csproj'.
+* From already compiled binaries, for example `modules/MyModule.dll`
+* From projects, for example `modules/MyModule/src/MyModule.csproj`.
 
 In order to create a module project, it is necessary:
 1. Create a folder with the name of your module (the folder name must match the output name of the binary)
@@ -33,12 +33,12 @@ The `Initialize` method should contain the code that starts all the work, and ca
 ## Installation
 1. Create a directory where the server will be located.
 2. Open the command prompt/terminal in this folder.
-3. Clone the repository via `git clone https://github.com/terrariarealms/mint .git`
+3. Clone the repository via `git clone https://github.com/terrariarealms/mint.git`
 
 ## Starting the server
 1. Open the command prompt/terminal in your folder.
 2. Compile the server kernel using the `dotnet build src/` command
-3. Start the server via `bin/net6.0/MintServer` (Linux) or `bin\net6.0\MintServer.exe ` (Windows).
+3. Start the server via `bin/net6.0/MintServer` (Linux) or `bin\net6.0\MintServer.exe` (Windows).
 
 If you are on Linux, then you can start the server through an already created script: `./start.sh `.
 * If you are denied access, enter `chmod +x start.sh ` and run the script again.
