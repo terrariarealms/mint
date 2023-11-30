@@ -1,42 +1,42 @@
-Mint это современное, мощное ядро для вашего сервера Terraria, предоставляющее множество улучшений.
-* Вы можете ознакомиться с вики на [этой странице](https://github.com/terrariarealms/mint/wiki).
+Mint is a modern, powerful core for your Terraria server, providing many improvements.
+* You can read the wiki on [this page](https://github.com/terrariarealms/mint/wiki ).
 
-## Для разработчиков
-Для разработки необходим пакет .NET 6.0 SDK, который можно найти на [официальном сайте Microsoft](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+## For developers
+A package is required for development .NET 6.0 SDK, which can be found on [Microsoft's official website](https://dotnet.microsoft.com/en-us/download/dotnet/6.0 ).
 
-Его также можно установить через `sudo apt-get install dotnet-sdk-6.0` на многих Linux-дистрибутивах.
-Но не забывайте обновить репозитории пакетов через `sudo apt-get update && sudo apt-get upgrade`.
+It can also be installed via `sudo apt-get install dotnet-sdk-6.0` on many Linux distributions.
+But don't forget to update the package repositories via `sudo apt-get update && sudo apt-get upgrade'.
 
-Для того, что бы изменять ядро под себя, необходимо для начала установить сервер (инструкция снизу).
+In order to change the kernel for yourself, you must first install the server (instructions below).
 
-### Разработка ядра
-Исходный код ядра всегда находится в папке `src/`, а скомпилированный сервер в папке `bin/net6.0/`
+### Core Development
+The kernel source code is always located in the `src/` folder, and the compiled server is in the `bin/net6.0/` folder
 
-### Разработка модулей для ядра
-Модули загружаются из папки `modules/` (по крайней мере если ваши руки не добрались до изменения папки модулей в ядре).
-Модули могут загружаться:
-* Из уже скомпилированных бинарников, например `modules/MyModule.dll`
-* Из проектов, например `modules/MyModule/src/MyModule.csproj`.
+### Development of modules for the kernel
+Modules are loaded from the `modules/` folder (at least if your hands haven't gotten around to changing the modules folder in the kernel).
+Modules can be loaded:
+* From already compiled binaries, for example `modules/MyModule.dll `
+* From projects, for example `modules/MyModule/src/MyModule.csproj'.
 
-Что-бы создать проект модуля необходимо:
-1. Создать папку с именем вашего модуля (имя папки должно совпадать с выходным названием бинарника)
-2. Создать проект через `dotnet new classlib -f net6.0 -o MyModule/src -n MY_MODULE`, где `MY_MODULE` будет названием вашего модуля.
+In order to create a module project, it is necessary:
+1. Create a folder with the name of your module (the folder name must match the output name of the binary)
+2. Create a project via `dotnet new classlib -f net6.0 -o MyModule/src -n MY_MODULE`, where `MY_MODULE` will be the name of your module.
 
-Для того что бы сервер загрузил ваш модуль, он должен наследовать класс [`Mint.Modules.MintModule`](https://github.com/terrariarealms/mint/blob/main/src/Modules/MintModule.cs)
-Обязательно указывайте зависимости от других модулей в свойстве `ModuleReferences`, а также каждый раз обновляйте свойство `ModuleArchitecture`, если вы внесли в ваш модуль обновление, которое может повлиять на совместную работу с другими модулями. (изменение/удаление/переименование публичных методов/классов/полей/свойств и тому подобное)
+In order for the server to load your module, it must inherit the class [`Mint.Modules.MintModule`](https://github.com/terrariarealms/mint/blob/main/src/Modules/MintModule.cs)
+Be sure to specify dependencies on other modules in the `ModuleReferences` property, and also update the `ModuleArchitecture` property every time if you have made an update to your module that may affect collaboration with other modules. (changing/deleting/renaming public methods/classes/fields/properties and the like)
 
-Метод `Setup`, должен содержать в себе код, который инициализирует модуль перед началом работы (он не должен содержать в себе взаимодействие с другими модулями)
-Метод `Initialize`, должен содержать в себе код который начинает всю работу, и может взаимодействовать с другими модулями.
+The `Setup` method should contain the code that initializes the module before starting work (it should not contain interaction with other modules)
+The `Initialize` method should contain the code that starts all the work, and can interact with other modules.
 
-## Установка
-1. Создайте директорию, в которой будет находиться сервер.
-2. Откройте командную строку/терминал в этой папке.
-3. Клонируйте репозиторий через `git clone https://github.com/terrariarealms/mint.git`
+## Installation
+1. Create a directory where the server will be located.
+2. Open the command prompt/terminal in this folder.
+3. Clone the repository via `git clone https://github.com/terrariarealms/mint .git`
 
-## Запуск сервера
-1. Откройте командную строку/терминал в вашей папке.
-2. Скомпилируйте ядро сервера через команду `dotnet build src/`
-3. Запустите сервер через `bin/net6.0/MintServer` (Linux) или `bin\net6.0\MintServer.exe` (Windows).
+## Starting the server
+1. Open the command prompt/terminal in your folder.
+2. Compile the server kernel using the `dotnet build src/` command
+3. Start the server via `bin/net6.0/MintServer` (Linux) or `bin\net6.0\MintServer.exe ` (Windows).
 
-Если вы на Linux, то вы можете запустить сервер через уже созданный скрипт: `./start.sh`.
-* Если вам выдает отказ в доступе, введите `chmod +x start.sh` и запустите скрипт заново.
+If you are on Linux, then you can start the server through an already created script: `./start.sh `.
+* If you are denied access, enter `chmod +x start.sh ` and run the script again.
