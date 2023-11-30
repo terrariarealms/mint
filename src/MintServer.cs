@@ -22,6 +22,8 @@ internal static class MintServer
         Network = new NetworkHandler();
         Players = new PlayersManager();
 
+        TileFix.Fix();
+
         AssemblyManager.InvokeSetup();
 
         AssemblyManager.InvokeInitialize();

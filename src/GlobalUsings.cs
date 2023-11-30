@@ -6,3 +6,11 @@ global using Mint.API;
 global using Mint.Modules;
 global using Mint.Network;
 global using Mint.Server;
+
+global using global::System;
+global using global::System.Collections.Generic;
+global using global::System.IO;
+global using global::System.Linq;
+global using global::System.Net.Http;
+global using global::System.Threading;
+global using global::System.Threading.Tasks;

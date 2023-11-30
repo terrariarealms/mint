@@ -19,7 +19,7 @@ internal class NetworkHandler
         if (messageType > packetBinds.Length)
             return;
         
-        Player? player = PlayersAPI.GetPlayer(self.whoAmI);
+        Player? player = MintServer.Players?.players[self.whoAmI];
         if (player == null)
             return;
 
@@ -41,7 +41,13 @@ internal class NetworkHandler
             throw new InvalidOperationException("Cannot register PacketBind: invalid Packet ID!");
 
         if (packetBinds[packetId] == null) 
-            packetBinds[packetId] = new List<PacketBindDelegate>();
+        {
+            packetBinds[packetId] = new List<PacketBindDelegate>()
+            {
+                bind
+            };
+            return;
+        }
 
         packetBinds[packetId]?.Add(bind);
     }
