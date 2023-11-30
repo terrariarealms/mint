@@ -1,3 +1,5 @@
+# [README на русском](https://github.com/terrariarealms/mint/blob/main/README_russian.md)
+
 Mint is a modern, powerful core for your Terraria server, providing many improvements.
 * You can read the wiki on [this page](https://github.com/terrariarealms/mint/wiki ).
 
