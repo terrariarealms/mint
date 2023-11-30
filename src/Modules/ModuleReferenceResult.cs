@@ -1,4 +1,4 @@
-namespace Mint.Core;
+namespace Mint.Modules;
 
 public static class ModuleReferenceResult
 {

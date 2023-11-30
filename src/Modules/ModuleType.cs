@@ -1,4 +1,4 @@
-namespace Mint.Core;
+namespace Mint.Modules;
 
 [Flags]
 public enum ModuleType : byte

@@ -40,7 +40,7 @@ public partial class Player
     /// <param name="reason">Death reason</param>
     public void Hurt(int damage, PlayerDeathReason? reason = null)
     {
-        NetMessage.SendPlayerHurt(Index, reason ?? PlayerDeathReason.LegacyDefault(), damage, -1, false, false, 0, -1, -1);
+        Net.SendPlayerHurt(Index, reason ?? PlayerDeathReason.LegacyDefault(), damage, -1, false, false, 0, -1, -1);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public partial class Player
     /// <param name="reason">Death reason</param>
     public void Kill(PlayerDeathReason? reason = null)
     {
-        NetMessage.SendPlayerDeath(Index, reason ?? PlayerDeathReason.LegacyDefault(), 32767, -1, false, -1, -1);
+        Net.SendPlayerDeath(Index, reason ?? PlayerDeathReason.LegacyDefault(), 32767, -1, false, -1, -1);
     }
 
     /// <summary>
