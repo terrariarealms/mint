@@ -4,12 +4,13 @@ using Terraria.Localization;
 
 namespace Mint.Core;
 
-internal static class MintServer
+public static class MintServer
 {
     internal static AssemblyManager? AssemblyManager;
 
-    internal static NetworkHandler? Network;
-    internal static PlayersManager? Players;
+    public static readonly NetworkHandler Network = new NetworkHandler();
+
+    public static readonly PlayersManager Players = new PlayersManager();
 
     static void Main(string[] args)
     {
@@ -19,9 +20,11 @@ internal static class MintServer
 
         Prepare(args, true);
 
-        Network = new NetworkHandler();
-        Players = new PlayersManager();
+        Players.Initialize();
 
+        Network.Initialize();
+
+        // TileFix removes caching 
         TileFix.Fix();
 
         AssemblyManager.InvokeSetup();
@@ -30,6 +33,7 @@ internal static class MintServer
         StartServer();
     }
 
+#region Terraria Server Startup
     static void Prepare(string[] args, bool monoArgs = true)
     {
         // 🌿🌿🌿🌿🌿🌿🌿🌿
@@ -39,8 +43,8 @@ internal static class MintServer
         // 🌿🌿🌿🌿🌿🌿🌿🌿
 
         Thread.CurrentThread.Name = "Main Thread";
-        if (monoArgs) args = Utils.ConvertMonoArgsToDotNet(args);
-        Program.LaunchParameters = Utils.ParseArguements(args);
+        if (monoArgs) args = Terraria.Utils.ConvertMonoArgsToDotNet(args);
+        Program.LaunchParameters = Terraria.Utils.ParseArguements(args);
         Program.SavePath = Path.Combine("data");
         ThreadPool.SetMinThreads(8, 8);
         Program.InitializeConsoleOutput();
@@ -59,4 +63,5 @@ internal static class MintServer
 
         main.Run();
     }
+#endregion
 }

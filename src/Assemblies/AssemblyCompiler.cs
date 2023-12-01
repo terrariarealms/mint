@@ -29,6 +29,7 @@ public class AssemblyCompiler
             if (name == null)
             {
                 Console.WriteLine($"Skip {directory}: name is NULL: {name}");
+                continue;
             }
 
             // source code directory path

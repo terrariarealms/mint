@@ -25,9 +25,23 @@ public struct Packet
         reader.Dispose();
     }
 
+    /// <summary>
+    /// Packet ID.
+    /// </summary>
     public byte PacketID;
+
+    /// <summary>
+    /// Packet sender index.
+    /// </summary>
     public byte Sender;
 
+    /// <summary>
+    /// Packet start.
+    /// </summary>
     public int Start;
+
+    /// <summary>
+    /// Packet length.
+    /// </summary>
     public int Length;
 }

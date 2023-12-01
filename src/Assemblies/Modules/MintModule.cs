@@ -3,7 +3,7 @@ namespace Mint.Assemblies.Modules;
 public abstract class MintModule
 {
     /// <summary>
-    /// Name of module. Used in displaying module in console and resolving dependencies
+    /// Name of module. Used in displaying module in console and resolving dependencies.
     /// Valid name will be "mcpa" (Original name is Mint Core Packet API)
     /// </summary>
     public abstract string ModuleName { get; }

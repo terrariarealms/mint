@@ -25,7 +25,11 @@ public partial class Player
     /// Kick player.
     /// </summary>
     /// <param name="reason">Kick reason</param>
-    public void Kick(NetworkText reason) => Net.BootPlayer(Index, reason);
+    public void Kick(NetworkText reason)
+    {
+        PlayerState = PlayerState.Left;
+        Net.BootPlayer(Index, reason);
+    }
 
     /// <summary>
     /// Kick player.

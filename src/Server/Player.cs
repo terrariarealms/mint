@@ -28,4 +28,9 @@ public partial class Player
     /// Player's name.
     /// </summary>
     public string Name => Main.player[Index].name;
+
+    /// <summary>
+    /// Player state (None, AlmostJoined, Joined, Left)
+    /// </summary>
+    public PlayerState PlayerState { get; internal set; }
 }

@@ -1,9 +1,13 @@
 
 namespace Mint.Network;
 
-internal class NetworkHandler
+public class NetworkHandler
 {
-    internal List<PacketBindDelegate>?[] packetBinds = new List<PacketBindDelegate>?[Terraria.ID.MessageID.Count];
+    public IDataHandler NetModules => netModules;
+    public IDataHandler Packets => packets;
+
+    internal NetModuleHandler netModules = new NetModuleHandler();
+    internal PacketHandler packets = new PacketHandler();
 
     internal void Initialize()
     {
@@ -16,47 +20,21 @@ internal class NetworkHandler
 
         messageType = self.readBuffer[start];
 
-        if (messageType > packetBinds.Length)
+        if (messageType < 0 || messageType > Terraria.ID.MessageID.Count)
             return;
-        
+
         Player? player = MintServer.Players?.players[self.whoAmI];
         if (player == null)
             return;
 
         Packet packet = new Packet((byte)messageType, (byte)self.whoAmI, start, length);
 
-        List<PacketBindDelegate>? binds = packetBinds[messageType];
-        binds?.ForEach((PacketBindDelegate @delegate) => @delegate(player, packet, ref handled));
+        if (messageType == 82) netModules.Invoke(player, packet, ref handled);
+        else packets.Invoke(player, packet, ref handled);
 
         if (handled)
             return;
 
         orig(self, start, length, out messageType);
-    }
-
-
-    internal void Register(int packetId, PacketBindDelegate bind)
-    {
-        if (packetId > packetBinds.Length)
-            throw new InvalidOperationException("Cannot register PacketBind: invalid Packet ID!");
-
-        if (packetBinds[packetId] == null) 
-        {
-            packetBinds[packetId] = new List<PacketBindDelegate>()
-            {
-                bind
-            };
-            return;
-        }
-
-        packetBinds[packetId]?.Add(bind);
-    }
-
-    internal void Unregister(int packetId, PacketBindDelegate bind)
-    {
-        if (packetId > packetBinds.Length)
-            throw new InvalidOperationException("Cannot register PacketBind: invalid Packet ID!");
-
-        packetBinds[packetId]?.Remove(bind);
     }
 }
