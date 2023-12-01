@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Mint.Modules;
+namespace Mint.Assemblies.Modules;
 
 public class ModuleAssembly
 {

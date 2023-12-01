@@ -1,17 +1,16 @@
 using System.Reflection;
-using Mint.Modules;
+using Mint.Assemblies.Modules;
+using MongoDB.Libmongocrypt;
 
-namespace Mint.Core;
+namespace Mint.Assemblies;
 
-public class AssemblyManager
+internal class AssemblyManager
 {
+    internal const string WorkingDirectory = "modules";
+
     internal List<Assembly> dependencies = new List<Assembly>();
     internal List<ModuleAssembly>? modules;
 
-    private ModulesLoader? _moduleLoader;
-
-
-#region Assembly resolving
     internal void SetupResolving()
     {
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
@@ -51,25 +50,21 @@ public class AssemblyManager
 
         return assembly;
     }
-#endregion
-
-#region Modules
+    
     internal void LoadModules()
     {
-        _moduleLoader = new ModulesLoader();
         modules = new List<ModuleAssembly>();
 
-        var binModules = _moduleLoader.FindBinaryModules("modules");
-        LoadProjects(_moduleLoader.FindProjectModules("modules"), CountOf(binModules));
-
-        foreach (string binPath in binModules)
-        {
-            LoadModule(binPath);
-        }
-
-        _moduleLoader.Wait();
+        LoadVia(new SourceLoader());
+        LoadVia(new BinaryLoader());
 
         CheckDependencies();
+    }
+
+    internal void LoadVia(IModuleLoader loader)
+    {
+        loader.Initialize(WorkingDirectory);
+        modules?.AddRange(loader.LoadModules());
     }
 
     internal void InvokeSetup()
@@ -120,54 +115,6 @@ public class AssemblyManager
                 sleep = true;
             }
         }
-    }
-
-
-    private void LoadProjects(IEnumerable<string> modules, int binCount)
-    {
-        _moduleLoader?.SetupCompiler(CountOf(modules) + binCount + 2);
-        foreach (string projPath in modules)
-        {
-            _moduleLoader?.CompileProject(projPath, CompileCallback);
-        }
-    }
-
-    private void CompileCallback(byte result, CompileContext ctx, string? binDir, string? binFile, string? name)
-    {
-        if (result != CompileCallbackID.Compiled || binFile == null)
-            return;
-
-        LoadModule(binFile);
-    }
-
-
-    private void LoadModule(string binFile)
-    {        
-        (MintModule?, Assembly)? data = _moduleLoader?.LoadFrom(binFile);
-
-        if (data?.Item1 == null)
-        {
-            Console.WriteLine($"loadModule {binFile}: \x1b[31mfailed.\x1b[0m");
-            return;
-        }
-
-        ModuleAssembly moduleAssembly = new ModuleAssembly(binFile)
-        {
-            Module = data?.Item1,
-            Assembly = data?.Item2
-        };
-        modules?.Add(moduleAssembly);
-    }
-#endregion
-
-    private int CountOf<T>(IEnumerable<T> enumerable)
-    {
-        int count = 0;
-        var enumerator = enumerable.GetEnumerator();
-        while (enumerator.MoveNext())
-            count++;
-
-        return count;
     }
 
     private bool DependencyExists(string name)

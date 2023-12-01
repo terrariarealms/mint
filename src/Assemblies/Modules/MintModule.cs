@@ -1,4 +1,4 @@
-namespace Mint.Modules;
+namespace Mint.Assemblies.Modules;
 
 public abstract class MintModule
 {
