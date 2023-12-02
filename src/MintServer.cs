@@ -34,24 +34,6 @@ public static class MintServer
         AccountsCollection = DatabaseUtils.GetDatabase<Account>();       
         GroupsCollection = DatabaseUtils.GetDatabase<Group>();
 
-        var group = Group.CreateClean("Test");
-        group.Presence.Prefix = "333333";
-        group.Save();
-
-
-        /*
-        Account acc = AccountsCollection.Get("test");
-        AccountClan clan = (AccountClan)acc.Extensions[0];
-        Console.WriteLine(clan.ClanF);
-        */
-
-        var acc = new Account("test", Guid.NewGuid().ToString(), "Test", null, null, new Dictionary<string, string>());
-        acc.SetPassword("Mypass");
-        Console.WriteLine(acc.VerifyPassword("mypass"));
-        Console.WriteLine(acc.VerifyPassword("Mypass"));
-        Console.WriteLine(acc.VerifyPassword("ZA_DONBAS"));
-        
-
         Prepare(args, true);
 
         Players.Initialize();
@@ -64,7 +46,7 @@ public static class MintServer
         AssemblyManager.InvokeSetup();
 
         AssemblyManager.InvokeInitialize();
-        //StartServer();
+        StartServer();
     }
 
 #region Terraria Server Startup
