@@ -1,6 +1,5 @@
 using System.Reflection;
 using Mint.Assemblies.Modules;
-using MongoDB.Libmongocrypt;
 
 namespace Mint.Assemblies;
 

@@ -30,6 +30,11 @@ public partial class Player
     public string Name => Main.player[Index].name;
 
     /// <summary>
+    /// Player's UUID.
+    /// </summary>
+    public string? UUID { get; internal set; }
+
+    /// <summary>
     /// Player state (None, AlmostJoined, Joined, Left)
     /// </summary>
     public PlayerState PlayerState { get; internal set; }

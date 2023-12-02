@@ -9,11 +9,13 @@ public static class PlayerEvents
     /// Invokes when player was connected (socket)
     /// </summary>
     public static event OnPlayerConnected? PlayerConnected;
-    internal static void InvokePlayerConnected(Player player) => PlayerConnected?.Invoke(player);
+    internal static void InvokePlayerConnected(Player player) 
+        => PlayerConnected?.Invoke(player);
 
     /// <summary>
     /// Invokes when player was left (socket)
     /// </summary>
     public static event OnPlayerLeft? PlayerLeft;
-    internal static void InvokePlayerLeft(Player player) => PlayerLeft?.Invoke(player);
+    internal static void InvokePlayerLeft(Player player) 
+        => PlayerLeft?.Invoke(player);
 }

@@ -19,11 +19,35 @@
     <Reference Include="FNA">
       <HintPath>..\deps\terraria.mintoza\FNA.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\deps\mongodb\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\deps\mongodb\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core">
+      <HintPath>..\deps\mongodb\MongoDB.Driver.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Legacy">
+      <HintPath>..\deps\mongodb\MongoDB.Driver.Legacy.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Libmongocrypt">
+      <HintPath>..\deps\mongodb\MongoDB.Libmongocrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\deps\mongodb\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="Snappier">
+      <HintPath>..\deps\mongodb\Snappier.dll</HintPath>
+    </Reference>
+    <Reference Include="ZstdSharp">
+      <HintPath>..\deps\mongodb\ZstdSharp.dll</HintPath>
+    </Reference>
 
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1"/>
-    <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2"/>
-    <PackageReference Include="MongoDB.Driver" Version="2.22.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1" />
+    <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,18 @@
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 
 namespace Mint.Core;
 
-internal static class TileFix
+internal class TileFix : WorldGen
 {
     internal static void Fix()
     {
 		On.Terraria.IO.WorldFile.SaveWorldTiles += SaveWorldTiles;
-
+		
         TileID.Sets.AllowsSaveCompressionBatching = new bool[TileID.Sets.AllowsSaveCompressionBatching.Length];
     }
 
@@ -16,7 +20,7 @@ internal static class TileFix
     {
 		try
 		{
-			return SaveWorldTiles(orig, (BinaryWriter)writer);
+			return SaveWorldTiles((BinaryWriter)writer);
 		}
 		catch (Exception ex)
 		{
@@ -26,7 +30,7 @@ internal static class TileFix
 		return (int)((BinaryWriter)writer).BaseStream.Position;
     }
 
-    static unsafe int SaveWorldTiles(On.Terraria.IO.WorldFile.orig_SaveWorldTiles orig, BinaryWriter writer)
+    static unsafe int SaveWorldTiles(BinaryWriter writer)
 	{
 		byte[] array = new byte[16];
 		for (int i = 0; i < Main.maxTilesX; i++)

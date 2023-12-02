@@ -8,15 +8,49 @@ public static class MintServer
 {
     internal static AssemblyManager? AssemblyManager;
 
-    public static readonly NetworkHandler Network = new NetworkHandler();
+    internal static MintConfig Config;
+    internal static ConfigUtils ConfigUtils = new ConfigUtils("core");
+    
+    public static DatabaseUtils? DatabaseUtils;
 
+    public static readonly NetworkHandler Network = new NetworkHandler();
     public static readonly PlayersManager Players = new PlayersManager();
+
+    public static DatabaseCollection<Account>? AccountsCollection;
+    public static DatabaseCollection<Group>? GroupsCollection;
 
     static void Main(string[] args)
     {
         AssemblyManager = new AssemblyManager();
         AssemblyManager.SetupResolving();
         AssemblyManager.LoadModules();
+
+        if (!Directory.Exists("data"))
+            Directory.CreateDirectory("data");
+
+        Config = ConfigUtils.GetConfig<MintConfig>();
+        DatabaseUtils = new DatabaseUtils();
+
+        AccountsCollection = DatabaseUtils.GetDatabase<Account>();       
+        GroupsCollection = DatabaseUtils.GetDatabase<Group>();
+
+        var group = Group.CreateClean("Test");
+        group.Presence.Prefix = "333333";
+        group.Save();
+
+
+        /*
+        Account acc = AccountsCollection.Get("test");
+        AccountClan clan = (AccountClan)acc.Extensions[0];
+        Console.WriteLine(clan.ClanF);
+        */
+
+        var acc = new Account("test", Guid.NewGuid().ToString(), "Test", null, null, new Dictionary<string, string>());
+        acc.SetPassword("Mypass");
+        Console.WriteLine(acc.VerifyPassword("mypass"));
+        Console.WriteLine(acc.VerifyPassword("Mypass"));
+        Console.WriteLine(acc.VerifyPassword("ZA_DONBAS"));
+        
 
         Prepare(args, true);
 
@@ -30,7 +64,7 @@ public static class MintServer
         AssemblyManager.InvokeSetup();
 
         AssemblyManager.InvokeInitialize();
-        StartServer();
+        //StartServer();
     }
 
 #region Terraria Server Startup
