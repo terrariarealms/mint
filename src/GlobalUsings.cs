@@ -6,8 +6,7 @@ global using Mint.Assemblies;
 global using Mint.Assemblies.Modules;
 global using Mint.Network;
 global using Mint.Server;
-global using Mint.Utils;
-global using Mint.Events;
+global using Mint.API;
 
 global using global::System;
 global using global::System.Collections.Generic;

@@ -1,4 +1,4 @@
-namespace Mint.Utils;
+namespace Mint.API;
 
 public static class PlayersUtils
 {

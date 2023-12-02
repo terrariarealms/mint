@@ -60,6 +60,8 @@ public class PlayersManager
             PlayerState = PlayerState.Joined
         };
 
+        AsyncMessage.StartSession(index);
+
         Console.WriteLine($"Players: Created player instance for {index}.");
 
         PlayerEvents.InvokePlayerConnected(players[index]);
@@ -67,6 +69,8 @@ public class PlayersManager
 
     private void HandleDisconnect(int index)
     {
+        AsyncMessage.StopSession(index);
+
         if (players[index] == null) 
             return;
 
