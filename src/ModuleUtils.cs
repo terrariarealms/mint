@@ -1,4 +1,4 @@
-namespace Mint.API;
+namespace Mint.Core;
 
 public static class ModuleUtils
 {

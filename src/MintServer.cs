@@ -37,7 +37,6 @@ public static class MintServer
         Prepare(args, true);
 
         Players.Initialize();
-
         Network.Initialize();
 
         // TileFix removes caching 

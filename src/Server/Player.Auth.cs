@@ -5,23 +5,23 @@ public partial class Player
     /// <summary>
     /// Player's account.
     /// </summary>
-    public Account? Account { get; set; }
+    public virtual Account? Account { get; set; }
 
     /// <summary>
     /// Player's group
     /// </summary>
-    public Group? Group => Account?.GetGroup();
+    public virtual Group? Group => Account?.GetGroup();
 
     /// <summary>
     /// Player's authorized state.
     /// </summary>
-    public bool Authorized { get; set; }
+    public virtual bool Authorized { get; set; }
 
     /// <summary>
     /// Find account candidate by Name & UUID & IP.
     /// </summary>
     /// <returns>Found account</returns>
-    public Account? FindAccountCandidate()
+    public virtual Account? FindAccountCandidate()
     {
         if (string.IsNullOrEmpty(Name) || UUID == null)
             return null;

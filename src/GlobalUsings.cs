@@ -6,11 +6,13 @@ global using Mint.Assemblies;
 global using Mint.Assemblies.Modules;
 global using Mint.Network;
 global using Mint.Server;
-global using Mint.API;
 global using Mint.Data;
 global using Mint.Server.Auth;
 global using Mint.Network.Incoming;
 global using Mint.Network.Outcoming;
+
+global using ModSend = On.Terraria.NetMessage;
+global using ModGet = On.Terraria.MessageBuffer;
 
 global using global::System;
 global using global::System.Collections.Generic;

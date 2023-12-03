@@ -1,8 +1,8 @@
 namespace Mint.Network.Incoming;
 
-public struct Packet
+public struct IncomingPacket
 {
-    public Packet(byte packetId, byte sender, int start, int length)
+    public IncomingPacket(byte packetId, byte sender, int start, int length)
     {
         PacketID = packetId;
         Sender = sender;
@@ -10,6 +10,10 @@ public struct Packet
         Length = length;
     }
 
+    /// <summary>
+    /// Create reader for this packet.
+    /// </summary>
+    /// <returns>BinaryReader</returns>
     public BinaryReader CreateReader()
     {
         MemoryStream stream = new MemoryStream(Net.buffer[Sender].readBuffer);
@@ -19,11 +23,21 @@ public struct Packet
         return reader;
     }
 
+    /// <summary>
+    /// Dispose reader that you got from CreateReader(). (above)
+    /// </summary>
+    /// <param name="reader">BinaryReader</param>
     public void DisposeReader(BinaryReader reader)
     {
-        reader.BaseStream.Dispose();
         reader.Dispose();
+        reader.BaseStream.Dispose();
     }
+
+    /// <summary>
+    /// Get sender's Mint.Server.Player instance.
+    /// </summary>
+    /// <returns></returns>
+    public Player GetSender() => MintServer.Players.players[Sender];
 
     /// <summary>
     /// Packet ID.

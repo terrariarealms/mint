@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace Mint.Core;
 
+// mongodb does not like XNA Color :(
 public struct MintColor
 {
     public static readonly MintColor White = new MintColor(255, 255, 255);

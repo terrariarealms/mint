@@ -7,7 +7,93 @@ namespace Mint.Server;
 
 public class PlayersManager
 {
-    internal Player[] players = new Player[254];
+    /// <summary>
+    /// All active players that enabled PvP Mode.
+    /// </summary>
+    public IEnumerable<Player> InPvP => 
+        QuickWhere((p) => p.PlayerState == PlayerState.Joined && p.TPlayer.hostile);
+
+    /// <summary>
+    /// All active players that not enabled PvP Mode.
+    /// </summary>
+    public IEnumerable<Player> NotInPvP => 
+        QuickWhere((p) => p.PlayerState == PlayerState.Joined && !p.TPlayer.hostile);
+
+    /// <summary>
+    /// All active players that alive.
+    /// </summary>
+    public IEnumerable<Player> Alive => 
+        QuickWhere((p) => p.PlayerState == PlayerState.Joined && !p.TPlayer.dead);
+
+    /// <summary>
+    /// All active players that alive.
+    /// </summary>
+    public IEnumerable<Player> Dead => 
+        QuickWhere((p) => p.PlayerState == PlayerState.Joined && p.TPlayer.dead);
+
+    /// <summary>
+    /// All active players.
+    /// </summary>
+    public IEnumerable<Player> Active => 
+        QuickWhere((p) => p.PlayerState == PlayerState.Joined);
+
+    /// <summary>
+    /// Get count of active players.
+    /// </summary>
+    /// <returns>Active players count.</returns>
+    public int GetActivePlayersCount()
+    {
+        if (MintServer.Players?.players == null) 
+            return -1;
+
+        byte count = 0;
+
+        for (int i = 0; i < 255; i++)
+        {
+            Player? player = MintServer.Players?.players[i];
+            if (player?.PlayerState == PlayerState.Joined) 
+                count++;
+        }
+
+        return count;
+    }
+
+    /// <summary>
+    /// Faster implementation of Where from LINQ.
+    /// </summary>
+    /// <param name="predicate">Target predicate</param>
+    /// <returns>Predicate result</returns>
+    public IEnumerable<Player> QuickWhere(Predicate<Player> predicate)
+    {
+        if (MintServer.Players?.players == null) 
+            yield break;
+
+        for (int i = 0; i < 255; i++)
+        {
+            Player? player = MintServer.Players.players[i];
+            if (player != null && predicate(player))
+                yield return player;
+        }
+    }
+
+    /// <summary>
+    /// Implementation of foreach.
+    /// </summary>
+    /// <param name="action">Target action</param>
+    public void QuickForEach(Action<Player> action)
+    {
+        if (MintServer.Players?.players == null) 
+            return;
+
+        for (int i = 0; i < 255; i++)
+        {
+            Player? player = MintServer.Players?.players[i];
+            if (player != null)
+                action(player);
+        }
+    }
+
+    internal Player[] players = new Player[255];
 
     internal void Initialize()
     {
@@ -59,25 +145,42 @@ public class PlayersManager
         {
             PlayerState = PlayerState.Joined
         };
-
-        AsyncMessage.StartSession(index);
+        players[index].StartPacketHandler();
 
         Console.WriteLine($"Players: Created player instance for {index}.");
 
-        PlayerEvents.InvokePlayerConnected(players[index]);
+        Events.InvokePlayerConnected(players[index]);
     }
 
     private void HandleDisconnect(int index)
     {
-        AsyncMessage.StopSession(index);
-
         if (players[index] == null) 
             return;
 
+        players[index].StopPacketHandler();
         players[index].PlayerState = PlayerState.Left;
 
-        PlayerEvents.InvokePlayerConnected(players[index]);
+        Events.InvokePlayerLeft(players[index]);
 
         players[index].Socket.Close();
+    }
+    public static class Events
+    {
+        public delegate void OnPlayerConnected(Player player);
+        public delegate void OnPlayerLeft(Player player);
+
+        /// <summary>
+        /// Invokes when player was connected (socket)
+        /// </summary>
+        public static event OnPlayerConnected? PlayerConnected;
+        internal static void InvokePlayerConnected(Player player) 
+            => PlayerConnected?.Invoke(player);
+
+        /// <summary>
+        /// Invokes when player was left (socket)
+        /// </summary>
+        public static event OnPlayerLeft? PlayerLeft;
+        internal static void InvokePlayerLeft(Player player) 
+            => PlayerLeft?.Invoke(player);
     }
 }

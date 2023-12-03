@@ -13,7 +13,7 @@ public partial class Player
     /// </summary>
     /// <param name="name">New name</param>
     /// <param name="netBroadcast">Broadcast PlayerInfo (4) packet with updated name</param>
-    public void SetName(string name, bool netBroadcast)
+    public virtual void SetName(string name, bool netBroadcast)
     {
         Main.player[Index].name = name;
         Netplay.Clients[Index].Name = name;
@@ -25,7 +25,7 @@ public partial class Player
     /// Kick player.
     /// </summary>
     /// <param name="reason">Kick reason</param>
-    public void Kick(NetworkText reason)
+    public virtual void Kick(NetworkText reason)
     {
         PlayerState = PlayerState.Left;
         Net.BootPlayer(Index, reason);
@@ -35,14 +35,14 @@ public partial class Player
     /// Kick player.
     /// </summary>
     /// <param name="reason">Kick reason</param>
-    public void Kick(string reason) => Kick(NetworkText.FromLiteral(reason));
+    public virtual void Kick(string reason) => Kick(NetworkText.FromLiteral(reason));
 
     /// <summary>
     /// Hurt player.
     /// </summary>
     /// <param name="damage">Damage</param>
     /// <param name="reason">Death reason</param>
-    public void Hurt(int damage, PlayerDeathReason? reason = null)
+    public virtual void Hurt(int damage, PlayerDeathReason? reason = null)
     {
         Net.SendPlayerHurt(Index, reason ?? PlayerDeathReason.LegacyDefault(), damage, -1, false, false, 0, -1, -1);
     }
@@ -51,7 +51,7 @@ public partial class Player
     /// Kill player.
     /// </summary>
     /// <param name="reason">Death reason</param>
-    public void Kill(PlayerDeathReason? reason = null)
+    public virtual void Kill(PlayerDeathReason? reason = null)
     {
         Net.SendPlayerDeath(Index, reason ?? PlayerDeathReason.LegacyDefault(), 32767, -1, false, -1, -1);
     }
@@ -61,7 +61,7 @@ public partial class Player
     /// </summary>
     /// <param name="text">Message text</param>
     /// <param name="color">Message color</param>
-    public void SendMessage(string text, Color color)
+    public virtual void SendMessage(string text, Color color)
     {
         ChatHelper.SendChatMessageToClient(NetworkText.FromLiteral(text), color, Index);
     }
