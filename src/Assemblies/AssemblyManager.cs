@@ -86,8 +86,6 @@ internal class AssemblyManager
     {
         if (modules == null) return;
 
-        //foreach (ModuleAssembly asm in modules)
-
         bool sleep = false;
         modules.ForEach((m) => CheckDependenciesFor(m.Module, ref sleep));
 

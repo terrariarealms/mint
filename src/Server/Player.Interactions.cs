@@ -63,6 +63,15 @@ public partial class Player
     /// <param name="color">Message color</param>
     public virtual void SendMessage(string text, Color color)
     {
-        ChatHelper.SendChatMessageToClient(NetworkText.FromLiteral(text), color, Index);
+        byte[] packet = PacketWriter.New(82) // netmodule
+                    .WriteUInt16(1) // netmodule chat packet id
+                    .WriteByte(byte.MaxValue) // author
+                    // NetworkText
+                    .WriteByte(0) // NetworkText mode
+                    .WriteString(text) // msg text
+                    .WriteColor(color) // msg color
+                    .Build();
+
+        SendBytes(packet);
     }
 }

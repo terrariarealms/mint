@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Mint.Outcoming;
+namespace Mint.Network.Outcoming;
 
 public unsafe class PacketWriter : BinaryWriter
 {
@@ -207,6 +207,19 @@ public unsafe class PacketWriter : BinaryWriter
         base.Write(value.Y);
         base.Write(value.Width);
         base.Write(value.Height);
+        return this;
+    }
+
+    /// <summary>
+    /// Write Color.
+    /// </summary>
+    /// <param name="value">Value</param>
+    /// <returns>PacketWriter instance</returns>
+    public PacketWriter WriteColor(Color value)
+    {
+        base.Write(value.R);
+        base.Write(value.G);
+        base.Write(value.B);
         return this;
     }
 

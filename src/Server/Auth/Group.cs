@@ -74,20 +74,20 @@ public class Group : DatabaseObject
     /// Get group's parent.
     /// </summary>
     /// <returns>Parent group</returns>
-    public Group? GetParent() => ParentName == null ? null : MintServer.GroupsCollection?.Get(ParentName);
+    public Group? GetParent() => ParentName == null ? null : MintServer.GroupsCollection.Get(ParentName);
 
     /// <summary>
     /// Save your changes.
     /// </summary>
     public void Save()
     {
-        if (MintServer.GroupsCollection?.Get(Name) == null)
+        if (MintServer.GroupsCollection.Get(Name) == null)
         {
-            MintServer.GroupsCollection?.Add(this);
+            MintServer.GroupsCollection.Add(this);
             return;
         }
 
-        MintServer.GroupsCollection?.Update(this);
+        MintServer.GroupsCollection.Update(this);
     }
 
     /// <summary>

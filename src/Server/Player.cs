@@ -7,6 +7,7 @@ public partial class Player
     public Player(int index)
     {
         Index = index;
+        Messenger = new PlayerMessenger(this);
     }
 
     /// <summary>
@@ -38,4 +39,10 @@ public partial class Player
     /// Player state (None, AlmostJoined, Joined, Left)
     /// </summary>
     public virtual PlayerState PlayerState { get; internal set; }
+
+    /// <summary>
+    /// Player messenger. Use it in commands context.
+    /// (if you will use SendMessage you are gay)
+    /// </summary>
+    public virtual PlayerMessenger Messenger { get; internal set; }
 }

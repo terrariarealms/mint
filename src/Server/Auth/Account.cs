@@ -18,20 +18,20 @@ public class Account : DatabaseObject
     /// Get account's group.
     /// </summary>
     /// <returns></returns>
-    public Group? GetGroup() => MintServer.GroupsCollection?.Get(GroupName);
+    public Group? GetGroup() => MintServer.GroupsCollection.Get(GroupName);
 
     /// <summary>
     /// Save your changes.
     /// </summary>
     public void Save()
     {
-        if (MintServer.AccountsCollection?.Get(Name) == null)
+        if (MintServer.AccountsCollection.Get(Name) == null)
         {
-            MintServer.AccountsCollection?.Add(this);
+            MintServer.AccountsCollection.Add(this);
             return;
         }
 
-        MintServer.AccountsCollection?.Update(this);
+        MintServer.AccountsCollection.Update(this);
     }
 
     /// <summary>

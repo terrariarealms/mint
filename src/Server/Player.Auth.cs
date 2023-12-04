@@ -26,10 +26,16 @@ public partial class Player
         if (string.IsNullOrEmpty(Name) || UUID == null)
             return null;
 
-        Account? account = MintServer.AccountsCollection?.Get(Name);
+        Account? account = MintServer.AccountsCollection.Get(Name);
         if (account != null && account.VerifyToken(UUID, IP))
             return account;
 
         return null;
+    }
+
+    public virtual void AuthorizeAs(Account account)
+    {
+        Account = account;
+        Authorized = true;
     }
 }

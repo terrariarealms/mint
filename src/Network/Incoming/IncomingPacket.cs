@@ -11,26 +11,38 @@ public struct IncomingPacket
     }
 
     /// <summary>
+    /// Get reader for this packet.
+    /// </summary>
+    /// <returns>BinaryReader</returns>
+    public BinaryReader GetReader()
+    {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        _reader.BaseStream.Position = Start;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        return _reader;
+    }
+
+    /// <summary>
     /// Create reader for this packet.
     /// </summary>
     /// <returns>BinaryReader</returns>
-    public BinaryReader CreateReader()
+    internal BinaryReader CreateReader()
     {
-        MemoryStream stream = new MemoryStream(Net.buffer[Sender].readBuffer);
-        BinaryReader reader = new BinaryReader(stream);
-        reader.BaseStream.Position = Start;
+        _stream = new MemoryStream(Net.buffer[Sender].readBuffer);
+        _reader = new BinaryReader(_stream);
+        _reader.BaseStream.Position = Start;
 
-        return reader;
+        return _reader;
     }
 
     /// <summary>
     /// Dispose reader that you got from CreateReader(). (above)
     /// </summary>
     /// <param name="reader">BinaryReader</param>
-    public void DisposeReader(BinaryReader reader)
+    internal void DisposeReader()
     {
-        reader.Dispose();
-        reader.BaseStream.Dispose();
+        _reader?.Dispose();
+        _reader?.BaseStream.Dispose();
     }
 
     /// <summary>
@@ -38,6 +50,9 @@ public struct IncomingPacket
     /// </summary>
     /// <returns></returns>
     public Player GetSender() => MintServer.Players.players[Sender];
+
+    private MemoryStream? _stream;
+    private BinaryReader? _reader;
 
     /// <summary>
     /// Packet ID.

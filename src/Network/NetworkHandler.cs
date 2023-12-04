@@ -18,6 +18,16 @@ public class NetworkHandler
     /// <summary>
     /// Outcoming packets hijacks.
     /// </summary>
+    public readonly NetworkBindDelegate<IncomingPacket>?[] IncomingHijack = new NetworkBindDelegate<IncomingPacket>?[255];
+
+    /// <summary>
+    /// Outcoming packets hijacks.
+    /// </summary>
+    public readonly NetworkBindDelegate<IncomingPacket>?[] IncomingModulesHijack = new NetworkBindDelegate<IncomingPacket>?[32];
+
+    /// <summary>
+    /// Outcoming packets hijacks.
+    /// </summary>
     public readonly NetworkBindDelegate<OutcomingPacket>?[] OutcomingHijack = new NetworkBindDelegate<OutcomingPacket>?[255];
 
     /// <summary>
@@ -33,6 +43,64 @@ public class NetworkHandler
         PacketHandlerTask.Start();
 
         ModSend.SendData += OnSendData;
+        ModGet.GetData += OnGetData;
+    }
+
+    private void OnGetData(ModGet.orig_GetData orig, Terraria.MessageBuffer self, int start, int length, out int messageType)
+    {
+        messageType = self.readBuffer[start];
+
+        Player? player = MintServer.Players.players[self.whoAmI];
+        if (player == null)
+            return;
+
+        if (messageType == 82) // net module
+        {
+            ushort netModuleId = BitConverter.ToUInt16(self.readBuffer, start + 1); // id
+            start += 3;
+            length -= 3;
+
+            IncomingPacket packet = new IncomingPacket((byte)netModuleId, (byte)self.whoAmI, start, length);
+            packet.CreateReader();
+            HandleNetModule(orig, self, player, packet);
+            packet.DisposeReader();
+        }
+        else // default packet
+        {
+            start += 1;
+            length -= 1;
+
+            IncomingPacket packet = new IncomingPacket((byte)messageType, (byte)self.whoAmI, start, length);
+            packet.CreateReader();
+            HandlePacket(orig, self, player, packet);
+            packet.DisposeReader();
+        }
+    }
+
+    private bool HandleNetModule(ModGet.orig_GetData orig, Terraria.MessageBuffer self, Player? player, IncomingPacket packet)
+    {
+        bool handled = false;
+        IncomingNetModules.binds[packet.PacketID]?.ForEach((p) => p?.Invoke(player, packet, ref handled));
+
+        var hijack = IncomingModulesHijack[packet.PacketID];
+
+        if (hijack != null) hijack(player, packet, ref handled);
+        else orig(self, packet.Start - 3, packet.Length + 3, out _);
+
+        return handled;
+    }
+
+    private bool HandlePacket(ModGet.orig_GetData orig, Terraria.MessageBuffer self, Player? player, IncomingPacket packet)
+    {
+        bool handled = false;
+        IncomingPackets.binds[packet.PacketID]?.ForEach((p) => p?.Invoke(player, packet, ref handled));
+
+        var hijack = IncomingHijack[packet.PacketID];
+
+        if (hijack != null) hijack(player, packet, ref handled);
+        else orig(self, packet.Start - 1, packet.Length + 1, out _);
+
+        return handled;
     }
 
     private void OnSendData(ModSend.orig_SendData orig, int msgType, int remoteClient, int ignoreClient, NetworkText text, int number, float number2, float number3, float number4, int number5, int number6, int number7)

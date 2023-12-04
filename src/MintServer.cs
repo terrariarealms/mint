@@ -6,18 +6,20 @@ namespace Mint.Core;
 
 public static class MintServer
 {
-    internal static AssemblyManager? AssemblyManager;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    internal static AssemblyManager AssemblyManager;
 
     internal static MintConfig Config;
     internal static ConfigUtils ConfigUtils = new ConfigUtils("core");
-    
-    public static DatabaseUtils? DatabaseUtils;
+
+    public static DatabaseUtils DatabaseUtils;
 
     public static readonly NetworkHandler Network = new NetworkHandler();
     public static readonly PlayersManager Players = new PlayersManager();
 
-    public static DatabaseCollection<Account>? AccountsCollection;
-    public static DatabaseCollection<Group>? GroupsCollection;
+    public static DatabaseCollection<Account> AccountsCollection;
+    public static DatabaseCollection<Group> GroupsCollection;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     static void Main(string[] args)
     {
