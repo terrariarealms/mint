@@ -76,7 +76,7 @@ public class AssemblyCompiler
         string binFilePath = Path.Combine(binPath, info.Name + ".dll");
 
         string command = BuildCommand(info);
-        if (RunCommand(command, true))
+        if (RunCommand(command, false))
         {
             if (File.Exists(binFilePath))
                 return binFilePath;

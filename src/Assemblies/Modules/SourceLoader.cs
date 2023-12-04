@@ -9,7 +9,7 @@ public class SourceLoader : IModuleLoader
     public void Initialize(string workingDirectory)
     {
         _workingDirectory = workingDirectory;
-        _compiler = new AssemblyCompiler(_workingDirectory, new CompilationTargets("src", "bin", "net6.0", null));
+        _compiler = new AssemblyCompiler(_workingDirectory, new CompilationTargets("src", "bin", "net7.0", "-c Release"));
     }
 
     public IEnumerable<ModuleAssembly> LoadModules()
