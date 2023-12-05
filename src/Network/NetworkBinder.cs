@@ -1,6 +1,6 @@
 namespace Mint.Network;
 
-public class NetworkBinder<TPacket> where TPacket : struct
+public sealed  class NetworkBinder<TPacket> where TPacket : struct
 {
     internal NetworkBinder(byte maxBinds)
     {

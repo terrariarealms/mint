@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Mint.Server.Commands;
+using Terraria;
 using Terraria.Initializers;
 using Terraria.Localization;
 
@@ -12,13 +13,15 @@ public static class MintServer
     internal static MintConfig Config;
     internal static ConfigUtils ConfigUtils = new ConfigUtils("core");
 
-    public static DatabaseUtils DatabaseUtils;
+    public static DatabaseUtils DatabaseUtils { get; private set; }
 
-    public static readonly NetworkHandler Network = new NetworkHandler();
-    public static readonly PlayersManager Players = new PlayersManager();
+    public static CommandsManager Commands { get; private set; } = new CommandsManager();
+    public static NetworkHandler Network { get; private set; } = new NetworkHandler();
+    public static PlayersManager Players { get; private set; } = new PlayersManager();
 
-    public static DatabaseCollection<Account> AccountsCollection;
-    public static DatabaseCollection<Group> GroupsCollection;
+    public static DatabaseCollection<Account> AccountsCollection { get; private set; }
+    public static DatabaseCollection<Group> GroupsCollection { get; private set; }
+
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     static void Main(string[] args)
@@ -38,6 +41,9 @@ public static class MintServer
 
         Prepare(args, true);
 
+        CoreCommands.Register();
+        CoreCommands.Invoke();
+        
         Players.Initialize();
         Network.Initialize();
 

@@ -5,7 +5,7 @@ using Terraria.Net.Sockets;
 
 namespace Mint.Server;
 
-public class PlayersManager
+public sealed class PlayersManager
 {
     /// <summary>
     /// All active players that enabled PvP Mode.

@@ -3,7 +3,7 @@ using Terraria.Localization;
 
 namespace Mint.Network;
 
-public class NetworkHandler
+public sealed class NetworkHandler
 {
     /// <summary>
     /// Incoming packets binder.
