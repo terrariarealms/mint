@@ -31,7 +31,7 @@ public static class MintServer
     {
         AssemblyManager = new AssemblyManager();
         AssemblyManager.SetupResolving();
-        //AssemblyManager.LoadModules();
+        AssemblyManager.LoadModules();
 
         if (!Directory.Exists("data"))
             Directory.CreateDirectory("data");
