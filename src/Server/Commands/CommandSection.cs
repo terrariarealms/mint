@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Mint.Server.Commands;
 
 public sealed class CommandSection
@@ -21,5 +23,24 @@ public sealed class CommandSection
     /// <summary>
     /// Commands list.
     /// </summary>
-    internal List<ICommand> Commands { get; }
+    public List<ICommand> Commands { get; }
+
+    public void ImportFrom(Type type)
+    {
+        foreach (MethodInfo method in type.GetMethods())
+        {
+            if (!method.IsStatic) continue;
+
+            StaticCommandAttribute? commandAttribute = method.GetCustomAttribute<StaticCommandAttribute>();
+            if (commandAttribute == null) continue;
+
+            CommandPermissionAttribute? permissionAttribute = method.GetCustomAttribute<CommandPermissionAttribute>();
+            CommandFlagsAttribute? flagsAttribute = method.GetCustomAttribute<CommandFlagsAttribute>();
+
+            ICommand command = new StaticCommand(method, commandAttribute.Name, commandAttribute.Description, commandAttribute.Syntax, permissionAttribute?.Permission, flagsAttribute?.Flags ?? CommandFlags.None);
+            Console.WriteLine("Registed static command: " + command.Name);
+
+            Commands.Add(command);
+        }
+    }
 }

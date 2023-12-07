@@ -4,24 +4,29 @@ internal static class CoreCommands
 {
     internal static void Register()
     {
-        ICommand sex = new DynamicCommand("sex", "allows sex", "<hueta>", "mint.amomus", CommandFlags.None, Sex);
-
         var section = MintServer.Commands.CreateSection("mint.sex", 1);
-        section.Commands.Add(sex); // YAY SEX IN MINT!!!
+        section.ImportFrom(typeof(CoreCommands));
     }
 
     internal static void Invoke()
     {
-        Player plr = new Player(228);
-        Console.WriteLine(MintServer.Commands.InvokeCommand(plr, "/sex"));
+        Console.WriteLine(MintServer.Commands.InvokeCommand(MintServer.ServerPlayer, "/sex"));
+        Console.WriteLine(MintServer.Commands.InvokeCommand(MintServer.ServerPlayer, "/sex super 2"));
     }
 
+    [StaticCommand("sex", "allows sex", "<int>")]
+    [CommandPermission("mint.sex")]
+    [CommandFlags(CommandFlags.RootOnly | CommandFlags.Hidden)]
     public static void Sex(CommandInvokeContext ctx)
     {
-#pragma warning disable CS0162 // pashol nahui
-        if ("donbas" == "ukraine") return;
-#pragma warning restore CS0162 // donbas
+        ctx.Messenger.Send(MessageMark.OK, "SEX", "ky");
+    }
 
-        Console.WriteLine("donbas was successfully");
+    [StaticCommand("sex super 2", "allows sex", "<int>")]
+    [CommandPermission("mint.sex")]
+    [CommandFlags(CommandFlags.RootOnly | CommandFlags.Hidden)]
+    public static void Sex2(CommandInvokeContext ctx, int val1, int val2 = 4356)
+    {
+        ctx.Messenger.Send(MessageMark.OK, "SEX", $"Test: val1={val1}&val2={val2};");
     }
 }

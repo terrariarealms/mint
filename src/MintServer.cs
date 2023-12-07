@@ -1,4 +1,5 @@
-﻿using Mint.Server.Commands;
+﻿using IL.Terraria.ID;
+using Mint.Server.Commands;
 using Terraria;
 using Terraria.Initializers;
 using Terraria.Localization;
@@ -19,6 +20,8 @@ public static class MintServer
     public static NetworkHandler Network { get; private set; } = new NetworkHandler();
     public static PlayersManager Players { get; private set; } = new PlayersManager();
 
+    public static DynamicPlayer ServerPlayer { get; } = new DynamicPlayer("root", new Account("root", "0", "root", null, null, new Dictionary<string, string>()), new DynamicMessenger("root", true));
+
     public static DatabaseCollection<Account> AccountsCollection { get; private set; }
     public static DatabaseCollection<Group> GroupsCollection { get; private set; }
 
@@ -28,7 +31,7 @@ public static class MintServer
     {
         AssemblyManager = new AssemblyManager();
         AssemblyManager.SetupResolving();
-        AssemblyManager.LoadModules();
+        //AssemblyManager.LoadModules();
 
         if (!Directory.Exists("data"))
             Directory.CreateDirectory("data");
@@ -38,8 +41,11 @@ public static class MintServer
 
         AccountsCollection = DatabaseUtils.GetDatabase<Account>();       
         GroupsCollection = DatabaseUtils.GetDatabase<Group>();
+        InsertDefaultGroups();
 
         Prepare(args, true);
+
+        Commands.InitializeParsers();
 
         CoreCommands.Register();
         CoreCommands.Invoke();
@@ -54,6 +60,37 @@ public static class MintServer
 
         AssemblyManager.InvokeInitialize();
         StartServer();
+    }
+
+    static void InsertDefaultGroups()
+    {
+        if (GroupsCollection.Get("unauthorized") == null)
+        {
+            Group unauthorized = new Group("unauthorized", false, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>()
+            {
+                "mint.register",
+                "mint.login"
+            });
+
+            GroupsCollection.Add(unauthorized);
+        }
+
+        if (GroupsCollection.Get("user") == null)
+        {
+            Group user = new Group("user", false, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>()
+            {
+                "mint.logout"
+            });
+
+            GroupsCollection.Add(user);
+        }
+
+        if (GroupsCollection.Get("root") == null)
+        {
+            Group root = new Group("root", true, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>());
+
+            GroupsCollection.Add(root);
+        }
     }
 
 #region Terraria Server Startup

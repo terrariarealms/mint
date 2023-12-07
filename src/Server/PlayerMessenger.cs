@@ -4,6 +4,10 @@ namespace Mint.Server;
 
 public class PlayerMessenger
 {
+    public PlayerMessenger()
+    {
+    }
+
     public PlayerMessenger(Player player)
     {
         Player = player;
@@ -22,18 +26,20 @@ public class PlayerMessenger
         };
     }
 
-    protected Player Player;
-    protected Color[] colorMap;
+    protected Player? Player;
+    protected Color[]? colorMap;
 
     public virtual void Begin() {}
     public virtual void End() {}
 
     public virtual void Send(MessageMark mark, string? source, string message)
     {
+        if (colorMap == null) return;
+
         if (source != null)
             message = $"[c/691a7d:[][c/861aa1:{source}][c/691a7d:]] [c/595959:»] {message}";
 
-        Player.SendMessage(message, colorMap[(byte)mark]);
+        Player?.SendMessage(message, colorMap[(byte)mark]);
     }
 
     /// <summary>
