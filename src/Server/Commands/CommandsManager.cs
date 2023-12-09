@@ -4,6 +4,8 @@ namespace Mint.Server.Commands;
 
 public sealed class CommandsManager
 {
+    internal CommandsManager(){}
+
     internal List<CommandSection> commands = new List<CommandSection>();
     internal Dictionary<Type, Func<string, object>> parsers = new Dictionary<Type, Func<string, object>>();
     

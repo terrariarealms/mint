@@ -63,6 +63,9 @@ public partial class Player
     /// <param name="color">Message color</param>
     public virtual void SendMessage(string text, Color color)
     {
+        // will be important later aye
+
+        /* 
         byte[] packet = PacketWriter.New(82) // netmodule
                     .WriteUInt16(1) // netmodule chat packet id
                     .WriteByte(byte.MaxValue) // author
@@ -71,7 +74,8 @@ public partial class Player
                     .WriteString(text) // msg text
                     .WriteColor(color) // msg color
                     .Build();
+                    */
 
-        SendBytes(packet);
+        Terraria.Chat.ChatHelper.SendChatMessageToClient(Terraria.Localization.NetworkText.FromLiteral(text), color, Index);
     }
 }

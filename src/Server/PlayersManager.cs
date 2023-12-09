@@ -157,6 +157,7 @@ public sealed class PlayersManager
         if (players[index] == null) 
             return;
 
+        players[index].StopCommandHandler();
         players[index].StopPacketHandler();
         players[index].PlayerState = PlayerState.Left;
 

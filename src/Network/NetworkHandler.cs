@@ -5,6 +5,8 @@ namespace Mint.Network;
 
 public sealed class NetworkHandler
 {
+    internal NetworkHandler(){}
+
     /// <summary>
     /// Incoming packets binder.
     /// </summary>
@@ -44,6 +46,8 @@ public sealed class NetworkHandler
 
         ModSend.SendData += OnSendData;
         ModGet.GetData += OnGetData;
+
+        IncomingHandlers.Initialize();
     }
 
     private void OnGetData(ModGet.orig_GetData orig, Terraria.MessageBuffer self, int start, int length, out int messageType)
@@ -82,6 +86,8 @@ public sealed class NetworkHandler
         bool handled = false;
         IncomingNetModules.binds[packet.PacketID]?.ForEach((p) => p?.Invoke(player, packet, ref handled));
 
+        if (handled) return handled;
+
         var hijack = IncomingModulesHijack[packet.PacketID];
 
         if (hijack != null) hijack(player, packet, ref handled);
@@ -95,6 +101,8 @@ public sealed class NetworkHandler
         bool handled = false;
         IncomingPackets.binds[packet.PacketID]?.ForEach((p) => p?.Invoke(player, packet, ref handled));
 
+        if (handled) return handled;
+        
         var hijack = IncomingHijack[packet.PacketID];
 
         if (hijack != null) hijack(player, packet, ref handled);

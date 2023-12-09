@@ -8,6 +8,7 @@ global using Mint.Network;
 global using Mint.Server;
 global using Mint.Server.Auth;
 global using Mint.Server.Commands;
+global using Mint.Server.Chat;
 global using Mint.Data;
 global using Mint.Network.Incoming;
 global using Mint.Network.Outcoming;

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Terraria;
 
 namespace Mint.Server;
@@ -45,4 +46,46 @@ public partial class Player
     /// (if you will use SendMessage you are gay)
     /// </summary>
     public virtual PlayerMessenger Messenger { get; internal set; }
+
+    public virtual BlockingCollection<string> CommandsQueue { get; } = new BlockingCollection<string>();
+
+    internal CancellationTokenSource? cmdTokenSource;
+    internal CancellationToken? cmdToken;
+    internal Task? commandHandlerTask;
+    
+    internal void StartCommandHandler()
+    {
+        cmdTokenSource = new CancellationTokenSource();
+        cmdToken = cmdTokenSource.Token;
+
+        packetHandlerTask = new Task(CommandHandler);
+        packetHandlerTask.Start();
+    }
+
+    internal void StopCommandHandler()
+    {
+        cmdTokenSource?.Cancel();
+    }
+
+    private void CommandHandler()
+    {
+        if (cmdToken == null)
+            return;
+
+        while (!cmdToken.Value.IsCancellationRequested)
+        {
+            try
+            {
+                string commandText = CommandsQueue.Take(cmdToken.Value);
+                MintServer.Commands.InvokeCommand(this, commandText);
+            }
+            catch (OperationCanceledException)
+            {}
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception in Player: CommandHandler:");
+                Console.WriteLine(ex.ToString());
+            }
+        }
+    }
 }

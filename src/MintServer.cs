@@ -1,4 +1,5 @@
 ﻿using IL.Terraria.ID;
+using Mint.Server.Chat;
 using Mint.Server.Commands;
 using Terraria;
 using Terraria.Initializers;
@@ -19,6 +20,7 @@ public static class MintServer
     public static CommandsManager Commands { get; private set; } = new CommandsManager();
     public static NetworkHandler Network { get; private set; } = new NetworkHandler();
     public static PlayersManager Players { get; private set; } = new PlayersManager();
+    public static ChatManager Chat { get; private set; } = new ChatManager();
 
     public static DynamicPlayer ServerPlayer { get; } = new DynamicPlayer("root", new Account("root", "0", "root", null, null, new Dictionary<string, string>()), new DynamicMessenger("root", true));
 
@@ -29,6 +31,10 @@ public static class MintServer
 
     static void Main(string[] args)
     {
+        #if RUSSIAN
+        Console.WriteLine("Минт запущен с локализацией русского языка.");
+        #endif
+    
         AssemblyManager = new AssemblyManager();
         AssemblyManager.SetupResolving();
         AssemblyManager.LoadModules();
@@ -52,6 +58,8 @@ public static class MintServer
         
         Players.Initialize();
         Network.Initialize();
+
+        Chat.Initialize();
 
         // TileFix removes caching 
         TileFix.Fix();
