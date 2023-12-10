@@ -37,6 +37,11 @@ public partial class Player
     public virtual string? UUID { get; internal set; }
 
     /// <summary>
+    /// Player visuals. (Hair, hair dye, skin variant, colors and etc)
+    /// </summary>
+    public virtual PlayerVisuals Visuals { get; internal set; }
+
+    /// <summary>
     /// Player state (None, AlmostJoined, Joined, Left)
     /// </summary>
     public virtual PlayerState PlayerState { get; internal set; }
@@ -47,6 +52,9 @@ public partial class Player
     /// </summary>
     public virtual PlayerMessenger Messenger { get; internal set; }
 
+    /// <summary>
+    /// Commands queue.
+    /// </summary>
     public virtual BlockingCollection<string> CommandsQueue { get; } = new BlockingCollection<string>();
 
     internal CancellationTokenSource? cmdTokenSource;

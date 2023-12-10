@@ -58,32 +58,16 @@ public class ChatManager
         switch (result)
         {
             case CommandResult.CommandDisabled:
-            #if RUSSIAN
                 player.Messenger.Send(MessageMark.Error, "Команды", "Команда отключена.");
-            #else
-                player.Messenger.Send(MessageMark.Error, "Commands", "Command is disabled.");
-            #endif
                 break;
             case CommandResult.NoPermission:
-            #if RUSSIAN
                 player.Messenger.Send(MessageMark.Error, "Команды", "У вас недостаточно прав для использования этой команды.");
-            #else
-                player.Messenger.Send(MessageMark.Error, "Commands", "You do not have permission to run that command.");
-            #endif
                 break;
             case CommandResult.Error:
-            #if RUSSIAN
                 player.Messenger.Send(MessageMark.Error, "Команды", "При выполнении этой команды произошла ошибка.");
-            #else
-                player.Messenger.Send(MessageMark.Error, "Commands", "Command was failed.");
-            #endif
                 break;
             case CommandResult.CommandNotFound:
-            #if RUSSIAN
                 player.Messenger.Send(MessageMark.Error, "Команды", "Команда не найдена. Используйте /help для просмотра списка команд.");
-            #else
-                player.Messenger.Send(MessageMark.Error, "Commands", "Command not found. Use /help for viewing all available commands.");
-            #endif
                 break;
         }
     }

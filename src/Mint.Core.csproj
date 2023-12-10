@@ -7,7 +7,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>RUSSIAN</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
