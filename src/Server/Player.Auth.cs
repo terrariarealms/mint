@@ -10,7 +10,7 @@ public partial class Player
     /// <summary>
     /// Player's group
     /// </summary>
-    public virtual Group? Group => Account?.GetGroup();
+    public virtual Group? Group => Account?.GetGroup() ?? MintServer.GroupsCollection.Get("unauthorized");
 
     /// <summary>
     /// Player's authorized state.

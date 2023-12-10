@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <OutputPath>..\bin</OutputPath>
@@ -8,7 +7,6 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="Mintoza">
       <HintPath>..\deps\terraria.mintoza\Mintoza.dll</HintPath>
@@ -43,11 +41,12 @@
     <Reference Include="ZstdSharp">
       <HintPath>..\deps\mongodb\ZstdSharp.dll</HintPath>
     </Reference>
-
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1" />
-    <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1"/>
+    <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2"/>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.8.0"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0"/>
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0"/>
   </ItemGroup>
-
 </Project>

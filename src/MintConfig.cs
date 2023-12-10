@@ -8,6 +8,7 @@ public struct MintConfig
     }
 
     public DatabaseConfig Database;
+    public GameConfig Game;
 
     public struct DatabaseConfig
     {
@@ -21,5 +22,10 @@ public struct MintConfig
         public string Name;
         public string IP;
         public int Port;
+    }
+
+    public struct GameConfig
+    {
+        public bool UseSSC;
     }
 }

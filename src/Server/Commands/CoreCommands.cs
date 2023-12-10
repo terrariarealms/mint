@@ -4,29 +4,66 @@ internal static class CoreCommands
 {
     internal static void Register()
     {
-        var section = MintServer.Commands.CreateSection("mint.sex", 1);
+        var section = MintServer.Commands.CreateSection("mint.core", 1);
         section.ImportFrom(typeof(CoreCommands));
     }
+    
 
-    internal static void Invoke()
+    [StaticCommand("register", "зарегистрировать аккаунт", "<пароль>")]
+    public static void Register(CommandInvokeContext ctx, string password)
     {
-        Console.WriteLine(MintServer.Commands.InvokeCommand(MintServer.ServerPlayer, "/sex"));
-        Console.WriteLine(MintServer.Commands.InvokeCommand(MintServer.ServerPlayer, "/sex super 2"));
+        if (ctx.Sender.Name == null || ctx.Sender.UUID == null) return;
+
+        if (ctx.Sender.Account != null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Вы уже зарегистрировали аккаунт!");
+            return;
+        }
+
+        Account? foundAccount = MintServer.AccountsCollection.Get(ctx.Sender.Name);
+        if (foundAccount != null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Аккаунт с таким именем уже зарегистрирован!");
+            return;
+        }
+
+        Account newAccount = new Account(ctx.Sender.Name, Guid.NewGuid().ToString(), "user", null, null, new Dictionary<string, string>());
+        newAccount.SetPassword(password);
+        newAccount.SetToken(ctx.Sender.UUID, ctx.Sender.IP);
+
+        MintServer.AccountsCollection.Add(newAccount);
+
+        ctx.Sender.AuthorizeAs(newAccount);
+
+        ctx.Messenger.Send(MessageMark.OK, "Аккаунт", "Аккаунт создан!");
     }
 
-    [StaticCommand("sex", "allows sex", "<int>")]
-    [CommandPermission("mint.sex")]
-    [CommandFlags(CommandFlags.RootOnly | CommandFlags.Hidden)]
-    public static void Sex(CommandInvokeContext ctx)
+    [StaticCommand("login", "войти в аккаунт", "<пароль>")]
+    public static void Login(CommandInvokeContext ctx, string password)
     {
-        ctx.Messenger.Send(MessageMark.OK, "SEX", "ky");
-    }
+        if (ctx.Sender.Name == null || ctx.Sender.UUID == null) return;
 
-    [StaticCommand("sex super 2", "allows sex", "<int>")]
-    [CommandPermission("mint.sex")]
-    [CommandFlags(CommandFlags.RootOnly | CommandFlags.Hidden)]
-    public static void Sex2(CommandInvokeContext ctx, int val1, int val2 = 4356)
-    {
-        ctx.Messenger.Send(MessageMark.OK, "SEX", $"Test: val1={val1}&val2={val2};");
+        if (ctx.Sender.Account != null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Вы уже вошли в аккаунт!");
+            return;
+        }
+
+        Account? foundAccount = MintServer.AccountsCollection.Get(ctx.Sender.Name);
+        if (foundAccount == null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Аккаунт с таким именем не зарегистрирован!");
+            return;
+        }
+
+        if (!foundAccount.VerifyPassword(password))
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Неверный пароль!");
+            return;
+        }
+
+        ctx.Sender.AuthorizeAs(foundAccount);
+
+        ctx.Messenger.Send(MessageMark.OK, "Аккаунт", $"С возвращением, {foundAccount.Name}!");
     }
 }

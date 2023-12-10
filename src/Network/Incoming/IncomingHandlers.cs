@@ -1,3 +1,8 @@
+using Microsoft.Xna.Framework;
+using MongoDB.Driver.Linq;
+using Terraria;
+using Player = Mint.Server.Player;
+
 namespace Mint.Network.Incoming;
 
 public static class IncomingHandlers
@@ -34,9 +39,64 @@ public static class IncomingHandlers
         byte hair = reader.ReadByte();
         string name = reader.ReadString();
 
+        if (name.Length > 20)
+        {
+            player?.Kick("Ваш ник слишком длинный!");
+            return;
+        }
+        if (name.Length == 0)
+        {
+            player?.Kick("Некорректный ник!");
+            return;
+        }
 
-        TPlayer tplr = player.TPlayer;
-        tplr.hideMisc = 5;
+        foreach (Player plr in MintServer.Players.players)
+        {
+            if (plr != null && plr.Index != player.Index && plr.PlayerState == PlayerState.Joined && plr.Name == name)
+            {
+                player?.Kick("Игрок с таким ником уже играет на сервере.");
+                return;
+            }
+        }
+
+        byte hairDye = reader.ReadByte();
+		ReadAccessoryVisibility(reader, player.TPlayer.hideVisibleAccessory);
+        byte hideMisc = reader.ReadByte();
+        Color hairColor = reader.ReadRGB();
+        Color skinColor = reader.ReadRGB();
+        Color eyeColor = reader.ReadRGB();
+        Color shirtColor = reader.ReadRGB();
+        Color ushirtColor = reader.ReadRGB();
+        Color pantsColor = reader.ReadRGB();
+        Color shoesColor = reader.ReadRGB();
+
+        PlayerVisuals visuals = new PlayerVisuals()
+        {
+            SkinVariant = skinVariant,
+            Hair = hair,
+            HairDye = hairDye,
+            HideAccessories = player.TPlayer.hideVisibleAccessory,
+            HideMisc = hideMisc,
+            HairColor = hairColor,
+            SkinColor = skinColor,
+            EyesColor = eyeColor,
+            ShirtColor = shirtColor,
+            UndershirtColor = ushirtColor,
+            PantsColor = pantsColor,
+            ShoesColor = shoesColor
+        };
+
+        CharacterDifficulty difficulty = (CharacterDifficulty)reader.ReadByte();
+        CharacterExtraFirst extra1 = (CharacterExtraFirst)reader.ReadByte();
+        CharacterExtraSecond extra2 = (CharacterExtraSecond)reader.ReadByte();
+
+        player?.Character?.SetVisuals(visuals, true);
+        player?.Character?.SetDifficulty(difficulty, true);
+        player?.Character?.SetExtraFirst(extra1, true);
+        player?.Character?.SetExtraSecond(extra2, true);
+
+        player?.SetName(name, true);
+
     }
 
 	static void ReadAccessoryVisibility(BinaryReader reader, bool[] hideVisibleAccessory)

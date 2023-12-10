@@ -9,30 +9,31 @@ public partial class Player
     {
         Index = index;
         Messenger = new PlayerMessenger(this);
+        Character = new PlayerCharacter(this);
     }
 
     /// <summary>
-    /// Player's client index.
+    /// Player client index.
     /// </summary>
     public virtual int Index { get; init; }
 
     /// <summary>
-    /// Player's remote client
+    /// Player remote client
     /// </summary>
     public virtual RemoteClient RemoteClient => Netplay.Clients[Index];
 
     /// <summary>
-    /// Player's terraria player
+    /// Player terraria player
     /// </summary>
     public virtual TPlayer TPlayer => Main.player[Index];
 
     /// <summary>
-    /// Player's name.
+    /// Player name.
     /// </summary>
     public virtual string? Name { get; internal set; }
 
     /// <summary>
-    /// Player's UUID.
+    /// Player UUID.
     /// </summary>
     public virtual string? UUID { get; internal set; }
 
@@ -51,6 +52,12 @@ public partial class Player
     /// (if you will use SendMessage you are gay)
     /// </summary>
     public virtual PlayerMessenger Messenger { get; internal set; }
+
+
+    /// <summary>
+    /// Player character.
+    /// </summary>
+    public virtual PlayerCharacter Character { get; internal set; }
 
     /// <summary>
     /// Commands queue.

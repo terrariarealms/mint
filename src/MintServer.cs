@@ -1,7 +1,4 @@
-﻿using IL.Terraria.ID;
-using Mint.Server.Chat;
-using Mint.Server.Commands;
-using Terraria;
+﻿using Terraria;
 using Terraria.Initializers;
 using Terraria.Localization;
 
@@ -26,15 +23,16 @@ public static class MintServer
 
     public static DatabaseCollection<Account> AccountsCollection { get; private set; }
     public static DatabaseCollection<Group> GroupsCollection { get; private set; }
+    public static DatabaseCollection<CharacterData> CharactersCollection { get; private set; }
+
+    internal static ReplEngine ReplEngine = new ReplEngine();
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     static void Main(string[] args)
     {
-        #if RUSSIAN
-        Console.WriteLine("Минт запущен с локализацией русского языка.");
-        #endif
-    
+        ReplEngine.Initialize();
+
         AssemblyManager = new AssemblyManager();
         AssemblyManager.SetupResolving();
         AssemblyManager.LoadModules();
@@ -47,6 +45,7 @@ public static class MintServer
 
         AccountsCollection = DatabaseUtils.GetDatabase<Account>();       
         GroupsCollection = DatabaseUtils.GetDatabase<Group>();
+        CharactersCollection = DatabaseUtils.GetDatabase<CharacterData>();
         InsertDefaultGroups();
 
         Prepare(args, true);
@@ -54,7 +53,6 @@ public static class MintServer
         Commands.InitializeParsers();
 
         CoreCommands.Register();
-        CoreCommands.Invoke();
         
         Players.Initialize();
         Network.Initialize();
@@ -101,6 +99,23 @@ public static class MintServer
         }
     }
 
+    static void CliReader()
+    {
+        while (true)
+        {
+            string? command = Console.ReadLine();
+            if (command == null) continue;
+
+            if (command.StartsWith("/"))
+            {
+                Commands.InvokeCommand(ServerPlayer, command);
+                continue;
+            }
+
+            ReplEngine.RunCode(command);    
+        }
+    }
+
 #region Terraria Server Startup
     static void Prepare(string[] args, bool monoArgs = true)
     {
@@ -127,6 +142,10 @@ public static class MintServer
         using var main = new Terraria.Main();
         Lang.InitializeLegacyLocalization();
         LaunchInitializer.LoadParameters(main);
+
+        if (Config.Game.UseSSC) Terraria.Main.ServerSideCharacter = true;
+
+        On.Terraria.Main.startDedInputCallBack += (x) => CliReader();
         main.DedServ();
 
         main.Run();
