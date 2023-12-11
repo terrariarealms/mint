@@ -9,7 +9,7 @@ public partial class Player
     {
         Index = index;
         Messenger = new PlayerMessenger(this);
-        Character = new PlayerCharacter(this);
+        Character = new ClientsideCharacter(this);
     }
 
     /// <summary>
@@ -36,12 +36,7 @@ public partial class Player
     /// Player UUID.
     /// </summary>
     public virtual string? UUID { get; internal set; }
-
-    /// <summary>
-    /// Player visuals. (Hair, hair dye, skin variant, colors and etc)
-    /// </summary>
-    public virtual PlayerVisuals Visuals { get; internal set; }
-
+    
     /// <summary>
     /// Player state (None, AlmostJoined, Joined, Left)
     /// </summary>
@@ -57,7 +52,7 @@ public partial class Player
     /// <summary>
     /// Player character.
     /// </summary>
-    public virtual PlayerCharacter Character { get; internal set; }
+    public virtual ICharacter Character { get; internal set; }
 
     /// <summary>
     /// Commands queue.

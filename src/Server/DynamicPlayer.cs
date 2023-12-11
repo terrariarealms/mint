@@ -16,6 +16,9 @@ public class DynamicPlayer : Player
 
         Messenger = messenger;
     }
+    public DynamicPlayer() : base(-1)
+    {
+    }
 
     public override ISocket Socket => new EmptySocket();
 

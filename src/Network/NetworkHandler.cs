@@ -81,7 +81,7 @@ public sealed class NetworkHandler
         }
     }
 
-    private bool HandleNetModule(ModGet.orig_GetData orig, Terraria.MessageBuffer self, Player? player, IncomingPacket packet)
+    private bool HandleNetModule(ModGet.orig_GetData orig, Terraria.MessageBuffer self, Player player, IncomingPacket packet)
     {
         bool handled = false;
         IncomingNetModules.binds[packet.PacketID]?.ForEach((p) => p?.Invoke(player, packet, ref handled));
@@ -96,7 +96,7 @@ public sealed class NetworkHandler
         return handled;
     }
 
-    private bool HandlePacket(ModGet.orig_GetData orig, Terraria.MessageBuffer self, Player? player, IncomingPacket packet)
+    private bool HandlePacket(ModGet.orig_GetData orig, Terraria.MessageBuffer self, Player player, IncomingPacket packet)
     {
         bool handled = false;
         IncomingPackets.binds[packet.PacketID]?.ForEach((p) => p?.Invoke(player, packet, ref handled));
@@ -119,6 +119,8 @@ public sealed class NetworkHandler
         else MintServer.Players[remoteClient].OutcomingPackets.Add(packet);
     }
 
+    private Player _nonePlayer = new DynamicPlayer();
+
     // ctrl c + ctrl v issue
     private void PacketHandler()
     {
@@ -130,7 +132,7 @@ public sealed class NetworkHandler
 
                 OutcomingPacket packet = BroadcastPackets.Take();
                 NetworkBindDelegate<OutcomingPacket>? hijackDelegate = MintServer.Network.OutcomingHijack[packet.PacketID];
-                hijackDelegate?.Invoke(null, packet, ref ignore);
+                hijackDelegate?.Invoke(packet.RemoteClient != -1 ? MintServer.Players.players[packet.RemoteClient] : _nonePlayer, packet, ref ignore);
 
                 if (!ignore)
                     packet.Original(packet.PacketID, 

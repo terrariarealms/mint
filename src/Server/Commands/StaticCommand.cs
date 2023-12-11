@@ -51,7 +51,7 @@ public class StaticCommand : ICommand
         {
             ParameterInfo parameter = parameters[i];
 
-            if (ctx.Parameters.Count < i)
+            if (ctx.Parameters.Count < i - 1)
             {
                 if (parameter.HasDefaultValue && parameter.DefaultValue != null)
                 {
@@ -59,8 +59,8 @@ public class StaticCommand : ICommand
                     continue;
                 }
 
-                ctx.Messenger.Send(MessageMark.Error, commandSource, $"Command was failed [argument {i}]: ");
-                ctx.Messenger.Send(MessageMark.Error, commandSource, "Not enough arguments.");
+                ctx.Messenger.Send(MessageMark.Error, commandSource, $"Не удалось выполнить команду [аргумент {i}]: ");
+                ctx.Messenger.Send(MessageMark.Error, commandSource, "Недостаточно аргументов.");
                 return null;
             }
 
@@ -70,13 +70,13 @@ public class StaticCommand : ICommand
             switch (result)
             {
                 case ParseResult.ParserNotFound:
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Command was failed [argument {i}]: ");
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Cannot find parser for type {parameter.ParameterType.Name}.");
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Не удалось выполнить команду [аргумент {i}]: ");
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Парсер для типа {parameter.ParameterType.Name} не найден.");
                     break;
 
                 case ParseResult.InvalidArgument:
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Command was failed [argument {i}]: ");
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Cannot parse '{ctx.Parameters[i - 1]}' to {parameter.Name} ({parameter.ParameterType.Name}).");
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Не удалось выполнить команду [аргумент {i}]: ");
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Невозможно преобразовать '{ctx.Parameters[i - 1]}' в тип {parameter.Name} ({parameter.ParameterType.Name}).");
                     break;
 
                 case ParseResult.Success:

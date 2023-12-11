@@ -12,9 +12,10 @@ public static class IncomingHandlers
         MintServer.Network.IncomingModulesHijack[1] = OnChatNetModule;
 
         MintServer.Network.IncomingHijack[PacketID.PlayerPresence] = OnPlayerPresence;
+        MintServer.Network.IncomingHijack[PacketID.PlayerUUID] = OnPlayerUUID;
     }
 
-    static void OnChatNetModule(Player? player, IncomingPacket packet, ref bool ignore)
+    static void OnChatNetModule(Player player, IncomingPacket packet, ref bool ignore)
     {
         ignore = true;
         if (player == null) return;
@@ -27,7 +28,7 @@ public static class IncomingHandlers
         MintServer.Chat.HandleMessage(new ChatMessage(player, command == "Say" ? text : $"/{command.ToLower()} {text}", DateTime.UtcNow));
     }
 
-    static void OnPlayerPresence(Player? player, IncomingPacket packet, ref bool ignore)
+    static void OnPlayerPresence(Player player, IncomingPacket packet, ref bool ignore)
     {
         ignore = true;
         if (player == null) return;
@@ -41,12 +42,12 @@ public static class IncomingHandlers
 
         if (name.Length > 20)
         {
-            player?.Kick("Ваш ник слишком длинный!");
+            player.Kick("Ваш ник слишком длинный!");
             return;
         }
         if (name.Length == 0)
         {
-            player?.Kick("Некорректный ник!");
+            player.Kick("Некорректный ник!");
             return;
         }
 
@@ -54,7 +55,7 @@ public static class IncomingHandlers
         {
             if (plr != null && plr.Index != player.Index && plr.PlayerState == PlayerState.Joined && plr.Name == name)
             {
-                player?.Kick("Игрок с таким ником уже играет на сервере.");
+                player.Kick("Игрок с таким ником уже играет на сервере.");
                 return;
             }
         }
@@ -70,7 +71,7 @@ public static class IncomingHandlers
         Color pantsColor = reader.ReadRGB();
         Color shoesColor = reader.ReadRGB();
 
-        PlayerVisuals visuals = new PlayerVisuals()
+        CharacterVisuals visuals = new CharacterVisuals()
         {
             SkinVariant = skinVariant,
             Hair = hair,
@@ -90,13 +91,27 @@ public static class IncomingHandlers
         CharacterExtraFirst extra1 = (CharacterExtraFirst)reader.ReadByte();
         CharacterExtraSecond extra2 = (CharacterExtraSecond)reader.ReadByte();
 
-        player?.Character?.SetVisuals(visuals, true);
-        player?.Character?.SetDifficulty(difficulty, true);
-        player?.Character?.SetExtraFirst(extra1, true);
-        player?.Character?.SetExtraSecond(extra2, true);
+        CharacterStats stats = new CharacterStats()
+        {
+            Visuals = visuals,
+            Difficulty = difficulty,
+            ExtraFirst = extra1,
+            ExtraSecond = extra2,
+        };
 
-        player?.SetName(name, true);
+        player.Character.SetStats(stats, CharacterOperation.RequestedByPlayer);
 
+        player.SetName(name, true);
+    }
+
+    static void OnPlayerUUID(Player player, IncomingPacket packet, ref bool ignore)
+    {
+        ignore = true;
+
+        BinaryReader reader = packet.GetReader();
+        string uuid = reader.ReadString();
+
+        player.UUID = uuid;
     }
 
 	static void ReadAccessoryVisibility(BinaryReader reader, bool[] hideVisibleAccessory)

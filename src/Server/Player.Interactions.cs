@@ -15,6 +15,7 @@ public partial class Player
     /// <param name="netBroadcast">Broadcast PlayerInfo (4) packet with updated name</param>
     public virtual void SetName(string name, bool netBroadcast)
     {
+        Name = name;
         Main.player[Index].name = name;
         Netplay.Clients[Index].Name = name;
 

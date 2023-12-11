@@ -23,7 +23,6 @@ public static class MintServer
 
     public static DatabaseCollection<Account> AccountsCollection { get; private set; }
     public static DatabaseCollection<Group> GroupsCollection { get; private set; }
-    public static DatabaseCollection<CharacterData> CharactersCollection { get; private set; }
 
     internal static ReplEngine ReplEngine = new ReplEngine();
 
@@ -45,7 +44,6 @@ public static class MintServer
 
         AccountsCollection = DatabaseUtils.GetDatabase<Account>();       
         GroupsCollection = DatabaseUtils.GetDatabase<Group>();
-        CharactersCollection = DatabaseUtils.GetDatabase<CharacterData>();
         InsertDefaultGroups();
 
         Prepare(args, true);

@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace Mint.Server;
 
-public struct PlayerVisuals
+public struct CharacterVisuals
 {
     public byte SkinVariant;
     public byte Hair;

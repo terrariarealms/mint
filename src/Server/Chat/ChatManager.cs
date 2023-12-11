@@ -79,7 +79,7 @@ public class ChatManager
     /// <param name="color">Message color</param>
     public void BroadcastMessage(string text, Color color)
     {
-        Console.WriteLine("[Broadcast] " + text);
+        Console.WriteLine("@bc: " + text);
         Terraria.Chat.ChatHelper.BroadcastChatMessage(Terraria.Localization.NetworkText.FromLiteral(text), color);
     }
 }
