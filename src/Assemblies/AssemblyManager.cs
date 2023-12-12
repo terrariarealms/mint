@@ -12,6 +12,7 @@ internal class AssemblyManager
 
     internal void SetupResolving()
     {
+        Log.Information("AssemblyManager -> SetupResolving()");
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
     }
 
@@ -45,13 +46,15 @@ internal class AssemblyManager
 
         Assembly? assembly = FindAssembly(name, "dll") ?? FindAssembly(name, "exe");
         if (assembly == null)
-            Console.WriteLine($"\x1b[31mCannot resolve assembly {name}.\x1b[0m");
+            Log.Error("AssemblyManager -> failed to resolve {Name}", name);
 
         return assembly;
     }
     
     internal void LoadModules()
     {
+        Log.Information("AssemblyManager -> LoadModules()");
+
         modules = new List<ModuleAssembly>();
 
         LoadVia(new SourceLoader());
@@ -62,12 +65,16 @@ internal class AssemblyManager
 
     internal void LoadVia(IModuleLoader loader)
     {
+        Log.Information("AssemblyManager -> LoadVia(IModuleLoader)");
+
         loader.Initialize(WorkingDirectory);
         modules?.AddRange(loader.LoadModules());
     }
 
     internal void InvokeSetup()
     {
+        Log.Information("AssemblyManager -> InvokeSetup()");
+
         if (modules == null) return;
 
         foreach (ModuleAssembly asm in modules)
@@ -76,6 +83,8 @@ internal class AssemblyManager
 
     internal void InvokeInitialize()
     {
+        Log.Information("AssemblyManager -> InvokeInitialize()");
+
         if (modules == null) return;
 
         foreach (ModuleAssembly asm in modules)
@@ -84,21 +93,24 @@ internal class AssemblyManager
 
     private void CheckDependencies()
     {
+        Log.Information("AssemblyManager -> CheckDependencies()");
+
         if (modules == null) return;
 
         bool sleep = false;
-        modules.ForEach((m) => CheckDependenciesFor(m.Module, ref sleep));
+        modules.ForEach((m) =>
+        {
+            if (m.Module != null) CheckDependenciesFor(m.Module, ref sleep);
+        });
 
         if (sleep)
         {
-            Console.WriteLine("");
-            Console.WriteLine("requested server sleep by dependencies issues.");
-            Console.WriteLine("please fix all problems above and try again.");
+            Log.Information("AssemblyManager -> Cannot start server: update your modules and read all above.");
             Thread.Sleep(-1);
         }
     }
 
-    private void CheckDependenciesFor(MintModule? module, ref bool sleep)
+    private void CheckDependenciesFor(MintModule module, ref bool sleep)
     {
         if (module?.ModuleReferences == null) return;
 
@@ -107,8 +119,8 @@ internal class AssemblyManager
         {
             if (!DependencyExists(refs[i]))
             {
-                Console.WriteLine($"\x1b[31mcritical\x1b[0m {module?.ModuleName}: \x1b[31mmodule ref'{refs[i]}' not found!\x1b[0m");
-            
+                Log.Error("AssemblyManager -> CheckDependenciesFor() for {Name} -> failed to resolve {Dependency}", module.ModuleName, refs[i]);
+
                 sleep = true;
             }
         }

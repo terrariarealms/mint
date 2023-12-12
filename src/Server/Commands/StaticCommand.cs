@@ -31,6 +31,10 @@ public class StaticCommand : ICommand
 
     public void Invoke(CommandInvokeContext ctx)
     {
+        bool ignore = false;
+        ICommand.InvokeOnCommand(ctx.Sender, this, ref ctx, ref ignore);
+        if (ignore) return;
+        
         List<object>? invokeParameters = BuildParameters(ctx);
         if (invokeParameters != null)
         {

@@ -66,8 +66,8 @@ public sealed class CommandsManager
     internal ParseResult TryParse(Type type, string input, out object value)
     {
         if (!parsers.ContainsKey(type))
-        {
-            Console.Error.WriteLine($"Cannot find parser for {type.Name}.");
+        {        
+            Log.Error("Failed to pare type {Type} from {Input}", type.Name, input);
             value = new InvalidParameterValue(input);
             return ParseResult.ParserNotFound;
         }
@@ -147,6 +147,8 @@ public sealed class CommandsManager
         CommandSection section = new CommandSection(name, capacity);
         commands.Add(section);
 
+        Log.Information("Created command section {Name} with capacity {Capacity}.", name, capacity);
+
         return section;
     }
 
@@ -161,6 +163,8 @@ public sealed class CommandsManager
         CommandSection section = new CommandSection(name, wrappedCommands);
         commands.Add(section);
 
+        Log.Information("Created command section {Name} from List<ICommand>.", name);
+
         return section;
     }
 
@@ -170,6 +174,8 @@ public sealed class CommandsManager
     /// <param name="section">Section instance.</param>
     public void DestroySection(CommandSection section)
     {
+        Log.Information("Destroyed command section {Name}.", section.Name);
+
         commands.Remove(section);
         RequestGC();
     }
@@ -180,6 +186,8 @@ public sealed class CommandsManager
     /// <param name="section">Section name.</param>
     public void DestroySection(string section)
     {
+        Log.Information("Destroyed command section {Name}.", section);
+
         commands.RemoveAll((p) => p.Name == section);
         RequestGC();
     }

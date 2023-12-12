@@ -14,3 +14,4 @@ src/obj/Debug/net6.0/Mint.Core.GeneratedMSBuildEditorConfig.editorconfig
 src/obj/Debug/net6.0/Mint.Core.csproj.AssemblyReference.cache
 src/obj/Debug/net6.0/Mint.Core.assets.cache
 resx/.goutputstream-4TVZE2
+mint.log

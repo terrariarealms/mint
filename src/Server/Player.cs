@@ -48,12 +48,6 @@ public partial class Player
     /// </summary>
     public virtual PlayerMessenger Messenger { get; internal set; }
 
-
-    /// <summary>
-    /// Player character.
-    /// </summary>
-    public virtual ICharacter Character { get; internal set; }
-
     /// <summary>
     /// Commands queue.
     /// </summary>

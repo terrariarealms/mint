@@ -18,6 +18,8 @@ public class ConfigUtils
     /// <returns>Deserialized data</returns>
     public T CreateConfig<T>() where T : struct
     {
+        Log.Information("ConfigUtils -> Created config for {Type}", typeof(T).FullName);
+
         var type = typeof(T);
 
         var cfg = new Config<T>(targetName);

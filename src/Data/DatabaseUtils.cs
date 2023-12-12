@@ -16,6 +16,8 @@ public class DatabaseUtils
 
     internal DatabaseCollection<T> InternalCreateDatabase<T>() where T : DatabaseObject
     {
+        Log.Information("DatabaseUtils -> Created database collection for {Type}", typeof(T).FullName);
+
         string name = $"{typeof(T).Name}Collection";
         var database = new DatabaseCollection<T>(name);
 

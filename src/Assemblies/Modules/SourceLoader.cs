@@ -22,11 +22,11 @@ public class SourceLoader : IModuleLoader
             string? path = _compiler.CompileDll(info);
             if (path == null)
             {
-                Console.WriteLine("SOURCE_LOAD >>> FAIL: " + info.WorkingPath);
+                Log.Error("SourceLoader: failed -> {path}", info.WorkingPath);
                 continue;
             }
 
-            Console.WriteLine($"SOURCE_LOAD -> {path}");
+            Log.Information("SourceLoader: load -> {File}", path);
             ModuleAssembly? assembly = LoaderUtils.TryLoadFrom(path);
             if (assembly != null)
                 yield return assembly;

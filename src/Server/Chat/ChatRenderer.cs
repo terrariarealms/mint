@@ -37,9 +37,9 @@ public class ChatRenderer
         _suffixList.Post.Insert(0, RenderSuffix);
     }
 
-    string RenderPrefix(Player sender, ChatMessage message) => sender?.Group?.Presence.Prefix ?? "";
+    string RenderPrefix(Player sender, ChatMessage message) => sender?.Group?.Presence.GetPrefix() ?? "";
     string RenderName(Player sender, ChatMessage message) => sender?.Name ?? "<!unknown>";
-    string RenderSuffix(Player sender, ChatMessage message) => sender?.Group?.Presence.Suffix ?? "";
+    string RenderSuffix(Player sender, ChatMessage message) => sender?.Group?.Presence.GetSuffix() ?? "";
 
     /// <summary>
     /// Renders message.
@@ -52,11 +52,6 @@ public class ChatRenderer
         string name = NameRender.Render(message);
         string suffix = SuffixRender.Render(message);
 
-        string leftside = "";
-        if (prefix.Length != 0) leftside += prefix + " ";
-        if (name.Length != 0) leftside += name;
-        if (suffix.Length != 0) leftside += " " + suffix;
-
-        return leftside + ": " + message.Text;
+        return prefix + name + suffix + ": " + message.Text;
     }
 }

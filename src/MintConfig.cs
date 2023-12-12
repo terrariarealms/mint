@@ -26,6 +26,18 @@ public struct MintConfig
 
     public struct GameConfig
     {
-        public bool UseSSC;
+        public GameConfig()
+        {
+            MOTD = new string[]
+            {
+                "Добро пожаловать на наш сервер!",
+                "Этот сервер использует ядро Mint с открытым исходным кодом, ссылка:",
+                "https://github.com/terrariarealms/mint",
+            };
+        }
+
+        public string? IP;
+        public int? Port;
+        public string[] MOTD;
     }
 }

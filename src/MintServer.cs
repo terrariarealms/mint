@@ -1,6 +1,12 @@
-﻿using Terraria;
+﻿using System.Net;
+using Serilog;
+using Serilog.Sinks.SpectreConsole;
+using Serilog.Events;
+using Terraria;
 using Terraria.Initializers;
 using Terraria.Localization;
+using Terraria.Net.Sockets;
+using Terraria.Utilities;
 
 namespace Mint.Core;
 
@@ -11,6 +17,8 @@ public static class MintServer
 
     internal static MintConfig Config;
     internal static ConfigUtils ConfigUtils = new ConfigUtils("core");
+
+    internal static ReplEngine ReplEngine = new ReplEngine();
 
     public static DatabaseUtils DatabaseUtils { get; private set; }
 
@@ -24,12 +32,18 @@ public static class MintServer
     public static DatabaseCollection<Account> AccountsCollection { get; private set; }
     public static DatabaseCollection<Group> GroupsCollection { get; private set; }
 
-    internal static ReplEngine ReplEngine = new ReplEngine();
+    public static ISocket ServerSocket { get; set; }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     static void Main(string[] args)
     {
+        Serilog.Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("mint.log", LogEventLevel.Verbose, "[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}")
+            .WriteTo.SpectreConsole("[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}", minLevel: LogEventLevel.Verbose)
+            .MinimumLevel.Verbose()
+            .CreateLogger();
+            
         ReplEngine.Initialize();
 
         AssemblyManager = new AssemblyManager();
@@ -61,6 +75,8 @@ public static class MintServer
         TileFix.Fix();
 
         AssemblyManager.InvokeSetup();
+
+        ServerSocket = new RemadeTcpSocket();
 
         AssemblyManager.InvokeInitialize();
         StartServer();
@@ -141,9 +157,42 @@ public static class MintServer
         Lang.InitializeLegacyLocalization();
         LaunchInitializer.LoadParameters(main);
 
-        if (Config.Game.UseSSC) Terraria.Main.ServerSideCharacter = true;
-
         On.Terraria.Main.startDedInputCallBack += (x) => CliReader();
+        On.Terraria.Netplay.InitializeServer += (x) => 
+        {
+            Log.Information("NetplayHijack -> InitializeServer()");
+            Netplay.Connection.ResetSpecialFlags();
+            Netplay.ResetNetDiag();
+            if (Terraria.Main.rand == null)
+            {
+                Terraria.Main.rand = new UnifiedRandom((int)DateTime.Now.Ticks);
+            }
+            Terraria.Main.myPlayer = 255;
+            Netplay.ServerIP = IPAddress.Any;
+            Terraria.Main.menuMode = 14;
+            Terraria.Main.netMode = 2;
+            Netplay.Disconnect = false;
+            for (int i = 0; i < 256; i++)
+            {
+                Netplay.Clients[i] = new RemoteClient();
+                Netplay.Clients[i].Reset();
+                Netplay.Clients[i].Id = i;
+                Netplay.Clients[i].ReadBuffer = new byte[1024];
+            }
+            Netplay.TcpListener = ServerSocket;
+            Log.Information("NetplayHijack -> using {Name} socket.", ServerSocket.GetType().FullName);
+            if (!Netplay.Disconnect)
+            {
+                if (!Netplay.StartListening())
+                {
+                    Log.Error("NetplayHijack -> Cannot start listening -> port already used.");
+                    Netplay.SaveOnServerExit = false;
+                    Netplay.Disconnect = true;
+                }
+                
+                Log.Information("NetplayHijack -> Server started.");
+            }
+        };
         main.DedServ();
 
         main.Run();

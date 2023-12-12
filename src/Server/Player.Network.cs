@@ -2,6 +2,7 @@ using Terraria.Localization;
 using Terraria;
 using Terraria.Net.Sockets;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace Mint.Server;
 
@@ -17,6 +18,11 @@ public partial class Player
     /// You can add OutcomingPacket here for directly packet sending.
     /// </summary>
     public virtual BlockingCollection<OutcomingPacket> OutcomingPackets { get; } = new BlockingCollection<OutcomingPacket>();
+
+    /// <summary>
+    /// Sent packets id array from player.
+    /// </summary>
+    public virtual bool[] SentPackets { get; } = new bool[PacketID.Count];
 
     /// <summary>
     /// Player IP Address.
@@ -87,11 +93,23 @@ public partial class Player
                 bool ignore = false;
 
                 OutcomingPacket packet = OutcomingPackets.Take(netToken.Value);
-                NetworkBindDelegate<OutcomingPacket>? hijackDelegate = MintServer.Network.OutcomingHijack[packet.PacketID];
-                hijackDelegate?.Invoke(this, packet, ref ignore);
 
-                if (!ignore)
-                    packet.Original(packet.PacketID, 
+                List<NetworkBindDelegate<OutcomingPacket>>? binds = MintServer.Network.OutcomingPackets.binds[packet.PacketID];
+                if (binds != null)
+                {
+                    foreach (NetworkBindDelegate<OutcomingPacket> bind in binds)
+                    {
+                        bind(this, packet, ref ignore);
+                    }
+                }
+
+                if (ignore)
+                    continue;
+
+                NetworkBindDelegate<OutcomingPacket>? hijackDelegate = MintServer.Network.OutcomingHijack[packet.PacketID];
+
+                if (hijackDelegate != null) hijackDelegate?.Invoke(this, packet, ref ignore);
+                else packet.Original(packet.PacketID, 
                                     packet.RemoteClient, 
                                     packet.IgnoreClient, 
                                     packet.Text, 
@@ -101,16 +119,14 @@ public partial class Player
                                     packet.Number3, 
                                     packet.Number4, 
                                     packet.Number5, 
-                                    packet.Number6);
-
+                                    packet.Number6);    
             }
             // when NetToken was cancelled we got operation canceled exception from blocking collection.
             catch (OperationCanceledException)
             {}
             catch (Exception ex)
             {
-                Console.WriteLine("Exception in Player.Network: PacketHandler:");
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("Exception in SendData: " + ex.ToString());
             }
         }
     }

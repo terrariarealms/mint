@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyVersion>7.31.0.0</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mintoza">
@@ -41,6 +42,16 @@
     <Reference Include="ZstdSharp">
       <HintPath>..\deps\mongodb\ZstdSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Serilog">
+      <HintPath>..\deps\serilog\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File">
+      <HintPath>..\deps\serilog\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.SpectreConsole">
+      <HintPath>..\deps\serilog\Serilog.Sinks.SpectreConsole.dll</HintPath>
+    </Reference>
+
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1"/>
     <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2"/>

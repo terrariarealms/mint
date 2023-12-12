@@ -17,7 +17,7 @@ public class BinaryLoader : IModuleLoader
 
         foreach (string file in Directory.EnumerateFiles(_workingDirectory, "*.dll"))
         {
-            Console.WriteLine($"BINARY_LOAD -> {file}");
+            Log.Information("BinaryLoader: load -> {File}", file);
             ModuleAssembly? assembly = LoaderUtils.TryLoadFrom(file);
             if (assembly != null)
                 yield return assembly;

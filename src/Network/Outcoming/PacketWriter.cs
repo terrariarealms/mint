@@ -33,11 +33,13 @@ public unsafe class PacketWriter : BinaryWriter
     {
         this.data = data;
         this.stream = stream;
+        stream.Position = 2;
     } 
 
     public PacketWriter(MemoryStream stream) : base(stream)
     {
         this.stream = stream;
+        stream.Position = 2;
     } 
 
     /// <summary>

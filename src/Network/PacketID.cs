@@ -7,7 +7,7 @@ public static class PacketID
 	public const byte Kick = 2;
 	public const byte PlayerIndex = 3;
 	public const byte PlayerPresence = 4;
-	public const byte SyncEquipment = 5;
+	public const byte PlayerSlot = 5;
 	public const byte RequestWorldData = 6;
 	public const byte WorldData = 7;
 	public const byte SpawnTileData = 8;
@@ -15,9 +15,9 @@ public static class PacketID
 	public const byte TileSection = 10;
 	public const byte TileFrameSection = 11;
 	public const byte PlayerSpawn = 12;
-	public const byte PlayerControls = 13;
+	public const byte PlayerUpdate = 13;
 	public const byte PlayerActive = 14;
-	public const byte PlayerLifeMana = 16;
+	public const byte PlayerLife = 16;
 	public const byte TileManipulation = 17;
 	public const byte SetTime = 18;
 	public const byte ToggleDoorState = 19;
@@ -44,7 +44,7 @@ public static class PacketID
 	public const byte SyncTalkNPC = 40;
 	public const byte ShotAnimationAndSound = 41;
 	public const byte ItemPlaySound = 42;
-	public const byte PlayerStatMana = 43;
+	public const byte PlayerMana = 43;
 	public const byte ManaEffect = 44;
 	public const byte PartyChat = 45;
 	public const byte SignReadRequest = 46;

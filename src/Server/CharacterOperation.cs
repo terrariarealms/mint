@@ -9,7 +9,17 @@ public enum CharacterOperation : byte
     RequestedByPlayer,
 
     /// <summary>
-    /// Means that Mint or modules wants to process that operation.
+    /// Means that Mint wants to process that operation.
     /// </summary>
-    RequestedByServer
+    RequestedByServer,
+
+    /// <summary>
+    /// Means that module wants to process that operation.
+    /// </summary>
+    RequestedByThirdparty,
+
+    /// <summary>
+    /// Means that request was silent and ICharacter will not invoke ICharacter events.
+    /// </summary>
+    SilentRequest
 }

@@ -1,7 +1,57 @@
 namespace Mint.Server;
 
 public interface ICharacter
-{
+{    
+    /// <summary>
+    /// Invokes when someone requests slot change operation.
+    /// </summary>
+    public static event CharacterSlotChangeEvent? OnSlotChange;
+    protected static void InvokeSlotChange(ICharacter character, ref int slot, ref NetItem item, CharacterOperation operationType, ref bool ignore)
+    {
+        if (character != character.BasePlayer.Character)
+            return;
+
+        OnSlotChange?.Invoke(character, ref slot, ref item, operationType, ref ignore);
+    }
+
+    /// <summary>
+    /// Invokes when someone requests stats change operation.
+    /// </summary>
+    public static event CharacterStatsChangeEvent? OnStatsChange;
+    protected static void InvokeStatsChange(ICharacter character, ref CharacterStats stats, CharacterOperation operationType, ref bool ignore)
+    {
+        if (character != character.BasePlayer.Character)
+            return;
+
+        OnStatsChange?.Invoke(character, ref stats, operationType, ref ignore);
+    }
+
+    /// <summary>
+    /// Invokes when someone requests life change operation.
+    /// </summary>
+    public static event CharacterLifeChangeEvent? OnLifeChange;
+    protected static void InvokeLifeChange(ICharacter character, ref int life, CharacterOperation operationType, ref bool ignore)
+    {
+        if (character != character.BasePlayer.Character)
+            return;
+
+        OnLifeChange?.Invoke(character, ref life, operationType, ref ignore);
+    }
+
+    /// <summary>
+    /// Invokes when someone requests mana change operation.
+    /// </summary>
+    public static event CharacterManaChangeEvent? OnManaChange;
+    protected static void InvokeManaChange(ICharacter character, ref int mana, CharacterOperation operationType, ref bool ignore)
+    {
+        if (character != character.BasePlayer.Character)
+            return;
+
+        OnManaChange?.Invoke(character, ref mana, operationType, ref ignore);
+    }
+
+    public Player BasePlayer { get; }
+
     /// <summary>
     /// IEnumerable of slots.
     /// </summary>

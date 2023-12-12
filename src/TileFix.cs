@@ -11,6 +11,8 @@ internal class TileFix : WorldGen
 {
     internal static void Fix()
     {
+        Log.Information("TileFix -> Fix()");
+
 		On.Terraria.IO.WorldFile.SaveWorldTiles += SaveWorldTiles;
 		
         TileID.Sets.AllowsSaveCompressionBatching = new bool[TileID.Sets.AllowsSaveCompressionBatching.Length];

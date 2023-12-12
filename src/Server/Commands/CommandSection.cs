@@ -25,6 +25,10 @@ public sealed class CommandSection
     /// </summary>
     public List<ICommand> Commands { get; }
 
+    /// <summary>
+    /// Import commands from type.
+    /// </summary>
+    /// <param name="type">Target type</param>
     public void ImportFrom(Type type)
     {
         foreach (MethodInfo method in type.GetMethods())
@@ -38,7 +42,8 @@ public sealed class CommandSection
             CommandFlagsAttribute? flagsAttribute = method.GetCustomAttribute<CommandFlagsAttribute>();
 
             ICommand command = new StaticCommand(method, commandAttribute.Name, commandAttribute.Description, commandAttribute.Syntax, permissionAttribute?.Permission, flagsAttribute?.Flags ?? CommandFlags.None);
-            Console.WriteLine("Registed static command: " + command.Name);
+            
+            Log.Information("CommandSection -> Registered command {Name} from {Method}.", command.Name, method.Name);
 
             Commands.Add(command);
         }

@@ -29,6 +29,7 @@ public class ClientsideCharacter : ICharacter
     private int _maxHp;
     private int _maxMp;
 
+    public Player BasePlayer => _basePlayer;
 
     public IEnumerable<NetItem> Slots => _slots;
 
@@ -40,24 +41,52 @@ public class ClientsideCharacter : ICharacter
 
     public void SetLife(int maxLife, CharacterOperation operationType)
     {
+        if (operationType != CharacterOperation.SilentRequest)
+        {
+            bool ignore = false;
+            ICharacter.InvokeLifeChange(this, ref maxLife, operationType, ref ignore);
+            if (ignore) return;
+        }
+
         _maxHp = maxLife;
         CharacterUtils.SetLife(_basePlayer, maxLife, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 
     public void SetMana(int maxMana, CharacterOperation operationType)
     {
+        if (operationType != CharacterOperation.SilentRequest)
+        {
+            bool ignore = false;
+            ICharacter.InvokeManaChange(this, ref maxMana, operationType, ref ignore);
+            if (ignore) return;
+        }
+
         _maxMp = maxMana;
         CharacterUtils.SetMana(_basePlayer, maxMana, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 
     public void SetSlot(int slot, NetItem item, CharacterOperation operationType)
     {
+        if (operationType != CharacterOperation.SilentRequest)
+        {
+            bool ignore = false;
+            ICharacter.InvokeSlotChange(this, ref slot, ref item, operationType, ref ignore);
+            if (ignore) return;
+        }
+
         _slots[slot] = item;
         CharacterUtils.SetSlot(_basePlayer, slot, item, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 
     public void SetStats(CharacterStats stats, CharacterOperation operationType)
     {
+        if (operationType != CharacterOperation.SilentRequest)
+        {
+            bool ignore = false;
+            ICharacter.InvokeStatsChange(this, ref stats, operationType, ref ignore);
+            if (ignore) return;
+        }
+
         _stats = stats;
         CharacterUtils.SetDifficulty(_basePlayer, stats.Difficulty, true);
         CharacterUtils.SetExtraFirst(_basePlayer, stats.ExtraFirst, true);

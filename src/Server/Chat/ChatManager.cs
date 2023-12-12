@@ -20,8 +20,11 @@ public class ChatManager
 
     internal void Initialize()
     {
+        Log.Information("Chat renderer -> Initialize()");
         ChatRenderer.Setup();
     }
+
+    public event EventChatDelegate? OnChat;
 
     /// <summary>
     /// Handle message. You can use it for displaying messages of player.
@@ -30,6 +33,14 @@ public class ChatManager
     /// <param name="message">Chat message</param>
     public void HandleMessage(ChatMessage message)
     {
+        bool isCommand = message.Text.StartsWith('/');
+        if (!isCommand)
+        {
+            bool ignore = false;
+            OnChat?.Invoke(message.Sender, ref message, ref ignore);
+            if (ignore) return;
+        }
+
         bool block = false;
         string text = message.Text;
 
@@ -38,15 +49,23 @@ public class ChatManager
 
         if (text.StartsWith('/'))
         {
+            string validCommand = (text.StartsWith("/register") || text.StartsWith("/login")) ? "[/register OR /login]" : text;
+
+            Log.Information("{Group}@{Name} used -> {Command}", message.Sender.Group?.Name ?? "unauthorized", message.Sender.Name, validCommand);
+
             CommandResult result = MintServer.Commands.InvokeCommand(message.Sender, text);
             DisplayResult(message.Sender, result);
         }
         else
         {
+            Log.Information("{Group}@{Name} says -> {Command}", message.Sender.Group?.Name ?? "unauthorized", message.Sender.Name, text);
+
             string rendered = ChatRenderer.RenderMessage(new ChatMessage(message.Sender, text, message.Time));
             BroadcastMessage(rendered, Color.White);
         }
     }
+
+    public event EventDisplayResultDelegate? OnDisplayResult;
 
     /// <summary>
     /// Displays command result to player.
@@ -55,6 +74,10 @@ public class ChatManager
     /// <param name="result">Command result</param>
     public void DisplayResult(Player player, CommandResult result)
     {
+        bool ignore = false;
+        OnDisplayResult?.Invoke(player, result, ref ignore);
+        if (ignore) return;
+
         switch (result)
         {
             case CommandResult.CommandDisabled:
@@ -72,6 +95,16 @@ public class ChatManager
         }
     }
 
+    internal void SystemBroadcast(string text)
+    {
+        string sysPrefix = "[c/1f9162:[][c/20d492:Система][c/1f9162:]] [c/595959:»] ";
+        BroadcastMessage(sysPrefix + text, new Color(130, 255, 203));
+
+        Log.Information("System Broadcast: {Text}", text);
+    }
+
+    public event EventBroadcastDelegate? OnBroadcast;
+
     /// <summary>
     /// Broadcast chat message to all connected players.
     /// </summary>
@@ -79,7 +112,11 @@ public class ChatManager
     /// <param name="color">Message color</param>
     public void BroadcastMessage(string text, Color color)
     {
-        Console.WriteLine("@bc: " + text);
+        bool ignore = false;
+        OnBroadcast?.Invoke(ref text, ref color, ref ignore);
+        if (ignore) return;
+
+        Log.Information("Broadcast: {Text}", text);
         Terraria.Chat.ChatHelper.BroadcastChatMessage(Terraria.Localization.NetworkText.FromLiteral(text), color);
     }
 }

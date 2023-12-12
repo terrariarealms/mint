@@ -28,7 +28,7 @@ public class AssemblyCompiler
             string? name = directory.Replace('\\', '/').Split('/').Last();
             if (name == null)
             {
-                Console.WriteLine($"Skip {directory}: name is NULL: {name}");
+                Log.Error("AssemblyCompiler for {Directory}: name is null.", directory);
                 continue;
             }
 
@@ -40,7 +40,7 @@ public class AssemblyCompiler
                 srcPath = Path.Combine(directory, _targets.SourceDirectory);
                 if (!Directory.Exists(srcPath)) 
                 {
-                    Console.WriteLine($"Skip {directory}: srcPath not exists: {srcPath}");
+                    Log.Error("AssemblyCompiler for {Directory}: source code directory path not exists -> {Path}", directory, srcPath);
                     continue;
                 }
 
@@ -53,7 +53,7 @@ public class AssemblyCompiler
             string csprojPath = Path.Combine(srcPath, $"{name}.csproj");
             if (!File.Exists(csprojPath))
             {
-                Console.WriteLine($"Skip {directory}: csprojPath not exists: {csprojPath}");
+                Log.Error("AssemblyCompiler for {Directory}: .csproj file path not exists -> {Path}", directory, csprojPath);
                 continue;
             }
 
@@ -80,7 +80,7 @@ public class AssemblyCompiler
         {
             if (File.Exists(binFilePath))
                 return binFilePath;
-            else Console.WriteLine($"Skip {info.WorkingPath}: binFilePath not exists: {binFilePath}");
+            else Log.Error("AssemblyCompiler for {Directory}: binary files directory path not exists -> {Path}", info.WorkingPath, binFilePath);
         }
 
         return null;
@@ -99,6 +99,8 @@ public class AssemblyCompiler
 
         if (_targets.Framework != null) command += $" -f " + _targets.Framework;
         if (_targets.CustomArguments != null) command += " " + _targets.CustomArguments;
+
+        Log.Information("AssemblyCompiler for {directory}: dotnet -> {Command}", command);
 
         return command;
     }

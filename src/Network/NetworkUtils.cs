@@ -6,8 +6,18 @@ public static class NetworkUtils
     /// Broadcast packet to all players.
     /// </summary>
     /// <param name="bytes"></param>
-    public static void BroadcastPacket(byte[] bytes)
+    public static void SendPacket(byte[] bytes, int remoteClient = -1, int ignoreClient = -1)
     {
-        MintServer.Players.QuickForEach((p) => p.SendBytes(bytes));
+        if (remoteClient != -1)
+        {
+            MintServer.Players[remoteClient].SendBytes(bytes);
+            return; 
+        }
+
+        MintServer.Players.QuickForEach((p) => 
+        {
+            if (p.Index != ignoreClient) 
+                p.SendBytes(bytes);
+        });
     }
 }

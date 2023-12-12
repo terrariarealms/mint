@@ -11,6 +11,8 @@ internal class ReplEngine
 
     internal void Initialize()
     {
+        Log.Information("ReplEngine -> Initialize()");
+
         options = options.WithOptimizationLevel(OptimizationLevel.Release)
                         .WithAllowUnsafe(true)
                         .WithLanguageVersion(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Preview)
@@ -45,11 +47,11 @@ internal class ReplEngine
         }
         catch (CompilationErrorException e)
         {
-            Console.Error.WriteLine($"Compilation error: {string.Join(Environment.NewLine, e.Diagnostics)}");
+            Log.Error("REPL Engine: compilation error -> {Error}", string.Join(Environment.NewLine, e.Diagnostics));
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.Error.WriteLine($"Running error: {e.Message}");
+            Log.Error("REPL Engine: exception -> {Exception}", ex.ToString());
         }
     }
 }

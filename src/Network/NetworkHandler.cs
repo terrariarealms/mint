@@ -28,6 +28,11 @@ public sealed class NetworkHandler
     public readonly NetworkBindDelegate<IncomingPacket>?[] IncomingModulesHijack = new NetworkBindDelegate<IncomingPacket>?[32];
 
     /// <summary>
+    /// Incoming packets binder.
+    /// </summary>
+    public readonly NetworkBinder<OutcomingPacket> OutcomingPackets = new NetworkBinder<OutcomingPacket>(255);
+
+    /// <summary>
     /// Outcoming packets hijacks.
     /// </summary>
     public readonly NetworkBindDelegate<OutcomingPacket>?[] OutcomingHijack = new NetworkBindDelegate<OutcomingPacket>?[255];
@@ -41,12 +46,15 @@ public sealed class NetworkHandler
 
     internal void Initialize()
     {
+        Log.Information("NetworkHandler -> Initialize()");
+
         PacketHandlerTask = new Task(PacketHandler);
         PacketHandlerTask.Start();
 
         ModSend.SendData += OnSendData;
         ModGet.GetData += OnGetData;
 
+        OutcomingHandlers.Initialize();
         IncomingHandlers.Initialize();
     }
 
@@ -58,26 +66,33 @@ public sealed class NetworkHandler
         if (player == null)
             return;
 
-        if (messageType == 82) // net module
+        try
         {
-            ushort netModuleId = BitConverter.ToUInt16(self.readBuffer, start + 1); // id
-            start += 3;
-            length -= 3;
+            if (messageType == 82) // net module
+            {
+                ushort netModuleId = BitConverter.ToUInt16(self.readBuffer, start + 1); // id
+                start += 3;
+                length -= 3;
 
-            IncomingPacket packet = new IncomingPacket((byte)netModuleId, (byte)self.whoAmI, start, length);
-            packet.CreateReader();
-            HandleNetModule(orig, self, player, packet);
-            packet.DisposeReader();
+                IncomingPacket packet = new IncomingPacket((byte)netModuleId, (byte)self.whoAmI, start, length);
+                packet.CreateReader();
+                HandleNetModule(orig, self, player, packet);
+                packet.DisposeReader();
+            }
+            else // default packet
+            {
+                start += 1;
+                length -= 1;
+
+                IncomingPacket packet = new IncomingPacket((byte)messageType, (byte)self.whoAmI, start, length);
+                packet.CreateReader();
+                HandlePacket(orig, self, player, packet);
+                packet.DisposeReader();
+            }
         }
-        else // default packet
+        catch (Exception ex)
         {
-            start += 1;
-            length -= 1;
-
-            IncomingPacket packet = new IncomingPacket((byte)messageType, (byte)self.whoAmI, start, length);
-            packet.CreateReader();
-            HandlePacket(orig, self, player, packet);
-            packet.DisposeReader();
+            Console.WriteLine("Exception in GetData: " + ex.ToString());
         }
     }
 
@@ -108,6 +123,8 @@ public sealed class NetworkHandler
         if (hijack != null) hijack(player, packet, ref handled);
         else orig(self, packet.Start - 1, packet.Length + 1, out _);
 
+        player.SentPackets[packet.PacketID] = true;
+
         return handled;
     }
 
@@ -131,11 +148,22 @@ public sealed class NetworkHandler
                 bool ignore = false;
 
                 OutcomingPacket packet = BroadcastPackets.Take();
-                NetworkBindDelegate<OutcomingPacket>? hijackDelegate = MintServer.Network.OutcomingHijack[packet.PacketID];
-                hijackDelegate?.Invoke(packet.RemoteClient != -1 ? MintServer.Players.players[packet.RemoteClient] : _nonePlayer, packet, ref ignore);
 
-                if (!ignore)
-                    packet.Original(packet.PacketID, 
+                List<NetworkBindDelegate<OutcomingPacket>>? binds = OutcomingPackets.binds[packet.PacketID];
+                if (binds != null)
+                {
+                    foreach (NetworkBindDelegate<OutcomingPacket> bind in binds)
+                    {
+                        bind(_nonePlayer, packet, ref ignore);
+                    }
+                }
+
+                if (ignore)
+                    continue;
+
+                NetworkBindDelegate<OutcomingPacket>? hijackDelegate = MintServer.Network.OutcomingHijack[packet.PacketID];
+                if (hijackDelegate != null) hijackDelegate?.Invoke(_nonePlayer, packet, ref ignore);
+                else packet.Original(packet.PacketID, 
                                     packet.RemoteClient, 
                                     packet.IgnoreClient, 
                                     packet.Text, 
@@ -145,16 +173,14 @@ public sealed class NetworkHandler
                                     packet.Number3, 
                                     packet.Number4, 
                                     packet.Number5, 
-                                    packet.Number6);
-                                    
+                                    packet.Number6);    
             }
             // when NetToken was cancelled we got operation canceled exception from blocking collection.
             catch (OperationCanceledException)
             {}
             catch (Exception ex)
             {
-                Console.WriteLine("Exception in Player.Network: PacketHandler:");
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine("Exception in SendData: " + ex.ToString());
             }
         }
     }

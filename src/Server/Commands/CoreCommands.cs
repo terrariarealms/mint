@@ -4,6 +4,8 @@ internal static class CoreCommands
 {
     internal static void Register()
     {
+        Log.Information("CoreCommands -> Register().");
+
         var section = MintServer.Commands.CreateSection("mint.core", 1);
         section.ImportFrom(typeof(CoreCommands));
     }
@@ -33,7 +35,7 @@ internal static class CoreCommands
 
         MintServer.AccountsCollection.Add(newAccount);
 
-        ctx.Sender.AuthorizeAs(newAccount);
+        ctx.Sender.Authorize(newAccount);
 
         ctx.Messenger.Send(MessageMark.OK, "Аккаунт", "Аккаунт создан!");
     }
@@ -62,7 +64,36 @@ internal static class CoreCommands
             return;
         }
 
-        ctx.Sender.AuthorizeAs(foundAccount);
+        ctx.Sender.Authorize(foundAccount);
+
+        ctx.Messenger.Send(MessageMark.OK, "Аккаунт", $"С возвращением, {foundAccount.Name}!");
+    }
+
+    [StaticCommand("logout", "выйти из аккаунта", null)]
+    public static void Logout(CommandInvokeContext ctx, string password)
+    {
+        if (ctx.Sender.Name == null || ctx.Sender.UUID == null) return;
+
+        if (ctx.Sender.Account != null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Вы уже вошли в аккаунт!");
+            return;
+        }
+
+        Account? foundAccount = MintServer.AccountsCollection.Get(ctx.Sender.Name);
+        if (foundAccount == null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Аккаунт с таким именем не зарегистрирован!");
+            return;
+        }
+
+        if (!foundAccount.VerifyPassword(password))
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Аккаунт", "Неверный пароль!");
+            return;
+        }
+
+        ctx.Sender.Authorize(foundAccount);
 
         ctx.Messenger.Send(MessageMark.OK, "Аккаунт", $"С возвращением, {foundAccount.Name}!");
     }

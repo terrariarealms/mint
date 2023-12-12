@@ -38,6 +38,12 @@ public partial class Player
     /// <param name="reason">Kick reason</param>
     public virtual void Kick(string reason) => Kick(NetworkText.FromLiteral(reason));
 
+    internal void KickAnticheat(string reason) 
+    {
+        string header = "==== MINT ANTICHEAT =====\n";
+        Kick(header + reason);
+    }
+
     /// <summary>
     /// Hurt player.
     /// </summary>

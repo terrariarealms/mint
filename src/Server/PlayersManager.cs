@@ -1,5 +1,7 @@
-
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Chat;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Net.Sockets;
 
@@ -36,6 +38,12 @@ public sealed class PlayersManager
     /// </summary>
     public IEnumerable<Player> Active => 
         QuickWhere((p) => p.PlayerState == PlayerState.Joined);
+
+    public Player this[int index]
+    {
+        get => players[index];
+        set => players[index] = value;
+    }
 
     /// <summary>
     /// Get count of active players.
@@ -98,7 +106,84 @@ public sealed class PlayersManager
     internal void Initialize()
     {
         On.Terraria.Netplay.OnConnectionAccepted += OnConnectionAccepted;
-        On.Terraria.NetMessage.SyncDisconnectedPlayer += SyncDisconnectedPlayer;
+        ModSend.SyncDisconnectedPlayer += SyncDisconnectedPlayer;
+        ModSend.greetPlayer += OnGreetPlayer;
+        ModSend.SyncOnePlayer += SyncOnePlayer;
+    }
+
+    private void SyncOnePlayer(ModSend.orig_SyncOnePlayer orig, int plr, int toWho, int fromWho)
+    {
+		int num = 0;
+		if (Main.player[plr].active)
+		{
+			num = 1;
+		}
+		if (Netplay.Clients[plr].State == 10)
+		{
+			Net.SendData(14, toWho, fromWho, NetworkText.Empty, plr, num);
+			Net.SendData(4, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(13, toWho, fromWho, NetworkText.Empty, plr);
+			if (Main.player[plr].statLife <= 0)
+			{
+				Net.SendData(135, toWho, fromWho, NetworkText.Empty, plr);
+			}
+			Net.SendData(16, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(30, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(45, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(42, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(50, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(80, toWho, fromWho, NetworkText.Empty, plr, Main.player[plr].chest);
+			Net.SendData(142, toWho, fromWho, NetworkText.Empty, plr);
+			Net.SendData(147, toWho, fromWho, NetworkText.Empty, plr, Main.player[plr].CurrentLoadoutIndex);
+			for (int i = 0; i < 59; i++)
+			{
+				Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Inventory0 + i, (int)Main.player[plr].inventory[i].prefix);
+			}
+			for (int j = 0; j < Main.player[plr].armor.Length; j++)
+			{
+				Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Armor0 + j, (int)Main.player[plr].armor[j].prefix);
+			}
+			for (int k = 0; k < Main.player[plr].dye.Length; k++)
+			{
+				Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Dye0 + k, (int)Main.player[plr].dye[k].prefix);
+			}
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscEquips, PlayerItemSlotID.Misc0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscDyes, PlayerItemSlotID.MiscDye0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Armor, PlayerItemSlotID.Loadout1_Armor_0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Dye, PlayerItemSlotID.Loadout1_Dye_0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Armor, PlayerItemSlotID.Loadout2_Armor_0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Dye, PlayerItemSlotID.Loadout2_Dye_0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Armor, PlayerItemSlotID.Loadout3_Armor_0);
+			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Dye, PlayerItemSlotID.Loadout3_Dye_0);
+			if (!Netplay.Clients[plr].IsAnnouncementCompleted)
+			{
+				Netplay.Clients[plr].IsAnnouncementCompleted = true;
+			}
+			return;
+		}
+		num = 0;
+		Net.SendData(14, -1, plr, NetworkText.Empty, plr, num);
+		if (Netplay.Clients[plr].IsAnnouncementCompleted)
+		{
+			Netplay.Clients[plr].IsAnnouncementCompleted = false;
+			Netplay.Clients[plr].Name = "Anonymous";
+		}
+		TPlayer.Hooks.PlayerDisconnect(plr);
+    }
+
+    public static event PlayerGreetEvent? OnPlayerGreet;
+
+
+    private void OnGreetPlayer(ModSend.orig_greetPlayer orig, int plr)
+    {
+        players[plr].PlayerState = PlayerState.Joined;
+        MintServer.Chat.SystemBroadcast($"{players[plr].Name} присоединился к серверу. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
+
+        foreach (string line in MintServer.Config.Game.MOTD)
+            players[plr].SendMessage(line, Color.White);
+
+        OnPlayerGreet?.Invoke(players[plr]);
+        Log.Information("Players: greeting player on {Index} ({Name})", plr, players[plr].Name ?? "unknown");
     }
 
     private void OnConnectionAccepted(On.Terraria.Netplay.orig_OnConnectionAccepted orig, ISocket client)
@@ -132,51 +217,47 @@ public sealed class PlayersManager
 		Net.EnsureLocalPlayerIsPresent();
     }
 
-    public Player this[int index]
-    {
-        get => players[index];
-        set => players[index] = value;
-    }
+    /// <summary>
+    /// Invokes when player was connected (socket)
+    /// </summary>
+    public static event PlayerConnectedEvent? OnPlayerConnected;
 
     private void HandleConnection(int index)
     {
         players[index] = new Player(index)
         {
-            PlayerState = PlayerState.Joined
+            PlayerState = PlayerState.AlmostJoined
         };
         players[index].StartPacketHandler();
         players[index].Character = new ClientsideCharacter(players[index]);
 
-        Console.WriteLine($"Players: Created player instance for {index}.");
+        Log.Information("Players: created instance for player on {Index}", index);
 
-        PlayerConnected?.Invoke(players[index]);
+        OnPlayerConnected?.Invoke(players[index]);
     }
+
+    /// <summary>
+    /// Invokes when player was left (socket)
+    /// </summary>
+    public static event PlayerLeftEvent? OnPlayerLeft;
 
     private void HandleDisconnect(int index)
     {
         if (players[index] == null) 
             return;
 
+        if (players[index].PlayerState == PlayerState.Joined && players[index].Name != null)
+        {
+            MintServer.Chat.SystemBroadcast($"{players[index].Name} отключился от сервера. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
+        }
+
         players[index].StopCommandHandler();
         players[index].StopPacketHandler();
-        players[index].PlayerState = PlayerState.Left;
-
-        PlayerLeft?.Invoke(players[index]);
-
         players[index].Socket.Close();
+        players[index].PlayerState = PlayerState.Left;        
+        
+        Log.Information("Players: disconnected player on {Index} ({Name})", index, players[index].Name ?? "unknown");
+
+        OnPlayerLeft?.Invoke(players[index]);
     }
-
-    public delegate void OnPlayerConnected(Player player);
-    public delegate void OnPlayerLeft(Player player);
-
-    /// <summary>
-    /// Invokes when player was connected (socket)
-    /// </summary>
-    public static event OnPlayerConnected? PlayerConnected;
-
-    /// <summary>
-    /// Invokes when player was left (socket)
-    /// </summary>
-    public static event OnPlayerLeft? PlayerLeft;
-       
 }

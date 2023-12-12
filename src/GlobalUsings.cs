@@ -13,6 +13,8 @@ global using Mint.Data;
 global using Mint.Network.Incoming;
 global using Mint.Network.Outcoming;
 
+global using Serilog;
+
 global using ModSend = On.Terraria.NetMessage;
 global using ModGet = On.Terraria.MessageBuffer;
 
