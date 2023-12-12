@@ -248,7 +248,7 @@ public sealed class PlayersManager
 
         if (players[index].PlayerState == PlayerState.Joined && players[index].Name != null)
         {
-            MintServer.Chat.SystemBroadcast($"{players[index].Name} отключился от сервера. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
+            MintServer.Chat.SystemBroadcast($"{players[index].Name} отключился от сервера. [{GetActivePlayersCount() - 1}/{Main.maxNetPlayers}]");
         }
 
         players[index].StopCommandHandler();
