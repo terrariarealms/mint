@@ -4,9 +4,11 @@ public struct MintConfig
 {
     public MintConfig()
     {
+        LanguageID = 0;
         Database = new DatabaseConfig();
     }
 
+    public byte LanguageID;
     public DatabaseConfig Database;
     public GameConfig Game;
 

@@ -7,6 +7,7 @@ using Terraria.Initializers;
 using Terraria.Localization;
 using Terraria.Net.Sockets;
 using Terraria.Utilities;
+using Mint.Localization;
 
 namespace Mint.Core;
 
@@ -27,6 +28,8 @@ public static class MintServer
     public static PlayersManager Players { get; private set; } = new PlayersManager();
     public static ChatManager Chat { get; private set; } = new ChatManager();
 
+    public static LocalizationManager Localization { get; } = new LocalizationManager();
+
     public static DynamicPlayer ServerPlayer { get; } = new DynamicPlayer("root", new Account("root", "0", "root", null, null, new Dictionary<string, string>()), new DynamicMessenger("root", true));
 
     public static DatabaseCollection<Account> AccountsCollection { get; private set; }
@@ -38,11 +41,16 @@ public static class MintServer
 
     static void Main(string[] args)
     {
-        Serilog.Log.Logger = new LoggerConfiguration()
+        Log.Logger = new LoggerConfiguration()
             .WriteTo.File("mint.log", LogEventLevel.Verbose, "[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}")
             .WriteTo.SpectreConsole("[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}", minLevel: LogEventLevel.Verbose)
             .MinimumLevel.Verbose()
             .CreateLogger();
+
+        LocalizationContainer russianLang = new LocalizationContainer();
+        russianLang.ImportFrom(File.ReadAllText("mint_localization_russian.json"), false, true);
+
+        Localization.AddContainer(LanguageID.Russian, russianLang);
             
         ReplEngine.Initialize();
 

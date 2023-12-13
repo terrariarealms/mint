@@ -74,6 +74,11 @@ public class Account : DatabaseObject
     public void SetPassword(string password) => Password = BCrypt.Net.BCrypt.HashPassword(password);
 
     /// <summary>
+    /// Selected language.
+    /// </summary>
+    public byte? LanguageID;
+
+    /// <summary>
     /// Unique identifier of account.
     /// </summary>
     public string UID;

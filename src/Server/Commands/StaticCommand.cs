@@ -63,8 +63,8 @@ public class StaticCommand : ICommand
                     continue;
                 }
 
-                ctx.Messenger.Send(MessageMark.Error, commandSource, $"Не удалось выполнить команду [аргумент {i}]: ");
-                ctx.Messenger.Send(MessageMark.Error, commandSource, "Недостаточно аргументов.");
+                ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot execute command (argument {0}): ", i);
+                ctx.Messenger.Send(MessageMark.Error, commandSource, "Not enough arguments.");
                 return null;
             }
 
@@ -74,13 +74,13 @@ public class StaticCommand : ICommand
             switch (result)
             {
                 case ParseResult.ParserNotFound:
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Не удалось выполнить команду [аргумент {i}]: ");
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Парсер для типа {parameter.ParameterType.Name} не найден.");
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot execute command (argument {0}): ", i);
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Parser for type {0} not found.", parameter.ParameterType.Name);
                     break;
 
                 case ParseResult.InvalidArgument:
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Не удалось выполнить команду [аргумент {i}]: ");
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, $"Невозможно преобразовать '{ctx.Parameters[i - 1]}' в тип {parameter.Name} ({parameter.ParameterType.Name}).");
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot execute command (argument {0}): ", i);
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot parse '{0}' into {1} ({2}).", ctx.Parameters[i - 1], parameter.Name, parameter.ParameterType.Name);
                     break;
 
                 case ParseResult.Success:

@@ -81,23 +81,23 @@ public class ChatManager
         switch (result)
         {
             case CommandResult.CommandDisabled:
-                player.Messenger.Send(MessageMark.Error, "Команды", "Команда отключена.");
+                player.Messenger.Send(MessageMark.Error, "Commands", "Command is disabled.");
                 break;
             case CommandResult.NoPermission:
-                player.Messenger.Send(MessageMark.Error, "Команды", "У вас недостаточно прав для использования этой команды.");
+                player.Messenger.Send(MessageMark.Error, "Commands", "You do not have permission for using this command.");
                 break;
             case CommandResult.Error:
-                player.Messenger.Send(MessageMark.Error, "Команды", "При выполнении этой команды произошла ошибка.");
+                player.Messenger.Send(MessageMark.Error, "Commands", "Command was failed!");
                 break;
             case CommandResult.CommandNotFound:
-                player.Messenger.Send(MessageMark.Error, "Команды", "Команда не найдена. Используйте /help для просмотра списка команд.");
+                player.Messenger.Send(MessageMark.Error, "Commands", "Command not found. Use /help for viewing all available commands.");
                 break;
         }
     }
 
     internal void SystemBroadcast(string text)
     {
-        string sysPrefix = "[c/1f9162:[][c/20d492:Система][c/1f9162:]] [c/595959:»] ";
+        string sysPrefix = $"[c/1f9162:[][c/20d492:{MintServer.Localization.Translate("System")}][c/1f9162:]] [c/595959:»] ";
         BroadcastMessage(sysPrefix + text, new Color(130, 255, 203));
 
         Log.Information("System Broadcast: {Text}", text);

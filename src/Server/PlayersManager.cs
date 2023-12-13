@@ -177,7 +177,7 @@ public sealed class PlayersManager
     private void OnGreetPlayer(ModSend.orig_greetPlayer orig, int plr)
     {
         players[plr].PlayerState = PlayerState.Joined;
-        MintServer.Chat.SystemBroadcast($"{players[plr].Name} присоединился к серверу. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
+        MintServer.Chat.SystemBroadcast($"{players[plr].Name} {MintServer.Localization.Translate("has joined", players[plr].Account?.LanguageID)}. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
 
         foreach (string line in MintServer.Config.Game.MOTD)
             players[plr].SendMessage(line, Color.White);
@@ -248,7 +248,7 @@ public sealed class PlayersManager
 
         if (players[index].PlayerState == PlayerState.Joined && players[index].Name != null)
         {
-            MintServer.Chat.SystemBroadcast($"{players[index].Name} отключился от сервера. [{GetActivePlayersCount() - 1}/{Main.maxNetPlayers}]");
+            MintServer.Chat.SystemBroadcast($"{players[index].Name} {MintServer.Localization.Translate("has left", players[index].Account?.LanguageID)}. [{GetActivePlayersCount() - 1}/{Main.maxNetPlayers}]");
         }
 
         players[index].StopCommandHandler();

@@ -87,6 +87,7 @@ public partial class Player
         {
             account.SetToken(UUID, IP);
             account.Save();
+            
         }
 
         Account = account;

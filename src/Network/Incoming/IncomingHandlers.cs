@@ -35,12 +35,10 @@ public static class IncomingHandlers
         {
             if (player.IgnoreAnticheat)
             {
-                player.Messenger.Send(MessageMark.Warning, "Mint", "Ваше сообщение не было отправлено, так как оно превышает максимальную длину сообщения.");
-                player.Messenger.Send(MessageMark.Warning, "Mint", "Вы также не были исключены с сервера, так как имеете право на игнорирование античита.");
                 return;
             }
 
-            player.KickAnticheat("Слишком длинное сообщение.");
+            player.KickAnticheat("mint.too_long_message");
             return;
         }
 
@@ -165,7 +163,7 @@ public static class IncomingHandlers
 
         if (!player.IgnoreAnticheat && (current > max || max % 20 != 0 || max > 500))
         {
-            player.KickAnticheat("нихуя");
+            player.KickAnticheat("mint.mana_hack\nнихуя");
             return;
         }
 
@@ -188,7 +186,7 @@ public static class IncomingHandlers
 
         if (!player.IgnoreAnticheat && (current > max || max % 20 != 0 || max > 200))
         {
-            player.KickAnticheat("ебаный ты волшебник");
+            player.KickAnticheat("mint.mana_hack\nебаный ты волшебник");
             return;
         }
 
@@ -210,12 +208,12 @@ public static class IncomingHandlers
 
         if (name.Length > 20)
         {
-            player.Kick("Ваш ник слишком длинный!");
+            player.Kick(MintServer.Localization.Translate("Your nickname is too long!"));
             return;
         }
         if (name.Length == 0)
         {
-            player.Kick("Некорректный ник!");
+            player.Kick(MintServer.Localization.Translate("Invalid nickname!"));
             return;
         }
 
@@ -223,7 +221,7 @@ public static class IncomingHandlers
         {
             if (plr != null && plr.Index != player.Index && plr.PlayerState == PlayerState.Joined && plr.Name == name)
             {
-                player.Kick("Игрок с таким ником уже играет на сервере.");
+                player.Kick(MintServer.Localization.Translate("Player with same nickname is playing on server!"));
                 return;
             }
         }
@@ -269,7 +267,7 @@ public static class IncomingHandlers
 
         if (difficulty.HasFlag(CharacterDifficulty.Journey) && Main.GameMode != 4)
         {
-            player.Kick("Этот сервер не поддерживает креатив.");
+            player.Kick(MintServer.Localization.Translate("This server is not supporting Journey."));
             return;
         }
 

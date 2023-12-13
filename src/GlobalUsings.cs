@@ -12,6 +12,7 @@ global using Mint.Server.Chat;
 global using Mint.Data;
 global using Mint.Network.Incoming;
 global using Mint.Network.Outcoming;
+global using Mint.Localization;
 
 global using Serilog;
 

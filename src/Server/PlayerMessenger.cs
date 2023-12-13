@@ -32,14 +32,46 @@ public class PlayerMessenger
     public virtual void Begin() {}
     public virtual void End() {}
 
-    public virtual void Send(MessageMark mark, string? source, string message)
+    /// <summary>
+    /// Send message to player.
+    /// </summary>
+    /// <param name="mark">Message mark</param>
+    /// <param name="source">Message source</param>
+    /// <param name="message">Message text</param>
+    /// <param name="objects">Format objects</param>
+    public virtual void Send(MessageMark mark, string? source, string message, params object?[] objects)
+    {
+        if (colorMap == null) return;
+
+        message = MintServer.Localization.Translate(message, Player?.Account?.LanguageID);
+        if (source != null)
+        {
+            source = MintServer.Localization.Translate(source, Player?.Account?.LanguageID);
+            message = $"[c/691a7d:[][c/861aa1:{source}][c/691a7d:]] [c/595959:»] {message}";
+        }
+
+        string formatted = string.Format(message, objects);
+        Player?.SendMessage(formatted, colorMap[(byte)mark]);
+    }
+
+    /// <summary>
+    /// Send message to player without translating.
+    /// </summary>
+    /// <param name="mark">Message mark</param>
+    /// <param name="source">Message source</param>
+    /// <param name="message">Message text</param>
+    /// <param name="objects">Format objects</param>
+    public virtual void CleanSend(MessageMark mark, string? source, string message, params object?[] objects)
     {
         if (colorMap == null) return;
 
         if (source != null)
+        {
             message = $"[c/691a7d:[][c/861aa1:{source}][c/691a7d:]] [c/595959:»] {message}";
+        }
 
-        Player?.SendMessage(message, colorMap[(byte)mark]);
+        string formatted = string.Format(message, objects);
+        Player?.SendMessage(formatted, colorMap[(byte)mark]);
     }
 
     /// <summary>

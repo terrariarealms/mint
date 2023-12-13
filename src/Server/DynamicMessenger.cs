@@ -24,8 +24,10 @@ public class DynamicMessenger : PlayerMessenger
         base.End();
     }
 
-    public override void Send(MessageMark mark, string? source, string message)
+    public override void Send(MessageMark mark, string? source, string message, params object?[] objects)
     {
+        message = string.Format(message, objects);
+
         messages?.Add(new DynamicMessage(mark, source, message));
         
         if (OutputToConsole)

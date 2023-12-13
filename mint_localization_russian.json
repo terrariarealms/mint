@@ -1,0 +1,38 @@
+{
+  "Your nickname is too long!": "Ваш ник слишком длинный!",
+  "Invalid nickname!": "Некорректный ник!",
+  "Player with same nickname is playing on server!": "Игрок с таким ником уже играет на сервере!",
+  "This server is not supporting Journey.": "Этот сервер не поддерживает креатив.",
+
+  "System": "Система",
+  "has left": "вышел с сервера",
+  "has joined": "присоединился к серверу",
+
+  "Account": "Аккаунт",
+  "<password>": "<пароль>",
+  "register account": "зарегистрировать аккаунт", 
+  "You have already registered account!": "Вы уже зарегистрировали аккаунт!",
+  "Account with that name already exists!": "Аккаунт с таким именем уже зарегистрирован!",
+  "Account successfully created!": "Аккаунт создан!",
+  
+  "login account": "войти в аккаунт",
+  "You have already logged in!": "Вы уже вошли в аккаунт!",
+  "Account with that name is not exists!": "Аккаунт с таким именем не зарегистрирован!",
+  "Invalid password!": "Неверный пароль!",
+  "Welcome back, {0}!": "С возвращением, {0}!",
+  
+  "logout from account": "выйти из аккаунта",
+  "You are not logged in!": "Вы не вошли в аккаунт!",
+  "You have logged out from your account.": "Вы вышли из своего аккаунта.",
+
+  "Cannot execute command (argument {0}): ": "Не удалось выполнить команду [аргумент {0}]: ",
+  "Not enough arguments.": "Недостаточно аргументов.",
+  "Parser for type {0} not found.": "Парсер для типа {0} не найден.",
+  "Cannot parse '{0}' into {1} ({2}).": "Невозможно преобразовать '{0}' в тип {1} ({2})",
+
+  "Commands": "Команды",
+  "Command is disabled.": "Команда отключена.",
+  "You do not have permission for using this command.": "У вас недостаточно прав для использования этой команды.",
+  "Command was failed!": "При выполнении этой команды произошла ошибка!",
+  "Command not found. Use /help for viewing all available commands.": "Команда не найдена. Используйте /help для просмотра списка команд."
+}
