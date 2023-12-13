@@ -41,6 +41,13 @@ public static class MintServer
 
     static void Main(string[] args)
     {
+        AssemblyManager = new AssemblyManager();
+        AssemblyManager.SetupResolving();
+        Initialize(args);
+    }
+
+    static void Initialize(string[] args)
+    {
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File("mint.log", LogEventLevel.Verbose, "[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}")
             .WriteTo.SpectreConsole("[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}", minLevel: LogEventLevel.Verbose)
@@ -54,8 +61,6 @@ public static class MintServer
             
         ReplEngine.Initialize();
 
-        AssemblyManager = new AssemblyManager();
-        AssemblyManager.SetupResolving();
         AssemblyManager.LoadModules();
 
         if (!Directory.Exists("data"))

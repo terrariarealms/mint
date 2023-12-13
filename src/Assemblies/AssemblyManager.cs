@@ -12,7 +12,6 @@ internal class AssemblyManager
 
     internal void SetupResolving()
     {
-        Log.Information("AssemblyManager -> SetupResolving()");
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
     }
 
@@ -59,6 +58,8 @@ internal class AssemblyManager
 
         LoadVia(new SourceLoader());
         LoadVia(new BinaryLoader());
+
+        modules = modules.OrderBy(p => p.Module.Priority).ToList();
 
         CheckDependencies();
     }

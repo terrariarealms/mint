@@ -38,11 +38,7 @@ internal static class LoaderUtils
                 
                 MintModule instance = (MintModule)objInstance;
 
-                ModuleAssembly moduleAssembly = new ModuleAssembly(path)
-                {
-                    Assembly = assembly,
-                    Module = instance
-                };
+                ModuleAssembly moduleAssembly = new ModuleAssembly(path, assembly, instance);
 
                 return moduleAssembly;
             }

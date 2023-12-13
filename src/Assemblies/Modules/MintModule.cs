@@ -26,6 +26,11 @@ public abstract class MintModule
     public abstract int ModuleArchitecture { get; }
 
     /// <summary>
+    /// Priority of module. Module loader sorting modules loading priority by this.
+    /// </summary>
+    public abstract int Priority { get; }
+
+    /// <summary>
     /// Setup invoking in async module loading.
     /// Can be used only for initializing without reference to other modules
     /// </summary>
