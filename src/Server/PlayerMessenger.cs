@@ -92,8 +92,7 @@ public class PlayerMessenger
         CalculatePages(lines.GetEnumerator(), 5, out items, out maxPage);
 
         // header
-        string headerText = string.Format(headerFormat, currentPage, maxPage, items, nextPage);
-        Send(MessageMark.PageHeader, null, headerText);
+        Send(MessageMark.PageHeader, null, headerText, currentPage, maxPage, items, nextPage);
 
         // items
         for (int i = currentPage * 5; i < items; i++)
@@ -104,17 +103,12 @@ public class PlayerMessenger
         // footers 
         List<string> footer = new List<string>(2);
         if (footerFormat != null)
-        {
-            string footerText = string.Format(footerFormat, currentPage, maxPage, items, nextPage);
             footer.Add(footerText);
-        }
-        if (nextPageFormat != null)
-        {
-            string nextPageText = string.Format(nextPageFormat, currentPage, maxPage, items, nextPage);
-            footer.Add(nextPageText);
-        }
 
-        Send(MessageMark.PageFooter, null, string.Join(" • ", footer));
+        if (nextPageFormat != null)
+            footer.Add(nextPageText);
+
+        Send(MessageMark.PageFooter, null, string.Join(" • ", footer), currentPage, maxPage, items, nextPage);
     }
 
     internal void CalculatePages(IEnumerator<string> enumerator, int maxItems, out int items, out int maxPage)
