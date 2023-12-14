@@ -92,7 +92,7 @@ public class PlayerMessenger
         CalculatePages(lines.GetEnumerator(), 5, out items, out maxPage);
 
         // header
-        Send(MessageMark.PageHeader, null, headerText, currentPage, maxPage, items, nextPage);
+        Send(MessageMark.PageHeader, null, headerFormat, currentPage, maxPage, items, nextPage);
 
         // items
         for (int i = currentPage * 5; i < items; i++)
@@ -103,10 +103,10 @@ public class PlayerMessenger
         // footers 
         List<string> footer = new List<string>(2);
         if (footerFormat != null)
-            footer.Add(footerText);
+            footer.Add(footerFormat);
 
         if (nextPageFormat != null)
-            footer.Add(nextPageText);
+            footer.Add(nextPageFormat);
 
         Send(MessageMark.PageFooter, null, string.Join(" • ", footer), currentPage, maxPage, items, nextPage);
     }

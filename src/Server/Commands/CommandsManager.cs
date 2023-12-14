@@ -93,10 +93,10 @@ public sealed class CommandsManager
             IEnumerable<ICommand> sortedCommands = section.Commands.OrderByDescending(p => p.Name.Length);
             foreach (ICommand command in sortedCommands)
             {
-                args = new List<string>(args.Skip(command.Name.Split(' ').Length));
-
                 if (text.StartsWith(command.Name))
                 {
+                    args = new List<string>(args.Skip(command.Name.Split(' ').Length));
+
                     if (command != null)
                     {
                         Group? playerGroup = sender.Account?.GetGroup();
@@ -123,8 +123,8 @@ public sealed class CommandsManager
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Exception in handling command {command.Name} from {section.Name}:");
-                            Console.WriteLine(ex.ToString());
+                            Log.Error("Commands: Exception in handling command {Command} from {Section}:", command.Name, section.Name);
+                            Log.Error("Commands: {Exception}", ex.ToString());
 
                             return CommandResult.Error;
                         }

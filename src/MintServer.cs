@@ -43,7 +43,20 @@ public static class MintServer
     {
         AssemblyManager = new AssemblyManager();
         AssemblyManager.SetupResolving();
-        Initialize(args);
+        try
+        {
+            Initialize(args);
+        }
+        catch (Exception ex)
+        {
+            DisplayException(ex);
+        }
+    }
+
+    static void DisplayException(Exception ex)
+    {
+        Log.Error("Error in server initialization: ");
+        Log.Error("{Exception}", ex.ToString());
     }
 
     static void Initialize(string[] args)
@@ -78,7 +91,7 @@ public static class MintServer
         Commands.InitializeParsers();
 
         CoreCommands.Register();
-        
+
         Players.Initialize();
         Network.Initialize();
 

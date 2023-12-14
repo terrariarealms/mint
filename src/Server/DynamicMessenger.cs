@@ -24,13 +24,17 @@ public class DynamicMessenger : PlayerMessenger
         base.End();
     }
 
-    public override void Send(MessageMark mark, string? source, string message, params object?[] objects)
+    private void PrivateSend(MessageMark mark, string? source, string message, object?[] objects)
     {
         message = string.Format(message, objects);
 
         messages?.Add(new DynamicMessage(mark, source, message));
         
         if (OutputToConsole)
-            Console.WriteLine($"{Name}: {(source == null ? "" : "<" + source + "> ")}{message}");
+            Log.Information("{Name}: {Text}", Name, $"{(source == null ? "" : "<" + source + "> ")}{message}");
     }
+
+    public override void Send(MessageMark mark, string? source, string message, params object?[] objects) => PrivateSend(mark, source, message, objects);
+
+    public override void CleanSend(MessageMark mark, string? source, string message, params object?[] objects) => PrivateSend(mark, source, message, objects);
 }

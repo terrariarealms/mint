@@ -55,7 +55,7 @@ public class StaticCommand : ICommand
         {
             ParameterInfo parameter = parameters[i];
 
-            if (ctx.Parameters.Count < i - 1)
+            if (ctx.Parameters.Count < i)
             {
                 if (parameter.HasDefaultValue && parameter.DefaultValue != null)
                 {
