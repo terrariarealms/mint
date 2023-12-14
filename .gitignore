@@ -4,6 +4,7 @@
 bin/
 bin/net6.0
 modules/
+plugins/
 data/
 
 src/obj/
