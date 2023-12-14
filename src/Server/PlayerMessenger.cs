@@ -94,8 +94,11 @@ public class PlayerMessenger
         // header
         Send(MessageMark.PageHeader, null, headerFormat, currentPage, maxPage, items, nextPage);
 
+
+        int fixedPageOffset = 5 * (currentPage - 1);
+        int maxPageItems = Math.Min(5 * currentPage, items);
         // items
-        for (int i = currentPage * 5; i < items; i++)
+        for (int i = fixedPageOffset; i < maxPageItems; i++)
         {
             Send(MessageMark.PageItem, null, lines[i]);
         }
@@ -103,12 +106,14 @@ public class PlayerMessenger
         // footers 
         List<string> footer = new List<string>(2);
         if (footerFormat != null)
-            footer.Add(footerFormat);
+            footer.Add(MintServer.Localization.Translate(footerFormat, Player?.Account?.LanguageID));
 
-        if (nextPageFormat != null)
-            footer.Add(nextPageFormat);
+        if (nextPageFormat != null && maxPageItems > items)
+            footer.Add(MintServer.Localization.Translate(nextPageFormat, Player?.Account?.LanguageID));
 
-        Send(MessageMark.PageFooter, null, string.Join(" • ", footer), currentPage, maxPage, items, nextPage);
+        string fullFooter = string.Join(" • ", footer);
+        if (fullFooter.Length > 0)
+            CleanSend(MessageMark.PageFooter, null, fullFooter, currentPage, maxPage, items, nextPage);
     }
 
     internal void CalculatePages(IEnumerator<string> enumerator, int maxItems, out int items, out int maxPage)
