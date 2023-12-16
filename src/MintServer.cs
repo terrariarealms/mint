@@ -17,11 +17,8 @@ public static class MintServer
     internal static AssemblyManager AssemblyManager;
 
     internal static MintConfig Config;
-    internal static ConfigUtils ConfigUtils = new ConfigUtils("core");
-
+    
     internal static ReplEngine ReplEngine = new ReplEngine();
-
-    public static DatabaseUtils DatabaseUtils { get; private set; }
 
     public static CommandsManager Commands { get; private set; } = new CommandsManager();
     public static NetworkHandler Network { get; private set; } = new NetworkHandler();
@@ -32,8 +29,8 @@ public static class MintServer
 
     public static DynamicPlayer ServerPlayer { get; } = new DynamicPlayer("root", new Account("root", "0", "root", null, null, new Dictionary<string, string>()), new DynamicMessenger("root", true));
 
-    public static DatabaseCollection<Account> AccountsCollection { get; private set; }
-    public static DatabaseCollection<Group> GroupsCollection { get; private set; }
+    public static DatabaseStorage<Account> AccountsCollection { get; private set; }
+    public static DatabaseStorage<Group> GroupsCollection { get; private set; }
 
     public static ISocket ServerSocket { get; set; }
 
@@ -79,11 +76,10 @@ public static class MintServer
         if (!Directory.Exists("data"))
             Directory.CreateDirectory("data");
 
-        Config = ConfigUtils.GetConfig<MintConfig>();
-        DatabaseUtils = new DatabaseUtils();
+        Config = Config<MintConfig>.GetData();
 
-        AccountsCollection = DatabaseUtils.GetDatabase<Account>();       
-        GroupsCollection = DatabaseUtils.GetDatabase<Group>();
+        AccountsCollection = MongoDatabase.Get<Account>();       
+        GroupsCollection = MongoDatabase.Get<Group>();
         InsertDefaultGroups();
 
         Prepare(args, true);
@@ -118,7 +114,7 @@ public static class MintServer
                 "mint.login"
             });
 
-            GroupsCollection.Add(unauthorized);
+            GroupsCollection.Push("unauthorized", unauthorized);
         }
 
         if (GroupsCollection.Get("user") == null)
@@ -128,14 +124,14 @@ public static class MintServer
                 "mint.logout"
             });
 
-            GroupsCollection.Add(user);
+            GroupsCollection.Push("user", user);
         }
 
         if (GroupsCollection.Get("root") == null)
         {
             Group root = new Group("root", true, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>());
 
-            GroupsCollection.Add(root);
+            GroupsCollection.Push("root", root);
         }
     }
 

@@ -6,6 +6,7 @@ public struct MintConfig
     {
         LanguageID = 0;
         Database = new DatabaseConfig();
+        Game = new GameConfig();
     }
 
     public byte LanguageID;

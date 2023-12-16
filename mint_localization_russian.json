@@ -5,6 +5,9 @@
   "This server is not supporting Journey.": "Этот сервер не поддерживает креатив.",
 
   "System": "Система",
+  "Your connection with server was closed.": "Ваше соединение с сервером было разорвано.",
+
+
   "has left": "вышел с сервера",
   "has joined": "присоединился к серверу",
 

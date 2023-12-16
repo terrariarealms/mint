@@ -31,14 +31,17 @@ public static class IncomingHandlers
         string command = reader.ReadString();
         string text = reader.ReadString();
 
-        if (text.Length > 300)
+        if (text.Length > 300 && !player.IgnoreAnticheat)
         {
-            if (player.IgnoreAnticheat)
-            {
-                return;
-            }
+            Log.Error("{Name} cheat detect in {Where}", player.Account?.Name, "OnChatNetModule");
+            player.CloseConnection();
+            return;
+        }
 
-            player.KickAnticheat("mint.too_long_message");
+        if (player.PlayerState != PlayerState.Joined)
+        {
+            Log.Error("{Name} bot detect in {Where}", player.Account?.Name, "OnChatNetModule");
+            player.CloseConnection();
             return;
         }
 
@@ -145,6 +148,7 @@ public static class IncomingHandlers
         
         if (stack > item.maxStack)
         {
+            Log.Error("{Name} stack cheat detect in {Where}", player.Account?.Name, "OnPlayerSlot");
             player.Character.SetSlot(slotId, new NetItem(0, 0, 0), CharacterOperation.RequestedByServer);
             return;
         }
@@ -163,7 +167,8 @@ public static class IncomingHandlers
 
         if (!player.IgnoreAnticheat && (current > max || max % 20 != 0 || max > 500))
         {
-            player.KickAnticheat("mint.mana_hack\nнихуя");
+            Log.Error("{Name} cheat detect in {Where}", player.Account?.Name, "OnPlayerLife");
+            player.CloseConnection();
             return;
         }
 
@@ -186,7 +191,8 @@ public static class IncomingHandlers
 
         if (!player.IgnoreAnticheat && (current > max || max % 20 != 0 || max > 200))
         {
-            player.KickAnticheat("mint.mana_hack\nебаный ты волшебник");
+            Log.Error("{Name} cheat detect in {Where}", player.Account?.Name, "OnPlayerMana");
+            player.CloseConnection();
             return;
         }
 
@@ -205,6 +211,9 @@ public static class IncomingHandlers
         byte skinVariant = reader.ReadByte();
         byte hair = reader.ReadByte();
         string name = reader.ReadString();
+        
+        if (!player.SentPackets[4])
+        player.SetName(name, true);
 
         if (name.Length > 20)
         {
@@ -273,12 +282,7 @@ public static class IncomingHandlers
 
         player.Character.SetStats(stats, CharacterOperation.RequestedByPlayer);
 
-        if (player.SentPackets[4])
-            return;
-        
         player.SentPackets[4] = true;
-
-        player.SetName(name, true);
     }
 
     static void OnPlayerUUID(Player player, IncomingPacket packet, ref bool ignore)

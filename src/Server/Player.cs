@@ -10,6 +10,7 @@ public partial class Player
         Index = index;
         Messenger = new PlayerMessenger(this);
         Character = new ClientsideCharacter(this);
+        Storage = new MemoryStorage();
     }
 
     /// <summary>
@@ -47,6 +48,11 @@ public partial class Player
     /// (if you will use SendMessage you are gay)
     /// </summary>
     public virtual PlayerMessenger Messenger { get; internal set; }
+
+    /// <summary>
+    /// Storage of custom data.
+    /// </summary>
+    public virtual MemoryStorage Storage { get; internal set; }
 
     /// <summary>
     /// Commands queue.

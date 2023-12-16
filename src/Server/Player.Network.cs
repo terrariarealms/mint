@@ -34,6 +34,14 @@ public partial class Player
         set => _ip = value;
     }
 
+    public virtual void CloseConnection()
+    {
+        Messenger.Send(MessageMark.Error, "System", "Your connection with server was closed.");
+        StopPacketHandler();
+        StopCommandHandler();
+        Socket.Close();
+    }
+
     private string? _ip;
 
     internal CancellationTokenSource? netTokenSource;

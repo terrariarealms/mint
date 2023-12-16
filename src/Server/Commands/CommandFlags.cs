@@ -21,5 +21,10 @@ public enum CommandFlags : byte
     /// <summary>
     /// Means that command will be not shown in /help.
     /// </summary>
-    Hidden = 4
+    Hidden = 4,
+
+    /// <summary>
+    /// Means that command is can be invoked only by thirdparty assemblies.
+    /// </summary>
+    Special = 8
 }

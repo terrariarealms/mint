@@ -34,7 +34,7 @@ internal static class CoreCommands
         newAccount.SetToken(ctx.Sender.UUID, ctx.Sender.IP);
         newAccount.LanguageID = MintServer.Config.LanguageID;
 
-        MintServer.AccountsCollection.Add(newAccount);
+        MintServer.AccountsCollection.Push(newAccount.Name, newAccount);
 
         ctx.Sender.Authorize(newAccount);
 

@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyVersion>7.31.0.0</AssemblyVersion>
+    <AssemblyVersion>7.40.0.0</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mintoza">

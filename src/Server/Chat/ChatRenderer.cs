@@ -41,6 +41,8 @@ public class ChatRenderer
     string RenderName(Player sender, ChatMessage message) => sender?.Name ?? "<!unknown>";
     string RenderSuffix(Player sender, ChatMessage message) => sender?.Group?.Presence.GetSuffix() ?? "";
 
+    public static event EventRenderedChatDelegate? OnRenderedChat;
+
     /// <summary>
     /// Renders message.
     /// </summary>
@@ -52,6 +54,8 @@ public class ChatRenderer
         string name = NameRender.Render(message);
         string suffix = SuffixRender.Render(message);
 
-        return prefix + name + suffix + ": " + message.Text;
+        string rendered = prefix + name + suffix + ": " + message.Text;
+        OnRenderedChat?.Invoke(message.Sender, rendered);
+        return rendered;
     }
 }

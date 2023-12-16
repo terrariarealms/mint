@@ -29,7 +29,7 @@ internal class ReplEngine
         AddUsing("Mint.Network");
         AddUsing("Mint.Network.Incoming");
         AddUsing("Mint.Network.Outcoming");
-        AddUsing("Mint.Data");
+        AddUsing("Mint.DataStorages");
         AddUsing("Mint.Assemblies");
         AddUsing("Mint.Assemblies.Modules");
     }

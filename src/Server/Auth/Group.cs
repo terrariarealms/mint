@@ -81,13 +81,7 @@ public class Group : DatabaseObject
     /// </summary>
     public void Save()
     {
-        if (MintServer.GroupsCollection.Get(Name) == null)
-        {
-            MintServer.GroupsCollection.Add(this);
-            return;
-        }
-
-        MintServer.GroupsCollection.Update(this);
+        MintServer.GroupsCollection.Push(this.Name, this);
     }
 
     /// <summary>

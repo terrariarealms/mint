@@ -25,13 +25,7 @@ public class Account : DatabaseObject
     /// </summary>
     public void Save()
     {
-        if (MintServer.AccountsCollection.Get(Name) == null)
-        {
-            MintServer.AccountsCollection.Add(this);
-            return;
-        }
-
-        MintServer.AccountsCollection.Update(this);
+        MintServer.AccountsCollection.Push(this.Name, this);
     }
 
     /// <summary>

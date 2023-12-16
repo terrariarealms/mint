@@ -79,7 +79,7 @@ public sealed class CommandsManager
         return ParseResult.Success;
     }
 
-    public CommandResult InvokeCommand(Player sender, string text)
+    public CommandResult InvokeCommand(Player sender, string text, bool special = false)
     {
         if (text.StartsWith("/"))
             text = text.Substring(1); // removes '/' from start.
@@ -104,6 +104,9 @@ public sealed class CommandsManager
 
                         if (command.Flags.HasFlag(CommandFlags.Disabled))
                             return CommandResult.CommandDisabled;
+
+                        if (command.Flags.HasFlag(CommandFlags.Special) && !special)
+                            return CommandResult.CommandNotFound;
 
                         if (command.Flags.HasFlag(CommandFlags.RootOnly) && !rootUser)
                             return CommandResult.NoPermission;
