@@ -215,6 +215,8 @@ public class RemadeTcpSocket : ISocket
                 {
                     Log.Error("RemadeTcpSocket -> Declined connection from {IP}", ip);
                 }
+
+                Thread.Sleep(100);
             }
             catch (Exception)
             {

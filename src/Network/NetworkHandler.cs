@@ -66,6 +66,12 @@ public sealed class NetworkHandler
         if (player == null)
             return;
 
+        if (length < 1 || length > 999)
+        {
+            player?.CloseConnection();
+            return;
+        }
+
         try
         {
             if (messageType == 82) // net module
