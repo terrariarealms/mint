@@ -50,6 +50,9 @@ internal class AssemblyManager
     {
         Log.Information("AssemblyManager -> LoadModules()");
 
+        if (!Directory.Exists(WorkingDirectory))
+            Directory.CreateDirectory(WorkingDirectory);
+
         modules = new List<ModuleAssembly>();
 
         LoadVia(new SourceLoader());
