@@ -21,6 +21,11 @@ public static class MongoDatabase
         return $"{typeof(T).Name}Collection";
     }
 
+    /// <summary>
+    /// Create database collection instance.
+    /// </summary>
+    /// <typeparam name="T">Database object type</typeparam>
+    /// <returns>Database collection storage</returns>
     public static DatabaseStorage<T> Get<T>() where T : DatabaseObject
     {
         string name = GetName<T>();
