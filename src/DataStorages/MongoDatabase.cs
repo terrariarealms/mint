@@ -2,7 +2,7 @@ using MongoDB.Driver;
 
 namespace Mint.DataStorages;
 
-internal static class MongoDatabase
+public static class MongoDatabase
 {
     static MongoDatabase()
     {
@@ -21,7 +21,7 @@ internal static class MongoDatabase
         return $"{typeof(T).Name}Collection";
     }
 
-    internal static DatabaseStorage<T> Get<T>() where T : DatabaseObject
+    public static DatabaseStorage<T> Get<T>() where T : DatabaseObject
     {
         string name = GetName<T>();
         if (Collections.ContainsKey(name))
