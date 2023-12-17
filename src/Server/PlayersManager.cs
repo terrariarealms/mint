@@ -85,6 +85,26 @@ public sealed class PlayersManager
     }
 
     /// <summary>
+    /// Get first player that matches predicate
+    /// </summary>
+    /// <param name="predicate">Target predicate</param>
+    /// <returns>Predicate result</returns>
+    public Player? First(Predicate<Player> predicate)
+    {
+        if (MintServer.Players?.players == null) 
+            return null;
+
+        for (int i = 0; i < 255; i++)
+        {
+            Player? player = MintServer.Players.players[i];
+            if (player != null && predicate(player))
+                return player;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Implementation of foreach.
     /// </summary>
     /// <param name="action">Target action</param>

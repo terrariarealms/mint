@@ -61,6 +61,49 @@ public sealed class CommandsManager
 
             return new InvalidParameterValue(arg);
         });
+        parsers.Add(typeof(Player), (arg) =>
+        {
+            Player? plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name == arg);
+            if (plr != null)
+                return plr;
+
+            plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name?.ToLower() == arg.ToLower());
+            if (plr != null)
+                return plr;
+
+            plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name?.ToLower().StartsWith(arg) == true);
+            if (plr != null)
+                return plr;
+
+            return new InvalidParameterValue(arg);
+        });
+        parsers.Add(typeof(Account), (arg) =>
+        {
+            var account = MintServer.AccountsCollection.Get(arg);
+            if (account == null)
+                return new InvalidParameterValue(arg);
+
+            return account;
+        });
+        parsers.Add(typeof(Group), (arg) =>
+        {
+            var group = MintServer.AccountsCollection.Get(arg);
+            if (group == null)
+                return new InvalidParameterValue(arg);
+
+            return group;
+        });
+    }
+
+    /// <summary>
+    /// Add custom parser.
+    /// There is no DeleteCustomParser because that method was designed for modules only.
+    /// </summary>
+    /// <param name="type">Type</param>
+    /// <param name="func">Func</param>
+    public void AddCustomParser(Type type, Func<string, object> func)
+    {
+        parsers.Add(type, func);
     }
 
     internal ParseResult TryParse(Type type, string input, out object value)
