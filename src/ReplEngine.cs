@@ -1,3 +1,4 @@
+#if REPL
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -55,3 +56,4 @@ internal class ReplEngine
         }
     }
 }
+#endif

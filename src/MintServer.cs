@@ -17,8 +17,10 @@ public static class MintServer
     internal static AssemblyManager AssemblyManager;
 
     internal static MintConfig Config;
-    
+
+    #if REPL    
     internal static ReplEngine ReplEngine = new ReplEngine();
+    #endif
 
     public static CommandsManager Commands { get; private set; } = new CommandsManager();
     public static NetworkHandler Network { get; private set; } = new NetworkHandler();
@@ -36,27 +38,13 @@ public static class MintServer
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    static void Main(string[] args)
-    {
-        AssemblyManager = new AssemblyManager();
-        AssemblyManager.SetupResolving();
-        try
-        {
-            Initialize(args);
-        }
-        catch (Exception ex)
-        {
-            DisplayException(ex);
-        }
-    }
-
-    static void DisplayException(Exception ex)
+    internal static void DisplayException(Exception ex)
     {
         Log.Error("Error in server initialization: ");
         Log.Error("{Exception}", ex.ToString());
     }
 
-    static void Initialize(string[] args)
+    internal static void Initialize(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File("mint.log", LogEventLevel.Verbose, "[{Timestamp:HH:mm:ss:ff} | {Level:u4}]: {Message:lj}{NewLine}{Exception}")
@@ -69,7 +57,9 @@ public static class MintServer
 
         Localization.AddContainer(LanguageID.Russian, russianLang);
             
+        #if REPL
         ReplEngine.Initialize();
+        #endif
 
         AssemblyManager.LoadModules();
 
@@ -108,6 +98,8 @@ public static class MintServer
     {
         if (GroupsCollection.Get("unauthorized") == null)
         {
+            Log.Information("Registering group {Name}", "unauthorized");
+
             Group unauthorized = new Group("unauthorized", false, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>()
             {
                 "mint.register",
@@ -119,6 +111,8 @@ public static class MintServer
 
         if (GroupsCollection.Get("user") == null)
         {
+            Log.Information("Registering group {Name}", "user");
+
             Group user = new Group("user", false, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>()
             {
                 "mint.logout"
@@ -129,6 +123,8 @@ public static class MintServer
 
         if (GroupsCollection.Get("root") == null)
         {
+            Log.Information("Registering group {Name}", "root");
+
             Group root = new Group("root", true, null, new GroupPresence(null, null, new MintColor(85, 85, 85)), new List<DatabaseObject>(), new List<string>());
 
             GroupsCollection.Push("root", root);
@@ -148,7 +144,9 @@ public static class MintServer
                 continue;
             }
 
+            #if REPL
             ReplEngine.RunCode(command);    
+            #endif
         }
     }
 

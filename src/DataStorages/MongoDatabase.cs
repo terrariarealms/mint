@@ -6,15 +6,16 @@ public static class MongoDatabase
 {
     static MongoDatabase()
     {
-        Client = new MongoClient($"mongodb://{MintServer.Config.Database.IP}:{MintServer.Config.Database.Port}");
+        Log.Information("Connecting to MongoDB on {IP}:{Port}", MintServer.Config.Database.IP, MintServer.Config.Database.Port);
+        
+        string mongoUrl = $"mongodb://{MintServer.Config.Database.IP}:{MintServer.Config.Database.Port}";
+        Client = new MongoClient(mongoUrl);
+        Log.Information("Using database {Name}", MintServer.Config.Database.Name);
         Database = Client.GetDatabase(MintServer.Config.Database.Name);
-
-        Collections = new Dictionary<string, dynamic>();
     }  
 
     internal static MongoClient Client;
     internal static IMongoDatabase Database;
-    internal static Dictionary<string, dynamic> Collections;
 
     internal static string GetName<T>()
     {
@@ -29,14 +30,8 @@ public static class MongoDatabase
     public static DatabaseStorage<T> Get<T>() where T : DatabaseObject
     {
         string name = GetName<T>();
-        if (Collections.ContainsKey(name))
-            return Collections[name];
-
-        IMongoCollection<T> collection = Database.GetCollection<T>(name, null);
-        DatabaseStorage<T> storage = new DatabaseStorage<T>(name, collection);
-
-        Collections.TryAdd(name, storage);
-
+        DatabaseStorage<T> storage = new DatabaseStorage<T>(name);
+        Log.Information("Created DatabaseStorage for {Name}", name);
         return storage;
     }
 }

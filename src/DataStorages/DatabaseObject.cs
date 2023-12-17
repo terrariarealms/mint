@@ -1,5 +1,8 @@
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace Mint.DataStorages;
 
+[BsonIgnoreExtraElements]
 public abstract class DatabaseObject : IMemoryObject
 {
     protected DatabaseObject(string name)

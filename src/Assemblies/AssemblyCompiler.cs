@@ -70,12 +70,18 @@ public class AssemblyCompiler
     public string? CompileDll(CompilationInfo info)
     {
         string binPath = Path.Combine(info.WorkingPath, info.BinaryDirectory);
+        string objPath = Path.Combine(info.WorkingPath, info.SourcePath, "obj");
         if (Directory.Exists(binPath))
             Directory.Delete(binPath, true);
+
+        bool ignoreRestoring = Directory.Exists(objPath);
 
         string binFilePath = Path.Combine(binPath, info.Name + ".dll");
 
         string command = BuildCommand(info);
+        if (ignoreRestoring)
+            command += "--no-restore";
+
         if (RunCommand(command, true))
         {
             if (File.Exists(binFilePath))

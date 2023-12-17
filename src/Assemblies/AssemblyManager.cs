@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using Mint.Assemblies.Modules;
 
 namespace Mint.Assemblies;
@@ -7,7 +8,6 @@ internal class AssemblyManager
 {
     internal const string WorkingDirectory = "modules";
 
-    internal List<Assembly> dependencies = new List<Assembly>();
     internal List<ModuleAssembly>? modules;
 
     internal void SetupResolving()
@@ -22,7 +22,6 @@ internal class AssemblyManager
         if (array.Length == 0) return null;
 
         Assembly assembly = Assembly.LoadFrom(array[0]);
-        dependencies.Add(assembly);
         return assembly;
     }
 
@@ -39,17 +38,14 @@ internal class AssemblyManager
                 return moduleAssembly.Assembly;
         }
 
-        Assembly? cachedAssembly = dependencies.Find((p) => p.GetName().Name == name);
-        if (cachedAssembly != null)
-            return cachedAssembly;
-
         Assembly? assembly = FindAssembly(name, "dll") ?? FindAssembly(name, "exe");
-        if (assembly == null)
-            Log.Error("AssemblyManager -> failed to resolve {Name}", name);
+        if (assembly == null) LogResolveFail(name);
 
         return assembly;
     }
-    
+
+    private void LogResolveFail(string name) => Log.Error("AssemblyManager -> failed to resolve {Name}", name);
+
     internal void LoadModules()
     {
         Log.Information("AssemblyManager -> LoadModules()");

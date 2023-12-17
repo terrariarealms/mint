@@ -5,11 +5,11 @@ namespace Mint.DataStorages;
 
 public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
 {
-    internal DatabaseStorage(string name, IMongoCollection<T> collection)
+    internal DatabaseStorage(string name)
     {
         Name = name;
         _memCache = new MemoryStorage();
-        _collection = collection;
+        _collection = MongoDatabase.Database.GetCollection<T>(Name);
     }
 
     internal MemoryStorage _memCache;
@@ -28,15 +28,14 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// <returns></returns>
     public T? Get(string name)
     {
-        T? value = (T?)_memCache.Get(name);
+        T? value = _memCache.Get(name) as T;
         if (value != null) return value; 
 
-        var result = _collection.Find((p) => p.Name == name);
-        if (result.CountDocuments() > 0)
+        var result = _collection.Find((p) => p.Name == name).ToList();
+        if (result.Count > 0 && result[0] != null)
         {   
-            var obj = result.First();
+            var obj = result[0];
             _memCache.Push(name, obj);
-
             return obj;
         }
 
@@ -109,8 +108,6 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// <param name="content"></param>
     public void Push(string name, T content)
     {
-        _memCache.Push(name, content);
-
         if (Get(name) != null)
         {
             _collection.ReplaceOne((p) => p.Name == name, content);
@@ -118,6 +115,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
         }
         
         _collection.InsertOne(content);
+        _memCache.Push(name, content);
     }
 
     /// <summary>
