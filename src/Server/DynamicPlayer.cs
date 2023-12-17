@@ -20,6 +20,8 @@ public class DynamicPlayer : Player
     {
     }
 
+    public override bool IsReal => false;
+
     public override ISocket Socket => new EmptySocket();
 
     public override string IP { get => "0.0.0.0"; set {} }

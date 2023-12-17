@@ -13,6 +13,8 @@ public partial class Player
         Storage = new MemoryStorage();
     }
 
+    public virtual bool IsReal => true;
+
     /// <summary>
     /// Player client index.
     /// </summary>

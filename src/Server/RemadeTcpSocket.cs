@@ -8,8 +8,6 @@ namespace Mint.Server;
 
 public class RemadeTcpSocket : ISocket
 {
-    public int MessagesInQueue => _messagesInQueue;
-
     public RemadeTcpSocket()
     {
         _connection = new TcpClient
@@ -223,7 +221,6 @@ public class RemadeTcpSocket : ISocket
             }
     }
 
-    private int _messagesInQueue;
     private TcpClient? _connection;
     private TcpListener? _listener;
     private SocketConnectionAccepted? _listenerCallback;

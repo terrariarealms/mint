@@ -87,7 +87,7 @@ public sealed class CommandsManager
         });
         parsers.Add(typeof(Group), (arg) =>
         {
-            var group = MintServer.AccountsCollection.Get(arg);
+            var group = MintServer.GroupsCollection.Get(arg);
             if (group == null)
                 return new InvalidParameterValue(arg);
 
@@ -154,7 +154,7 @@ public sealed class CommandsManager
                         if (command.Flags.HasFlag(CommandFlags.RootOnly) && !rootUser)
                             return CommandResult.NoPermission;
 
-                        if (command.Permission != null)
+                        if (command.Permission != null && !rootUser)
                         {
                             if (playerGroup == null) return CommandResult.NoPermission;
                             else if (!playerGroup.HasPermission(command.Permission)) return CommandResult.NoPermission;

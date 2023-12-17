@@ -140,7 +140,7 @@ public static class MintServer
 
             if (command.StartsWith("/"))
             {
-                Commands.InvokeCommand(ServerPlayer, command);
+                Commands.InvokeCommand(ServerPlayer, command, true);
                 continue;
             }
 

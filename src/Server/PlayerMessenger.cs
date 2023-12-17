@@ -21,7 +21,7 @@ public class PlayerMessenger
 
             // PAGE
             new Color(0, 128, 0),   // PAGE HEADER
-            new Color(0, 100, 0),   // PAGE ITEM
+            new Color(255, 255, 0),   // PAGE ITEM
             new Color(46, 139, 87)  // PAGE FOOTER
         };
     }
@@ -86,7 +86,7 @@ public class PlayerMessenger
     public virtual void SendPage(string headerFormat, IList<string> lines, int page, string? footerFormat = null, string? nextPageFormat = null)
     {
         // pages calculation
-        int currentPage = Math.Min(1, page);
+        int currentPage = Math.Max(1, page);
         int nextPage = currentPage + 1;
         int items; int maxPage;
         CalculatePages(lines.GetEnumerator(), 5, out items, out maxPage);
@@ -108,7 +108,7 @@ public class PlayerMessenger
         if (footerFormat != null)
             footer.Add(MintServer.Localization.Translate(footerFormat, Player?.Account?.LanguageID));
 
-        if (nextPageFormat != null && maxPageItems > items)
+        if (nextPageFormat != null && maxPageItems < items)
             footer.Add(MintServer.Localization.Translate(nextPageFormat, Player?.Account?.LanguageID));
 
         string fullFooter = string.Join(" • ", footer);

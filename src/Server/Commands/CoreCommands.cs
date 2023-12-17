@@ -1,3 +1,5 @@
+using On.Terraria.GameContent.Personalities;
+
 namespace Mint.Server.Commands;
 
 internal static class CoreCommands
@@ -10,6 +12,49 @@ internal static class CoreCommands
         section.ImportFrom(typeof(CoreCommands));
     }
     
+    [StaticCommand("rootfix", "fix root group permissions", null)]
+    [CommandFlags(CommandFlags.Special)]
+    public static void Rootfix(CommandInvokeContext ctx)
+    {
+        Group? root = MintServer.GroupsCollection.Get("root");
+        if (root == null)
+        {
+            root = new Group("root", true, null, new GroupPresence(null, null, null), new List<DatabaseObject>(), new List<string>());
+            root.Save();
+        }
+        else
+        {
+            root.RootPermissions = true;
+            root.Save();
+        }
+
+        ctx.Messenger.Send(MessageMark.OK, "System", "Fixed.");
+    }
+
+    [StaticCommand("help", "view available commands list", "[page]")]
+    public static void Help(CommandInvokeContext ctx, int page = 1)
+    {
+        ctx.Messenger.SendPage("Commands (total: {2}):", new List<string>(BuildHelpLines(ctx.Sender)), page, null, "Next page: /help {3}");
+    }
+
+    internal static IEnumerable<string> BuildHelpLines(Player plr)
+    {
+        foreach (CommandSection section in MintServer.Commands.commands)
+        foreach (ICommand command in section.Commands)
+        {
+            if (command.Permission == null || plr.Group?.HasPermission(command.Permission) == true 
+                && !command.Flags.HasFlag(CommandFlags.Hidden) && !command.Flags.HasFlag(CommandFlags.Special))
+            {
+                if (plr.Group?.RootPermissions == false && command.Flags.HasFlag(CommandFlags.RootOnly))
+                    continue;
+
+                string syntax = command.Syntax == null ? "" : " " + MintServer.Localization.Translate(command.Syntax, plr.Account?.LanguageID);
+                string description = MintServer.Localization.Translate(command.Description, plr.Account?.LanguageID);
+                string commandText = $"{command.Name}{syntax} - {description}";
+                yield return commandText;
+            }
+        }
+    }
 
     [StaticCommand("register", "register account", "<password>")]
     public static void Register(CommandInvokeContext ctx, string password)
@@ -71,7 +116,7 @@ internal static class CoreCommands
     }
 
     [StaticCommand("logout", "logout from account", null)]
-    public static void Logout(CommandInvokeContext ctx, string password)
+    public static void Logout(CommandInvokeContext ctx)
     {
         if (ctx.Sender.Name == null || ctx.Sender.UUID == null) return;
 
@@ -117,4 +162,179 @@ internal static class CoreCommands
 
         ctx.Messenger.CleanSend(MessageMark.OK, "Language", "Language successfully changed to english.");
     }
+    
+    #region Groups Management
+    
+    [StaticCommand("group list", "view group list", "[page]")]
+    [CommandPermission("mint.groups.list")]
+    public static void GroupList(CommandInvokeContext ctx, int page = 1)
+    {
+        IEnumerable<string> lines = MintServer.GroupsCollection.GetAll()
+        .Select(p => p.Name + ": " + p.Presence.GetPrefix() + ctx.Sender.Name ?? "unknown" + p.Presence.GetSuffix());
+        ctx.Messenger.SendPage("Registered groups (total: {2}):", new List<string>(lines), page, null, "Next page: /group list {3}");
+    }
+
+    [StaticCommand("group add", "create new group", "<name> [permissions;with;that;symbol] [parent group] [root: true/false]")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupAdd(CommandInvokeContext ctx, string name, string? permissions = null, Group? parent = null, bool root = false)
+    {
+        if (MintServer.GroupsCollection.Get(name) != null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Groups", "Group with that name already exists!");
+            return;
+        }
+
+        List<string> permsList = permissions?.Split(';').ToList() ?? new List<string>();
+        Group group = new Group(name, root, parent?.Name, new GroupPresence(null, null, null), new List<DataStorages.DatabaseObject>(), permsList);
+        group.Save();
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully created!");
+    }
+
+    [StaticCommand("group del", "delete group", "<name>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupDelete(CommandInvokeContext ctx, Group group)
+    {
+        MintServer.GroupsCollection.Pop(group.Name);
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully deleted!");
+    }
+
+    [StaticCommand("group setroot", "set root permissions for group", "<name> <isRoot: true/false>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupSetRoot(CommandInvokeContext ctx, Group group, bool isRoot)
+    {
+        group.RootPermissions = isRoot;
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+
+    [StaticCommand("group addperm", "add permission to group", "<name> <permission>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupAddPerm(CommandInvokeContext ctx, Group group, string permission)
+    {
+        group.Permissions.Add(permission);
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+
+    [StaticCommand("group delperm", "delete permission of group", "<name> <permission>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupDelPerm(CommandInvokeContext ctx, Group group, string permission)
+    {
+        group.Permissions.Remove(permission);
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+
+    [StaticCommand("group listperm", "view permissions of group", "<name> [page]")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupListPerm(CommandInvokeContext ctx, Group group, int page = 1)
+    {
+        ctx.Messenger.SendPage("Permissions (total: {2}):", group.Permissions, page, null, "Next page: /group listperm <name> {3}");
+    }
+
+    [StaticCommand("group parent", "set parent for group", "<name> <parent>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupParent(CommandInvokeContext ctx, Group group, Group parent)
+    {
+        group.ParentName = parent?.Name ?? null;
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+
+    [StaticCommand("group noparent", "remove parent for group", "<name>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupNoParent(CommandInvokeContext ctx, Group group)
+    {
+        group.ParentName = null;
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+
+    [StaticCommand("group prefix", "set prefix for group", "<name> <prefix>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupPrefix(CommandInvokeContext ctx, Group group, string prefix)
+    {
+        group.Presence.Prefix = prefix;
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+
+    [StaticCommand("group suffix", "set suffix for group", "<name> <suffix>")]
+    [CommandPermission("mint.groups.manage")]
+    public static void GroupSuffix(CommandInvokeContext ctx, Group group, string suffix)
+    {
+        group.Presence.Suffix = suffix;
+        group.Save();
+        
+        ctx.Messenger.Send(MessageMark.OK, "Groups", "Group successfully updated!");
+    }
+    #endregion
+    #region Accounts management
+    
+    [StaticCommand("account setgroup", "set group for account", "<account> <group>")]
+    [CommandPermission("mint.accounts.manage")]
+    public static void AccountSetGroup(CommandInvokeContext ctx, Account account, Group group)
+    {
+        account.GroupName = group.Name;
+        account.Save();
+
+        ctx.Messenger.Send(MessageMark.OK, "Account", "Account successfully updated.");
+    }
+
+    [StaticCommand("account setpassword", "set password for account", "<account> <password>")]
+    [CommandPermission("mint.accounts.manage")]
+    public static void AccountSetPassword(CommandInvokeContext ctx, Account account, string password)
+    {
+        account.SetPassword(password);
+        account.Save();
+
+        ctx.Messenger.Send(MessageMark.OK, "Account", "Account successfully updated.");
+    }
+
+    [StaticCommand("account killtoken", "kill auto-auth token for account", "<account>")]
+    [CommandPermission("mint.accounts.manage")]
+    public static void AccountKillToken(CommandInvokeContext ctx, Account account)
+    {
+        account.Token = null;
+        account.Save();
+
+        ctx.Messenger.Send(MessageMark.OK, "Account", "Account successfully updated.");
+    }
+
+    [StaticCommand("account add", "add new account", "<account> <group>")]
+    [CommandPermission("mint.accounts.manage")]
+    public static void AccountAdd(CommandInvokeContext ctx, string accountName, Group group)
+    {
+        if (MintServer.AccountsCollection.Get(accountName) != null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Account", "Account with that name already exists!");
+            return;
+        }
+
+        Account account = new Account(accountName, Guid.NewGuid().ToString(), group.Name, null, null, new Dictionary<string, string>());
+        account.Save();
+
+        ctx.Messenger.Send(MessageMark.OK, "Account", "Account successfully created.");
+    }
+
+    [StaticCommand("account del", "delete account", "<account>")]
+    [CommandPermission("mint.accounts.manage")]
+    public static void AccountAdd(CommandInvokeContext ctx, string accountName)
+    {
+        if (MintServer.AccountsCollection.Get(accountName) == null)
+        {
+            ctx.Messenger.Send(MessageMark.Error, "Account", "Account with that name is not exists!");
+            return;
+        }
+        
+        MintServer.AccountsCollection.Pop(accountName);
+        ctx.Messenger.Send(MessageMark.OK, "Account", "Account successfully deleted.");
+    }
+    #endregion
 }
