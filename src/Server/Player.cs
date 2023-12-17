@@ -68,8 +68,8 @@ public partial class Player
         cmdTokenSource = new CancellationTokenSource();
         cmdToken = cmdTokenSource.Token;
 
-        packetHandlerTask = new Task(CommandHandler);
-        packetHandlerTask.Start();
+        commandHandlerTask = new Task(CommandHandler);
+        commandHandlerTask.Start();
     }
 
     internal void StopCommandHandler()
@@ -87,7 +87,8 @@ public partial class Player
             try
             {
                 string commandText = CommandsQueue.Take(cmdToken.Value);
-                MintServer.Commands.InvokeCommand(this, commandText);
+                CommandResult result = MintServer.Commands.InvokeCommand(this, commandText);
+                MintServer.Chat.DisplayResult(this, result);
             }
             catch (OperationCanceledException)
             {}

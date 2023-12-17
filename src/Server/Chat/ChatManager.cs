@@ -53,8 +53,7 @@ public class ChatManager
 
             Log.Information("{Group}@{Name} used -> {Command}", message.Sender.Group?.Name ?? "unauthorized", message.Sender.Name, validCommand);
 
-            CommandResult result = MintServer.Commands.InvokeCommand(message.Sender, text);
-            DisplayResult(message.Sender, result);
+            message.Sender.CommandsQueue.Add(text);
         }
         else
         {

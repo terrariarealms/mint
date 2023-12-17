@@ -229,6 +229,7 @@ public sealed class PlayersManager
             PlayerState = PlayerState.AlmostJoined
         };
         players[index].StartPacketHandler();
+        players[index].StartCommandHandler();
         players[index].Character = new ClientsideCharacter(players[index]);
 
         Log.Information("Players: created instance for player on {Index}", index);
