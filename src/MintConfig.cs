@@ -37,10 +37,14 @@ public struct MintConfig
                 "Этот сервер использует ядро Mint с открытым исходным кодом, ссылка:",
                 "https://github.com/terrariarealms/mint",
             };
+            StrippedDownMode = false;
+            DisableItems = false;
         }
 
         public string? IP;
         public int? Port;
         public string[] MOTD;
+        public bool StrippedDownMode;
+        public bool DisableItems;
     }
 }

@@ -60,14 +60,13 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public T? GetBy(FilterDefinition<T> filter)
+    public T? GetBy(Expression<Func<T, bool>> filter)
     {
-        var result = _collection.Find(filter);
-        if (result.CountDocuments() > 0)
-        {
-            var obj = result.First();
+        var result = _collection.Find(filter).ToList();
+        if (result.Count > 0 && result[0] != null)
+        {   
+            var obj = result[0];
             _memCache.Push(obj.Name, obj);
-
             return obj;
         }
 

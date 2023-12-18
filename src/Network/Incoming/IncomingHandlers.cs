@@ -226,14 +226,13 @@ public static class IncomingHandlers
             return;
         }
 
-        foreach (Player plr in MintServer.Players.players)
+        Predicate<Player> sameNamePredicate = (p) => p != null && p.Index != player.Index && p.PlayerState == PlayerState.Left && p.Name == name;
+        if (MintServer.Players.First(sameNamePredicate) != null)
         {
-            if (plr != null && plr.Index != player.Index && plr.PlayerState == PlayerState.Joined && plr.Name == name)
-            {
-                player.Kick(MintServer.Localization.Translate("Player with same nickname is playing on server!"));
-                return;
-            }
+            player.Kick(MintServer.Localization.Translate("Player with same nickname is playing on server!"));
+            return;
         }
+
 
         byte hairDye = reader.ReadByte();
 		ReadAccessoryVisibility(reader, player.TPlayer.hideVisibleAccessory);

@@ -91,6 +91,8 @@ public static class MintServer
         ServerSocket = new RemadeTcpSocket();
 
         AssemblyManager.InvokeInitialize();
+        MainHooks.AttachHooks();
+        ItemHooks.AttachHooks();
         StartServer();
     }
 
