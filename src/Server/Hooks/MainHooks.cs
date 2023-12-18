@@ -163,9 +163,15 @@ public class MainHooks : Main
 		LucyAxeMessage.UpdateMessageCooldowns();
 
 		if (!MintServer.Config.Game.StrippedDownMode)
-		if (self.ShouldUpdateEntities())
 		{
-			self.DoUpdateInWorld(self._worldUpdateTimeTester);
+			if (self.ShouldUpdateEntities())
+			{
+				self.DoUpdateInWorld(self._worldUpdateTimeTester);
+			}
+		}
+		else
+		{
+			UpdateServer();
 		}
 	}
 
