@@ -54,8 +54,17 @@ public class MainHooks : Main
 		ConsumeAllMainThreadActions();
 		
     }
+
+	internal static int SecondsElapsed;
+
 	protected static void DoUpdate(Terraria.Main self, ref GameTime gameTime)
 	{
+		if (gameTime.ElapsedGameTime.Seconds != SecondsElapsed)
+		{
+			NetMessage.SendData(18);
+			SecondsElapsed = gameTime.ElapsedGameTime.Seconds;
+		}
+
 		gameTimeCache = gameTime;
 		
 		PartySky.MultipleSkyWorkaroundFix = true;
