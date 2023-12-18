@@ -55,15 +55,17 @@ public class MainHooks : Main
 		
     }
 
-	internal static int SecondsElapsed;
+	internal static int GameTimeSync;
 
 	protected static void DoUpdate(Terraria.Main self, ref GameTime gameTime)
 	{
-		if (gameTime.ElapsedGameTime.Seconds != SecondsElapsed)
+		if (GameTimeSync == 60)
 		{
 			NetMessage.SendData(18);
-			SecondsElapsed = gameTime.ElapsedGameTime.Seconds;
+			GameTimeSync = 0;
 		}
+			
+		GameTimeSync++;
 
 		gameTimeCache = gameTime;
 		
