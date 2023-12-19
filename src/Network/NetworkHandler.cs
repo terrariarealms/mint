@@ -98,7 +98,7 @@ public sealed class NetworkHandler
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Exception in GetData: " + ex.ToString());
+            Log.Error("Exception in GetData: " + ex.ToString());
         }
     }
 
@@ -186,7 +186,7 @@ public sealed class NetworkHandler
             {}
             catch (Exception ex)
             {
-                Console.WriteLine("Exception in SendData: " + ex.ToString());
+                Log.Error("Exception in GetData: " + ex.ToString());
             }
         }
     }
