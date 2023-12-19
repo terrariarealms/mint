@@ -33,6 +33,7 @@ The `Initialize` method should contain the code that starts all the work, and ca
 1. Create a directory where the server will be located.
 2. Open the command prompt/terminal in this folder.
 3. Clone the repository via `git clone https://github.com/terrariarealms/mint.git`
+4. Install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
 
 ## Starting the server
 1. Open the command prompt/terminal in your folder.
