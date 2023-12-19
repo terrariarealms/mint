@@ -1,4 +1,4 @@
-namespace Mint.Network.PacketAPI;
+namespace Mint.Network;
 
 public enum IncomingPacketID
 {
