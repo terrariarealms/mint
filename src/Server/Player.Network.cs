@@ -74,6 +74,30 @@ public partial class Player
         Net.SendData(packetId, Index, -1, text ?? NetworkText.Empty, num1, num2, num3, num4, num5, num6, num7);
     }
 
+    /// <summary>
+    /// Send tile rectangle packet to player.
+    /// </summary>
+    /// <param name="x">X</param>
+    /// <param name="y">Y</param>
+    /// <param name="width">Width</param>
+    /// <param name="height">Height</param>
+    public virtual void SendTileRectangle(int x, int y, byte width, byte height)
+    {
+        Net.SendTileSquare(Index, x, y, width, height);
+    }
+
+
+    /// <summary>
+    /// Send tile square packet to player.
+    /// </summary>
+    /// <param name="x">X</param>
+    /// <param name="y">Y</param>
+    /// <param name="size">Size</param>
+    public virtual void SendTileSquare(int x, int y, byte size)
+    {
+        Net.SendTileSquare(Index, x, y, size);
+    }
+
     internal void StartPacketHandler()
     {
         netTokenSource = new CancellationTokenSource();
