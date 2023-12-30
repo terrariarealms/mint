@@ -11,12 +11,12 @@ public static class NetworkUtils
         if (remoteClient != -1)
         {
             MintServer.Players[remoteClient].SendBytes(bytes);
-            return; 
+            return;
         }
 
-        MintServer.Players.QuickForEach((p) => 
+        MintServer.Players.QuickForEach((p) =>
         {
-            if (p.Index != ignoreClient) 
+            if (p.Index != ignoreClient)
                 p.SendBytes(bytes);
         });
     }

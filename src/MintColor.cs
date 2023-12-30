@@ -5,7 +5,7 @@ namespace Mint.Core;
 // mongodb does not like XNA Color :(
 public struct MintColor
 {
-    public static readonly MintColor White = new MintColor(255, 255, 255);
+    public static readonly MintColor White = new(255, 255, 255);
 
     public MintColor(byte r, byte g, byte b)
     {
@@ -14,7 +14,10 @@ public struct MintColor
         B = b;
     }
 
-    public Color ToXNA() => new Color(R, G, B);
+    public Color ToXNA()
+    {
+        return new Color(R, G, B);
+    }
 
     public byte R;
     public byte G;

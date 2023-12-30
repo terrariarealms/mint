@@ -16,12 +16,9 @@ public static partial class IncomingHandlers
         MintServer.Network.IncomingHijack[PacketID.PlayerMana] = OnPlayerMana;
     }
 
-	static void ReadAccessoryVisibility(BinaryReader reader, bool[] hideVisibleAccessory)
-	{
-		ushort num = reader.ReadUInt16();
-		for (int i = 0; i < hideVisibleAccessory.Length; i++)
-		{
-			hideVisibleAccessory[i] = (num & (1 << i)) != 0;
-		}
-	}
+    private static void ReadAccessoryVisibility(BinaryReader reader, bool[] hideVisibleAccessory)
+    {
+        var num = reader.ReadUInt16();
+        for (var i = 0; i < hideVisibleAccessory.Length; i++) hideVisibleAccessory[i] = (num & (1 << i)) != 0;
+    }
 }

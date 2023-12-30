@@ -6,7 +6,9 @@ public interface ICommand
     /// Command invoke event. Invokes when someone invoking command.
     /// </summary>
     public static event CommandInvokeEvent? OnCommandInvoked;
-    protected static void InvokeOnCommand(Player sender, ICommand command, ref CommandInvokeContext ctx, ref bool ignore)
+
+    protected static void InvokeOnCommand(Player sender, ICommand command, ref CommandInvokeContext ctx,
+        ref bool ignore)
     {
         OnCommandInvoked?.Invoke(sender, command, ref ctx, ref ignore);
     }

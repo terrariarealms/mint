@@ -2,7 +2,9 @@ namespace Mint.Server.Chat;
 
 public class RenderList
 {
-    internal RenderList(){}
+    internal RenderList()
+    {
+    }
 
     /// <summary>
     /// 'Pre' rendering layer. This is first layer of rendering.
@@ -14,8 +16,8 @@ public class RenderList
     /// </summary>
     public List<ChatRenderDelegate> Post => _post;
 
-    private List<ChatRenderDelegate> _pre = new List<ChatRenderDelegate>(16);
-    private List<ChatRenderDelegate> _post = new List<ChatRenderDelegate>(16);
+    private List<ChatRenderDelegate> _pre = new(16);
+    private List<ChatRenderDelegate> _post = new(16);
 
     /// <summary>
     /// Renders text from Pre & Post layers.
@@ -38,10 +40,12 @@ public class RenderList
 
     private IEnumerable<string> RenderAll(ChatMessage message)
     {
-        foreach (ChatRenderDelegate renderDelegate in _pre) if (renderDelegate != null)
-            yield return renderDelegate(message.Sender, message);
+        foreach (var renderDelegate in _pre)
+            if (renderDelegate != null)
+                yield return renderDelegate(message.Sender, message);
 
-        foreach (ChatRenderDelegate renderDelegate in _post) if (renderDelegate != null)
-            yield return renderDelegate(message.Sender, message);
+        foreach (var renderDelegate in _post)
+            if (renderDelegate != null)
+                yield return renderDelegate(message.Sender, message);
     }
 }

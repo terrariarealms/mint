@@ -8,8 +8,8 @@ public sealed class LocalizationManager
         _standardLocalization = 0;
     }
 
-    public byte StandardLocalization 
-    { 
+    public byte StandardLocalization
+    {
         get => _standardLocalization;
         set => _standardLocalization = value;
     }
@@ -25,7 +25,7 @@ public sealed class LocalizationManager
     /// <exception cref="NullReferenceException">Causes when you trying to add nullable localization container</exception>
     public void AddContainer(byte languageId, LocalizationContainer container)
     {
-        if (container == null) 
+        if (container == null)
             throw new NullReferenceException($"Cannot add nullable localization container (language id: {languageId})");
 
         if (_containers[languageId] != null)
@@ -39,7 +39,10 @@ public sealed class LocalizationManager
     /// </summary>
     /// <param name="languageId"></param>
     /// <returns></returns>
-    public LocalizationContainer? GetContainer(byte languageId) => _containers[languageId];
+    public LocalizationContainer? GetContainer(byte languageId)
+    {
+        return _containers[languageId];
+    }
 
     /// <summary>
     /// Translate text to other language.
@@ -53,7 +56,7 @@ public sealed class LocalizationManager
         {
             if (desiredLangId == 0) return text;
 
-            string? translated = _containers[desiredLangId.Value]?.Translate(text);
+            var translated = _containers[desiredLangId.Value]?.Translate(text);
             if (translated != null) return translated;
         }
 

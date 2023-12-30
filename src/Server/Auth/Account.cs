@@ -5,7 +5,8 @@ namespace Mint.Server.Auth;
 [BsonIgnoreExtraElements]
 public class Account : DatabaseObject
 {
-    public Account(string name, string uid, string groupName, string? token, string? password, Dictionary<string, string> extensions) : base(name)
+    public Account(string name, string uid, string groupName, string? token, string? password,
+        Dictionary<string, string> extensions) : base(name)
     {
         UID = uid;
         GroupName = groupName;
@@ -18,14 +19,17 @@ public class Account : DatabaseObject
     /// Get account's group.
     /// </summary>
     /// <returns></returns>
-    public Group? GetGroup() => MintServer.GroupsCollection.Get(GroupName);
+    public Group? GetGroup()
+    {
+        return MintServer.GroupsCollection.Get(GroupName);
+    }
 
     /// <summary>
     /// Save your changes.
     /// </summary>
     public void Save()
     {
-        MintServer.AccountsCollection.Push(this.Name, this);
+        MintServer.AccountsCollection.Push(Name, this);
     }
 
     /// <summary>
@@ -38,7 +42,7 @@ public class Account : DatabaseObject
     {
         if (Token == null) return false;
 
-        string newToken = uuid + ip;
+        var newToken = uuid + ip;
         return BCrypt.Net.BCrypt.Verify(newToken, Token);
     }
 
@@ -49,7 +53,7 @@ public class Account : DatabaseObject
     /// <param name="ip">Player's IP</param>
     public void SetToken(string uuid, string ip)
     {
-        string newToken = uuid + ip;
+        var newToken = uuid + ip;
         Token = BCrypt.Net.BCrypt.HashPassword(newToken);
     }
 
@@ -58,14 +62,20 @@ public class Account : DatabaseObject
     /// </summary>
     /// <param name="password">Password</param>
     /// <returns>Is token verified</returns>
-    public bool VerifyPassword(string password) => Password != null && BCrypt.Net.BCrypt.Verify(password, Password);
+    public bool VerifyPassword(string password)
+    {
+        return Password != null && BCrypt.Net.BCrypt.Verify(password, Password);
+    }
 
     /// <summary>
     /// Update password.
     /// </summary>
     /// <param name="uuid">Player's UUID</param>
     /// <param name="ip">Player's IP</param>
-    public void SetPassword(string password) => Password = BCrypt.Net.BCrypt.HashPassword(password);
+    public void SetPassword(string password)
+    {
+        Password = BCrypt.Net.BCrypt.HashPassword(password);
+    }
 
     /// <summary>
     /// Selected language.

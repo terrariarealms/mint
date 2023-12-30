@@ -9,6 +9,7 @@ public class LocalizationContainer
     {
         _localizedStrings = new Dictionary<string, string>();
     }
+
     private Dictionary<string, string> _localizedStrings;
 
     /// <summary>
@@ -20,7 +21,7 @@ public class LocalizationContainer
     public void ImportFrom(string json, bool recursive, bool fullLocalization)
     {
         Dictionary<string, string>? imported = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-        if (imported == null) 
+        if (imported == null)
             throw new InvalidOperationException("Cannot import localization file.");
 
         if (fullLocalization)
@@ -30,21 +31,14 @@ public class LocalizationContainer
         }
 
         foreach (KeyValuePair<string, string> local in imported)
-        {
             if (!_localizedStrings.ContainsKey(local.Key))
-            {
                 _localizedStrings.Add(local.Key, local.Value);
-            }
-            else if (recursive)
-            {
-                _localizedStrings[local.Key] = local.Value;
-            }
-        }
+            else if (recursive) _localizedStrings[local.Key] = local.Value;
     }
 
     public string ToJson()
     {
-        string text = JsonConvert.SerializeObject(_localizedStrings, Formatting.Indented);
+        var text = JsonConvert.SerializeObject(_localizedStrings, Formatting.Indented);
         return text;
     }
 
@@ -55,7 +49,7 @@ public class LocalizationContainer
     /// <returns>Return translated text or null</returns>
     public string? Translate(string text)
     {
-        if (_localizedStrings.TryGetValue(text, out string? translated) && translated != null)
+        if (_localizedStrings.TryGetValue(text, out var translated) && translated != null)
             return translated;
 
         return null;

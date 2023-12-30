@@ -2,14 +2,14 @@ namespace Mint.Network.Incoming;
 
 public static partial class IncomingHandlers
 {
-    static void OnPlayerMana(Player player, IncomingPacket packet, ref bool ignore)
+    private static void OnPlayerMana(Player player, IncomingPacket packet, ref bool ignore)
     {
-        BinaryReader reader = packet.GetReader();
-        
+        var reader = packet.GetReader();
+
         reader.ReadByte();
 
-        short current = reader.ReadInt16();
-        short max = reader.ReadInt16();
+        var current = reader.ReadInt16();
+        var max = reader.ReadInt16();
 
         if (!player.IgnoreAnticheat && (current > max || max % 20 != 0 || max > 200))
         {

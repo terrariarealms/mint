@@ -9,6 +9,7 @@ public sealed class CommandSection
         Name = name;
         Commands = new List<ICommand>(capacity);
     }
+
     internal CommandSection(string name, List<ICommand> wrappedCommands)
     {
         Name = name;
@@ -31,18 +32,19 @@ public sealed class CommandSection
     /// <param name="type">Target type</param>
     public void ImportFrom(Type type)
     {
-        foreach (MethodInfo method in type.GetMethods())
+        foreach (var method in type.GetMethods())
         {
             if (!method.IsStatic) continue;
 
-            StaticCommandAttribute? commandAttribute = method.GetCustomAttribute<StaticCommandAttribute>();
+            var commandAttribute = method.GetCustomAttribute<StaticCommandAttribute>();
             if (commandAttribute == null) continue;
 
-            CommandPermissionAttribute? permissionAttribute = method.GetCustomAttribute<CommandPermissionAttribute>();
-            CommandFlagsAttribute? flagsAttribute = method.GetCustomAttribute<CommandFlagsAttribute>();
+            var permissionAttribute = method.GetCustomAttribute<CommandPermissionAttribute>();
+            var flagsAttribute = method.GetCustomAttribute<CommandFlagsAttribute>();
 
-            ICommand command = new StaticCommand(method, commandAttribute.Name, commandAttribute.Description, commandAttribute.Syntax, permissionAttribute?.Permission, flagsAttribute?.Flags ?? CommandFlags.None);
-            
+            ICommand command = new StaticCommand(method, commandAttribute.Name, commandAttribute.Description,
+                commandAttribute.Syntax, permissionAttribute?.Permission, flagsAttribute?.Flags ?? CommandFlags.None);
+
             Log.Information("CommandSection -> Registered command {Name} from {Method}.", command.Name, method.Name);
 
             Commands.Add(command);

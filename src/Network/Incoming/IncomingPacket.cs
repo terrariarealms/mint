@@ -49,7 +49,10 @@ public struct IncomingPacket
     /// Get sender's Mint.Server.Player instance.
     /// </summary>
     /// <returns></returns>
-    public Player GetSender() => MintServer.Players.players[Sender];
+    public Player GetSender()
+    {
+        return MintServer.Players.players[Sender];
+    }
 
     private MemoryStream? _stream;
     private BinaryReader? _reader;

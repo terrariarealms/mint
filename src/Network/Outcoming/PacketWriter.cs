@@ -11,18 +11,19 @@ public unsafe class PacketWriter : BinaryWriter
     /// <returns>PacketWriter instance</returns>
     public static PacketWriter New(byte packetId, int size)
     {
-        byte[] data = new byte[size];
-        MemoryStream stream = new MemoryStream(data);
+        var data = new byte[size];
+        var stream = new MemoryStream(data);
 
         return new PacketWriter(data, stream).WriteByte(packetId);
     }
+
     /// <summary>
     /// Create new PacketWriter instance.
     /// </summary>
     /// <returns>PacketWriter instance</returns>
     public static PacketWriter New(byte packetId)
     {
-        MemoryStream stream = new MemoryStream();
+        var stream = new MemoryStream();
         return new PacketWriter(stream).WriteByte(packetId);
     }
 
@@ -34,13 +35,13 @@ public unsafe class PacketWriter : BinaryWriter
         this.data = data;
         this.stream = stream;
         stream.Position = 2;
-    } 
+    }
 
     public PacketWriter(MemoryStream stream) : base(stream)
     {
         this.stream = stream;
         stream.Position = 2;
-    } 
+    }
 
     /// <summary>
     /// Write Byte.
@@ -231,7 +232,7 @@ public unsafe class PacketWriter : BinaryWriter
     /// <returns>Packet bytes array</returns>
     public byte[] Build()
     {
-        ushort length = (ushort)stream.Position;
+        var length = (ushort)stream.Position;
         stream.Position = 0;
         WriteUInt16(length);
 

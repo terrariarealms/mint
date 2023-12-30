@@ -39,7 +39,7 @@ public partial class Player
     /// Player UUID.
     /// </summary>
     public virtual string? UUID { get; internal set; }
-    
+
     /// <summary>
     /// Player state (None, AlmostJoined, Joined, Left)
     /// </summary>
@@ -59,12 +59,12 @@ public partial class Player
     /// <summary>
     /// Commands queue.
     /// </summary>
-    public virtual BlockingCollection<string> CommandsQueue { get; } = new BlockingCollection<string>();
+    public virtual BlockingCollection<string> CommandsQueue { get; } = new();
 
     internal CancellationTokenSource? cmdTokenSource;
     internal CancellationToken? cmdToken;
     internal Task? commandHandlerTask;
-    
+
     internal void StartCommandHandler()
     {
         cmdTokenSource = new CancellationTokenSource();
@@ -85,20 +85,19 @@ public partial class Player
             return;
 
         while (!cmdToken.Value.IsCancellationRequested)
-        {
             try
             {
-                string commandText = CommandsQueue.Take(cmdToken.Value);
-                CommandResult result = MintServer.Commands.InvokeCommand(this, commandText);
+                var commandText = CommandsQueue.Take(cmdToken.Value);
+                var result = MintServer.Commands.InvokeCommand(this, commandText);
                 MintServer.Chat.DisplayResult(this, result);
             }
             catch (OperationCanceledException)
-            {}
+            {
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception in Player: CommandHandler:");
                 Console.WriteLine(ex.ToString());
             }
-        }
     }
 }

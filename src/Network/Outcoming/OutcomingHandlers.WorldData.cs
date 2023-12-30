@@ -8,7 +8,7 @@ public static partial class OutcomingHandlers
 {
     internal static void OnWorldData(Server.Player player, OutcomingPacket packet, ref bool ignore)
     {
-        PacketWriter writer = new PacketWriter(new MemoryStream());
+        var writer = new PacketWriter(new MemoryStream());
         writer.WriteByte(7);
 
         writer.Write((int)Main.time);
@@ -48,27 +48,12 @@ public static partial class OutcomingHandlers
         writer.Write((byte)Main.hellBackStyle);
         writer.Write(Main.windSpeedTarget);
         writer.Write((byte)Main.numClouds);
-        for (int n = 0; n < 3; n++)
-        {
-        	writer.Write(Main.treeX[n]);
-        }
-        for (int num8 = 0; num8 < 4; num8++)
-        {
-        	writer.Write((byte)Main.treeStyle[num8]);
-        }
-        for (int num9 = 0; num9 < 3; num9++)
-        {
-        	writer.Write(Main.caveBackX[num9]);
-        }
-        for (int num10 = 0; num10 < 4; num10++)
-        {
-        	writer.Write((byte)Main.caveBackStyle[num10]);
-        }
+        for (var n = 0; n < 3; n++) writer.Write(Main.treeX[n]);
+        for (var num8 = 0; num8 < 4; num8++) writer.Write((byte)Main.treeStyle[num8]);
+        for (var num9 = 0; num9 < 3; num9++) writer.Write(Main.caveBackX[num9]);
+        for (var num10 = 0; num10 < 4; num10++) writer.Write((byte)Main.caveBackStyle[num10]);
         WorldGen.TreeTops.SyncSend(writer);
-        if (!Main.raining)
-        {
-        	Main.maxRaining = 0f;
-        }
+        if (!Main.raining) Main.maxRaining = 0f;
         writer.Write(Main.maxRaining);
         BitsByte bitsByte6 = (byte)0;
         bitsByte6[0] = WorldGen.shadowOrbSmashed;
@@ -175,16 +160,12 @@ public static partial class OutcomingHandlers
         writer.Write((short)WorldGen.SavedOreTiers.Adamantite);
         writer.Write((sbyte)Main.invasionType);
         if (SocialAPI.Network != null)
-        {
-        	writer.Write(SocialAPI.Network.GetLobbyId());
-        }
+            writer.Write(SocialAPI.Network.GetLobbyId());
         else
-        {
-        	writer.Write(0uL);
-        }
+            writer.Write(0uL);
         writer.Write(Sandstorm.IntendedSeverity);
 
-        byte[] bytes = writer.Build();
+        var bytes = writer.Build();
 
         NetworkUtils.SendPacket(bytes, packet.RemoteClient, packet.IgnoreClient);
     }

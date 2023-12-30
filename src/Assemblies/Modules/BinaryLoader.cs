@@ -1,4 +1,3 @@
-
 namespace Mint.Assemblies.Modules;
 
 public class BinaryLoader : IModuleLoader
@@ -15,10 +14,10 @@ public class BinaryLoader : IModuleLoader
         if (_workingDirectory == null)
             throw new InvalidOperationException("BinaryLoader was not initialized.");
 
-        foreach (string file in Directory.EnumerateFiles(_workingDirectory, "*.dll"))
+        foreach (var file in Directory.EnumerateFiles(_workingDirectory, "*.dll"))
         {
             Log.Information("BinaryLoader: load -> {File}", file);
-            ModuleAssembly? assembly = LoaderUtils.TryLoadFrom(file);
+            var assembly = LoaderUtils.TryLoadFrom(file);
             if (assembly != null)
                 yield return assembly;
         }

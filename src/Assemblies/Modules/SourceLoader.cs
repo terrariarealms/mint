@@ -1,4 +1,3 @@
-
 namespace Mint.Assemblies.Modules;
 
 public class SourceLoader : IModuleLoader
@@ -9,7 +8,8 @@ public class SourceLoader : IModuleLoader
     public void Initialize(string workingDirectory)
     {
         _workingDirectory = workingDirectory;
-        _compiler = new AssemblyCompiler(_workingDirectory, new CompilationTargets("src", "bin", "net7.0", "-c Release"));
+        _compiler = new AssemblyCompiler(_workingDirectory,
+            new CompilationTargets("src", "bin", "net7.0", "-c Release"));
     }
 
     public IEnumerable<ModuleAssembly> LoadModules()
@@ -17,9 +17,9 @@ public class SourceLoader : IModuleLoader
         if (_workingDirectory == null || _compiler == null)
             throw new InvalidOperationException("SourceLoader was not initialized.");
 
-        foreach (CompilationInfo info in _compiler.FindCandidates())
+        foreach (var info in _compiler.FindCandidates())
         {
-            string? path = _compiler.CompileDll(info);
+            var path = _compiler.CompileDll(info);
             if (path == null)
             {
                 Log.Error("SourceLoader: failed -> {path}", info.WorkingPath);
@@ -27,7 +27,7 @@ public class SourceLoader : IModuleLoader
             }
 
             Log.Information("SourceLoader: load -> {File}", path);
-            ModuleAssembly? assembly = LoaderUtils.TryLoadFrom(path);
+            var assembly = LoaderUtils.TryLoadFrom(path);
             if (assembly != null)
                 yield return assembly;
         }

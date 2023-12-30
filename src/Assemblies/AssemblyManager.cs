@@ -21,7 +21,7 @@ internal class AssemblyManager
             .ToArray();
         if (array.Length == 0) return null;
 
-        Assembly assembly = Assembly.LoadFrom(array[0]);
+        var assembly = Assembly.LoadFrom(array[0]);
         return assembly;
     }
 
@@ -33,18 +33,21 @@ internal class AssemblyManager
 
         if (modules != null)
         {
-            ModuleAssembly? moduleAssembly = modules.Find((p) => p.Assembly?.GetName().Name == name);
+            var moduleAssembly = modules.Find((p) => p.Assembly?.GetName().Name == name);
             if (moduleAssembly?.Assembly != null)
                 return moduleAssembly.Assembly;
         }
 
-        Assembly? assembly = FindAssembly(name, "dll") ?? FindAssembly(name, "exe");
+        var assembly = FindAssembly(name, "dll") ?? FindAssembly(name, "exe");
         if (assembly == null) LogResolveFail(name);
 
         return assembly;
     }
 
-    private void LogResolveFail(string name) => Log.Error("AssemblyManager -> failed to resolve {Name}", name);
+    private void LogResolveFail(string name)
+    {
+        Log.Error("AssemblyManager -> failed to resolve {Name}", name);
+    }
 
     internal void LoadModules()
     {
@@ -77,7 +80,7 @@ internal class AssemblyManager
 
         if (modules == null) return;
 
-        foreach (ModuleAssembly asm in modules)
+        foreach (var asm in modules)
             asm.Module?.Setup();
     }
 
@@ -87,7 +90,7 @@ internal class AssemblyManager
 
         if (modules == null) return;
 
-        foreach (ModuleAssembly asm in modules)
+        foreach (var asm in modules)
             asm.Module?.Initialize();
     }
 
@@ -97,7 +100,7 @@ internal class AssemblyManager
 
         if (modules == null) return;
 
-        bool sleep = false;
+        var sleep = false;
         modules.ForEach((m) =>
         {
             if (m.Module != null) CheckDependenciesFor(m.Module, ref sleep);
@@ -115,15 +118,14 @@ internal class AssemblyManager
         if (module?.ModuleReferences == null) return;
 
         string[] refs = module.ModuleReferences;
-        for (int i = 0 ; i < refs.Length; i++)
-        {
+        for (var i = 0; i < refs.Length; i++)
             if (!DependencyExists(refs[i]))
             {
-                Log.Error("AssemblyManager -> CheckDependenciesFor() for {Name} -> failed to resolve {Dependency}", module.ModuleName, refs[i]);
+                Log.Error("AssemblyManager -> CheckDependenciesFor() for {Name} -> failed to resolve {Dependency}",
+                    module.ModuleName, refs[i]);
 
                 sleep = true;
             }
-        }
     }
 
     private bool DependencyExists(string name)

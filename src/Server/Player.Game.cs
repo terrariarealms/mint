@@ -1,4 +1,3 @@
-
 namespace Mint.Server;
 
 public partial class Player
@@ -11,7 +10,7 @@ public partial class Player
     /// <summary>
     /// Player character.
     /// </summary>
-    public virtual ICharacter Character { get; internal set; }  
+    public virtual ICharacter Character { get; internal set; }
 
     /// <summary>
     /// Is player dead.

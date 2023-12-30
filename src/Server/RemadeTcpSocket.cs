@@ -49,7 +49,7 @@ public class RemadeTcpSocket : ISocket
 
     private void ReadCallback(IAsyncResult result)
     {
-        if (result.AsyncState is not (Tuple<SocketReceiveCallback, object>)) return;
+        if (result.AsyncState is not Tuple<SocketReceiveCallback, object>) return;
 
         var tuple = (Tuple<SocketReceiveCallback, object>?)result.AsyncState;
         if (tuple == null) return;
@@ -202,7 +202,7 @@ public class RemadeTcpSocket : ISocket
                 ISocket socket = new RemadeTcpSocket(tcpClient);
                 var ip = socket.GetRemoteAddress()?.ToString()?.Split(':')[0];
 
-                bool ignore = false;
+                var ignore = false;
                 OnSocketConnection?.Invoke(ref socket, tcpClient, ref ignore);
                 if (!ignore)
                 {

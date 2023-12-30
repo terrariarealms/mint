@@ -22,11 +22,11 @@ public sealed class NetworkBinder<TPacket> where TPacket : struct
         if (packetId < 0 || packetId > binds.Length - 1)
             return false;
 
-        if (binds[packetId] == null) 
+        if (binds[packetId] == null)
         {
             binds[packetId] = new List<NetworkBindDelegate<TPacket>>()
-            { 
-                packetBind 
+            {
+                packetBind
             };
             return true;
         }
@@ -49,7 +49,7 @@ public sealed class NetworkBinder<TPacket> where TPacket : struct
         if (packetId < 0 || packetId > binds.Length - 1)
             return false;
 
-        if (binds[packetId] == null) 
+        if (binds[packetId] == null)
             return true;
 
         return binds[packetId]?.Remove(packetBind) ?? false;

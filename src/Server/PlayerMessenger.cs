@@ -14,23 +14,28 @@ public class PlayerMessenger
         colorMap = new Color[]
         {
             // BASIC
-            new Color(34, 139, 34), // OK
-            new Color(255, 255, 0), // INFO
-            new Color(178, 34, 34), // ERROR
-            new Color(255, 69, 0),  // WARNING
+            new(34, 139, 34), // OK
+            new(255, 255, 0), // INFO
+            new(178, 34, 34), // ERROR
+            new(255, 69, 0), // WARNING
 
             // PAGE
-            new Color(0, 128, 0),   // PAGE HEADER
-            new Color(255, 255, 0),   // PAGE ITEM
-            new Color(46, 139, 87)  // PAGE FOOTER
+            new(0, 128, 0), // PAGE HEADER
+            new(255, 255, 0), // PAGE ITEM
+            new(46, 139, 87) // PAGE FOOTER
         };
     }
 
     protected Player? Player;
     protected Color[]? colorMap;
 
-    public virtual void Begin() {}
-    public virtual void End() {}
+    public virtual void Begin()
+    {
+    }
+
+    public virtual void End()
+    {
+    }
 
     /// <summary>
     /// Send message to player.
@@ -50,7 +55,7 @@ public class PlayerMessenger
             message = $"[c/691a7d:[][c/861aa1:{source}][c/691a7d:]] [c/595959:»] {message}";
         }
 
-        string formatted = string.Format(message, objects);
+        var formatted = string.Format(message, objects);
         Player?.SendMessage(formatted, colorMap[(byte)mark]);
     }
 
@@ -65,12 +70,9 @@ public class PlayerMessenger
     {
         if (colorMap == null) return;
 
-        if (source != null)
-        {
-            message = $"[c/691a7d:[][c/861aa1:{source}][c/691a7d:]] [c/595959:»] {message}";
-        }
+        if (source != null) message = $"[c/691a7d:[][c/861aa1:{source}][c/691a7d:]] [c/595959:»] {message}";
 
-        string formatted = string.Format(message, objects);
+        var formatted = string.Format(message, objects);
         Player?.SendMessage(formatted, colorMap[(byte)mark]);
     }
 
@@ -83,41 +85,40 @@ public class PlayerMessenger
     /// <param name="page">Current page</param>
     /// <param name="footerFormat">Footer format</param>
     /// <param name="nextPageFormat">Next page format. This element is appearing when next page is available</param>
-    public virtual void SendPage(string headerFormat, IList<string> lines, int page, string? footerFormat = null, string? nextPageFormat = null)
+    public virtual void SendPage(string headerFormat, IList<string> lines, int page, string? footerFormat = null,
+        string? nextPageFormat = null)
     {
         // pages calculation
-        int currentPage = Math.Max(1, page);
-        int nextPage = currentPage + 1;
-        int items; int maxPage;
+        var currentPage = Math.Max(1, page);
+        var nextPage = currentPage + 1;
+        int items;
+        int maxPage;
         CalculatePages(lines.GetEnumerator(), 5, out items, out maxPage);
 
         // header
         Send(MessageMark.PageHeader, null, headerFormat, currentPage, maxPage, items, nextPage);
 
 
-        int fixedPageOffset = 5 * (currentPage - 1);
-        int maxPageItems = Math.Min(5 * currentPage, items);
+        var fixedPageOffset = 5 * (currentPage - 1);
+        var maxPageItems = Math.Min(5 * currentPage, items);
         // items
-        for (int i = fixedPageOffset; i < maxPageItems; i++)
-        {
-            Send(MessageMark.PageItem, null, lines[i]);
-        }
+        for (var i = fixedPageOffset; i < maxPageItems; i++) Send(MessageMark.PageItem, null, lines[i]);
 
         // footers 
-        List<string> footer = new List<string>(2);
+        List<string> footer = new(2);
         if (footerFormat != null)
             footer.Add(MintServer.Localization.Translate(footerFormat, Player?.Account?.LanguageID));
 
         if (nextPageFormat != null && maxPageItems < items)
             footer.Add(MintServer.Localization.Translate(nextPageFormat, Player?.Account?.LanguageID));
 
-        string fullFooter = string.Join(" • ", footer);
+        var fullFooter = string.Join(" • ", footer);
         if (fullFooter.Length > 0)
             CleanSend(MessageMark.PageFooter, null, fullFooter, currentPage, maxPage, items, nextPage);
     }
 
     internal void CalculatePages(IEnumerator<string> enumerator, int maxItems, out int items, out int maxPage)
-    {        
+    {
         maxPage = 1;
         items = 0;
 

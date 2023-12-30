@@ -18,7 +18,7 @@ internal static class LoaderUtils
 
     internal static ModuleAssembly? LoadFrom(string path)
     {
-        Assembly assembly = Assembly.LoadFrom(path);
+        var assembly = Assembly.LoadFrom(path);
 
         if (assembly == null)
             return null;
@@ -28,21 +28,19 @@ internal static class LoaderUtils
 
     internal static ModuleAssembly? LoadFrom(Assembly assembly, string path)
     {
-        Type moduleType = typeof(MintModule);
-        foreach (Type type in assembly.GetTypes())
-        {
+        var moduleType = typeof(MintModule);
+        foreach (var type in assembly.GetTypes())
             if (type.IsSubclassOf(moduleType))
             {
-                object? objInstance = Activator.CreateInstance(type);
+                var objInstance = Activator.CreateInstance(type);
                 if (objInstance == null) return null;
-                
-                MintModule instance = (MintModule)objInstance;
 
-                ModuleAssembly moduleAssembly = new ModuleAssembly(path, assembly, instance);
+                var instance = (MintModule)objInstance;
+
+                var moduleAssembly = new ModuleAssembly(path, assembly, instance);
 
                 return moduleAssembly;
             }
-        }
 
         return null;
     }

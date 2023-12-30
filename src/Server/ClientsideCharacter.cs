@@ -1,4 +1,3 @@
-
 using MongoDB.Driver.Linq;
 
 namespace Mint.Server;
@@ -43,46 +42,49 @@ public class ClientsideCharacter : ICharacter
     {
         if (operationType != CharacterOperation.SilentRequest)
         {
-            bool ignore = false;
+            var ignore = false;
             ICharacter.InvokeLifeChange(this, ref maxLife, operationType, ref ignore);
             if (ignore) return;
         }
 
         _maxHp = maxLife;
-        CharacterUtils.SetLife(_basePlayer, maxLife, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
+        CharacterUtils.SetLife(_basePlayer, maxLife, false,
+            operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 
     public void SetMana(int maxMana, CharacterOperation operationType)
     {
         if (operationType != CharacterOperation.SilentRequest)
         {
-            bool ignore = false;
+            var ignore = false;
             ICharacter.InvokeManaChange(this, ref maxMana, operationType, ref ignore);
             if (ignore) return;
         }
 
         _maxMp = maxMana;
-        CharacterUtils.SetMana(_basePlayer, maxMana, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
+        CharacterUtils.SetMana(_basePlayer, maxMana, false,
+            operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 
     public void SetSlot(int slot, NetItem item, CharacterOperation operationType)
     {
         if (operationType != CharacterOperation.SilentRequest)
         {
-            bool ignore = false;
+            var ignore = false;
             ICharacter.InvokeSlotChange(this, ref slot, ref item, operationType, ref ignore);
             if (ignore) return;
         }
 
         _slots[slot] = item;
-        CharacterUtils.SetSlot(_basePlayer, slot, item, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
+        CharacterUtils.SetSlot(_basePlayer, slot, item, false,
+            operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 
     public void SetStats(CharacterStats stats, CharacterOperation operationType)
     {
         if (operationType != CharacterOperation.SilentRequest)
         {
-            bool ignore = false;
+            var ignore = false;
             ICharacter.InvokeStatsChange(this, ref stats, operationType, ref ignore);
             if (ignore) return;
         }
@@ -91,6 +93,7 @@ public class ClientsideCharacter : ICharacter
         CharacterUtils.SetDifficulty(_basePlayer, stats.Difficulty, true);
         CharacterUtils.SetExtraFirst(_basePlayer, stats.ExtraFirst, true);
         CharacterUtils.SetExtraSecond(_basePlayer, stats.ExtraSecond, true);
-        CharacterUtils.SetVisuals(_basePlayer, stats.Visuals, false, operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
+        CharacterUtils.SetVisuals(_basePlayer, stats.Visuals, false,
+            operationType == CharacterOperation.RequestedByServer ? -1 : _basePlayer.Index);
     }
 }

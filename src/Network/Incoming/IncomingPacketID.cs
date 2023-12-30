@@ -10,7 +10,7 @@ public enum IncomingPacketID
     PlayerSpawn = 12,
     PlayerUpdate = 13,
     PlayerStatLife = 16,
-    PlayerPvPStatus = 30, 
+    PlayerPvPStatus = 30,
     PlayerHealLifeEffect = 35,
     PlayerZone = 36,
     PlayerSetTalkNpc = 40,
@@ -104,7 +104,7 @@ public enum IncomingPacketID
     SignSetText = 47,
 
     EventsBossesNpcsV1 = 51,
-    EventsBossesNpcsV2 = 61, 
+    EventsBossesNpcsV2 = 61,
     EventsReportProgress = 78,
     EventsToggleParty = 111,
     EventsDD2SummonCrystal = 113,
@@ -114,5 +114,5 @@ public enum IncomingPacketID
     WiringMassTileOperation = 109,
     WiringConsumeWires = 110,
 
-    NetEmoteBubble = 91,
+    NetEmoteBubble = 91
 }

@@ -13,19 +13,28 @@ public struct GroupPresence
     /// Safe way to get prefix.
     /// </summary>
     /// <returns>Prefix or blank text (if prefix is null)</returns>
-    public string GetPrefix() => Prefix + " " ?? "";
+    public string GetPrefix()
+    {
+        return Prefix + " " ?? "";
+    }
 
     /// <summary>
     /// Safe way to get suffix.
     /// </summary>
     /// <returns>Suffix or blank text (if suffix is null)</returns>
-    public string GetSuffix() => " " + Suffix ?? "";
+    public string GetSuffix()
+    {
+        return " " + Suffix ?? "";
+    }
 
     /// <summary>
     /// Safe way to get color.
     /// </summary>
     /// <returns>Color or blank text (if color is null)</returns>
-    public MintColor GetColor() => Color ?? MintColor.White;
+    public MintColor GetColor()
+    {
+        return Color ?? MintColor.White;
+    }
 
     /// <summary>
     /// Group's prefix. Can be null.

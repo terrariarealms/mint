@@ -2,7 +2,7 @@ namespace Mint.DataStorages;
 
 public class MemoryStorage : IObjectStorage<IMemoryObject>
 {
-    internal Dictionary<string, IMemoryObject> _memObjects = new Dictionary<string, IMemoryObject>();
+    internal Dictionary<string, IMemoryObject> _memObjects = new();
 
     public string Name => "MemoryStorage";
 
@@ -17,7 +17,7 @@ public class MemoryStorage : IObjectStorage<IMemoryObject>
     /// <returns>IMemoryObject if found</returns>
     public IMemoryObject? Get(string name)
     {
-        _memObjects.TryGetValue(name, out IMemoryObject? obj);
+        _memObjects.TryGetValue(name, out var obj);
         return obj;
     }
 

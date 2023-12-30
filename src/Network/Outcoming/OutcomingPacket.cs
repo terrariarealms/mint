@@ -4,7 +4,8 @@ namespace Mint.Network.Outcoming;
 
 public struct OutcomingPacket
 {
-    public OutcomingPacket(int packetId, int remote, int ignore, NetworkText? text, int num0, float num1, float num2, float num3, int num4, int num5, int num6, ModSend.orig_SendData orig)
+    public OutcomingPacket(int packetId, int remote, int ignore, NetworkText? text, int num0, float num1, float num2,
+        float num3, int num4, int num5, int num6, ModSend.orig_SendData orig)
     {
         PacketID = packetId;
         RemoteClient = remote;
@@ -20,7 +21,7 @@ public struct OutcomingPacket
 
         Original = orig;
     }
-    
+
 
     public int PacketID;
     public int RemoteClient;

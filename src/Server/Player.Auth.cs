@@ -2,8 +2,6 @@ namespace Mint.Server;
 
 public partial class Player
 {
-
-
     /// <summary>
     /// Player's account.
     /// </summary>
@@ -29,15 +27,12 @@ public partial class Player
     /// </summary>
     public virtual void AutoAuthorize()
     {
-        Account? account = FindAccountCandidate();
-        bool ignore = false;
+        var account = FindAccountCandidate();
+        var ignore = false;
         OnAutoAuthorize?.Invoke(this, ref account, ref ignore);
         if (ignore) return;
 
-        if (account != null)
-        {
-            Authorize(account);
-        }
+        if (account != null) Authorize(account);
     }
 
     /// <summary>
@@ -54,9 +49,9 @@ public partial class Player
         if (string.IsNullOrEmpty(Name) || UUID == null)
             return null;
 
-        Account? account = MintServer.AccountsCollection.Get(Name);
+        var account = MintServer.AccountsCollection.Get(Name);
 
-        bool ignore = false;
+        var ignore = false;
         OnFindAccountCandidate?.Invoke(this, ref account, ref ignore);
         if (ignore) return null;
 
@@ -77,7 +72,7 @@ public partial class Player
     /// <param name="account">Target account</param>
     public virtual void Authorize(Account account, bool tokenChange = true)
     {
-        bool ignore = false;
+        var ignore = false;
         OnAuthorize?.Invoke(this, ref account, ref tokenChange, ref ignore);
         if (ignore) return;
 
@@ -87,7 +82,6 @@ public partial class Player
         {
             account.SetToken(UUID, IP);
             account.Save();
-            
         }
 
         Account = account;
@@ -104,7 +98,7 @@ public partial class Player
     /// </summary>
     public virtual void Logout()
     {
-        bool ignore = false;
+        var ignore = false;
         OnLogout?.Invoke(this, ref ignore);
         if (ignore) return;
 

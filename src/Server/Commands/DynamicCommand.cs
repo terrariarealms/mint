@@ -1,9 +1,9 @@
-
 namespace Mint.Server.Commands;
 
 public class DynamicCommand : ICommand
 {
-    public DynamicCommand(string name, string description, string? syntax, string? permission, CommandFlags flags, DynamicCommandDelegate @delegate)
+    public DynamicCommand(string name, string description, string? syntax, string? permission, CommandFlags flags,
+        DynamicCommandDelegate @delegate)
     {
         Name = name;
         Description = description;
@@ -27,7 +27,7 @@ public class DynamicCommand : ICommand
 
     public void Invoke(CommandInvokeContext ctx)
     {
-        bool ignore = false;
+        var ignore = false;
         ICommand.InvokeOnCommand(ctx.Sender, this, ref ctx, ref ignore);
         if (ignore) return;
 

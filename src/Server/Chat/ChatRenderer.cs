@@ -2,7 +2,9 @@ namespace Mint.Server.Chat;
 
 public class ChatRenderer
 {
-    internal ChatRenderer(){}
+    internal ChatRenderer()
+    {
+    }
 
     /// <summary>
     /// Prefix render list. You can modify prefix rendering via this property.
@@ -19,9 +21,9 @@ public class ChatRenderer
     /// </summary>
     public RenderList SuffixRender => _suffixList;
 
-    private RenderList _prefixList = new RenderList();
-    private RenderList _nameList = new RenderList();
-    private RenderList _suffixList = new RenderList();
+    private RenderList _prefixList = new();
+    private RenderList _nameList = new();
+    private RenderList _suffixList = new();
 
     internal void Reset()
     {
@@ -37,9 +39,20 @@ public class ChatRenderer
         _suffixList.Post.Insert(0, RenderSuffix);
     }
 
-    string RenderPrefix(Player sender, ChatMessage message) => sender?.Group?.Presence.GetPrefix() ?? "";
-    string RenderName(Player sender, ChatMessage message) => sender?.Name ?? "<!unknown>";
-    string RenderSuffix(Player sender, ChatMessage message) => sender?.Group?.Presence.GetSuffix() ?? "";
+    private string RenderPrefix(Player sender, ChatMessage message)
+    {
+        return sender?.Group?.Presence.GetPrefix() ?? "";
+    }
+
+    private string RenderName(Player sender, ChatMessage message)
+    {
+        return sender?.Name ?? "<!unknown>";
+    }
+
+    private string RenderSuffix(Player sender, ChatMessage message)
+    {
+        return sender?.Group?.Presence.GetSuffix() ?? "";
+    }
 
     public static event EventRenderedChatDelegate? OnRenderedChat;
 
@@ -50,11 +63,11 @@ public class ChatRenderer
     /// <returns>Rendered text</returns>
     public string RenderMessage(ChatMessage message)
     {
-        string prefix = PrefixRender.Render(message);
-        string name = NameRender.Render(message);
-        string suffix = SuffixRender.Render(message);
+        var prefix = PrefixRender.Render(message);
+        var name = NameRender.Render(message);
+        var suffix = SuffixRender.Render(message);
 
-        string rendered = prefix + name + suffix + ": " + message.Text;
+        var rendered = prefix + name + suffix + ": " + message.Text;
         OnRenderedChat?.Invoke(message.Sender, rendered);
         return rendered;
     }

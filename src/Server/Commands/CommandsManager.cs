@@ -4,11 +4,13 @@ namespace Mint.Server.Commands;
 
 public sealed class CommandsManager
 {
-    internal CommandsManager(){}
+    internal CommandsManager()
+    {
+    }
 
-    internal List<CommandSection> commands = new List<CommandSection>();
-    internal Dictionary<Type, Func<string, object>> parsers = new Dictionary<Type, Func<string, object>>();
-    
+    internal List<CommandSection> commands = new();
+    internal Dictionary<Type, Func<string, object>> parsers = new();
+
     internal void InitializeParsers()
     {
         parsers.Add(typeof(string), (arg) => arg);
@@ -63,15 +65,17 @@ public sealed class CommandsManager
         });
         parsers.Add(typeof(Player), (arg) =>
         {
-            Player? plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name == arg);
+            var plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name == arg);
             if (plr != null)
                 return plr;
 
-            plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name?.ToLower() == arg.ToLower());
+            plr = MintServer.Players.First((p) =>
+                p.PlayerState == PlayerState.Joined && p.Name?.ToLower() == arg.ToLower());
             if (plr != null)
                 return plr;
 
-            plr = MintServer.Players.First((p) => p.PlayerState == PlayerState.Joined && p.Name?.ToLower().StartsWith(arg) == true);
+            plr = MintServer.Players.First((p) =>
+                p.PlayerState == PlayerState.Joined && p.Name?.ToLower().StartsWith(arg) == true);
             if (plr != null)
                 return plr;
 
@@ -109,14 +113,14 @@ public sealed class CommandsManager
     internal ParseResult TryParse(Type type, string input, out object value)
     {
         if (!parsers.ContainsKey(type))
-        {        
+        {
             Log.Error("Failed to pare type {Type} from {Input}", type.Name, input);
             value = new InvalidParameterValue(input);
             return ParseResult.ParserNotFound;
         }
 
         value = parsers[type](input);
-        if (value is InvalidParameterValue) 
+        if (value is InvalidParameterValue)
             return ParseResult.InvalidArgument;
 
         return ParseResult.Success;
@@ -131,19 +135,18 @@ public sealed class CommandsManager
         if (args.Count == 0) return CommandResult.CommandNotFound;
 
         // omg
-        foreach (CommandSection section in commands)
+        foreach (var section in commands)
         {
             IEnumerable<ICommand> sortedCommands = section.Commands.OrderByDescending(p => p.Name.Length);
-            foreach (ICommand command in sortedCommands)
-            {
+            foreach (var command in sortedCommands)
                 if (text.StartsWith(command.Name))
                 {
                     args = new List<string>(args.Skip(command.Name.Split(' ').Length));
 
                     if (command != null)
                     {
-                        Group? playerGroup = sender.Account?.GetGroup();
-                        bool rootUser = playerGroup != null && playerGroup.RootPermissions;
+                        var playerGroup = sender.Account?.GetGroup();
+                        var rootUser = playerGroup != null && playerGroup.RootPermissions;
 
                         if (command.Flags.HasFlag(CommandFlags.Disabled))
                             return CommandResult.CommandDisabled;
@@ -162,21 +165,21 @@ public sealed class CommandsManager
 
                         try
                         {
-                            CommandInvokeContext ctx = new CommandInvokeContext(sender, command, args.AsReadOnly());
+                            var ctx = new CommandInvokeContext(sender, command, args.AsReadOnly());
                             command.Invoke(ctx);
 
                             return CommandResult.Successfully;
                         }
                         catch (Exception ex)
                         {
-                            Log.Error("Commands: Exception in handling command {Command} from {Section}:", command.Name, section.Name);
+                            Log.Error("Commands: Exception in handling command {Command} from {Section}:", command.Name,
+                                section.Name);
                             Log.Error("Commands: {Exception}", ex.ToString());
 
                             return CommandResult.Error;
                         }
                     }
                 }
-            }
         }
 
         return CommandResult.CommandNotFound;
@@ -190,7 +193,7 @@ public sealed class CommandsManager
     /// <returns>CommandSection instance</returns>
     public CommandSection CreateSection(string name, int capacity)
     {
-        CommandSection section = new CommandSection(name, capacity);
+        var section = new CommandSection(name, capacity);
         commands.Add(section);
 
         Log.Information("Created command section {Name} with capacity {Capacity}.", name, capacity);
@@ -206,7 +209,7 @@ public sealed class CommandsManager
     /// <returns>CommandSection instance</returns>
     public CommandSection CreateSection(string name, List<ICommand> wrappedCommands)
     {
-        CommandSection section = new CommandSection(name, wrappedCommands);
+        var section = new CommandSection(name, wrappedCommands);
         commands.Add(section);
 
         Log.Information("Created command section {Name} from List<ICommand>.", name);

@@ -1,35 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <OutputPath>..\bin</OutputPath>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyVersion>7.45.0.0</AssemblyVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Mintoza">
-      <HintPath>..\deps\terraria.mintoza\Mintoza.dll</HintPath>
-    </Reference>
-    <Reference Include="MintozaHooks">
-      <HintPath>..\deps\terraria.mintoza\MintozaHooks.dll</HintPath>
-    </Reference>
-    <Reference Include="FNA">
-      <HintPath>..\deps\terraria.mintoza\FNA.dll</HintPath>
-    </Reference>
-    
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    
-    <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1"/>
-    <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2"/>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <OutputPath>..\bin</OutputPath>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AssemblyVersion>7.45.0.0</AssemblyVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Mintoza">
+            <HintPath>..\deps\terraria.mintoza\Mintoza.dll</HintPath>
+        </Reference>
+        <Reference Include="MintozaHooks">
+            <HintPath>..\deps\terraria.mintoza\MintozaHooks.dll</HintPath>
+        </Reference>
+        <Reference Include="FNA">
+            <HintPath>..\deps\terraria.mintoza\FNA.dll</HintPath>
+        </Reference>
 
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
 
-    <PackageReference Include="MongoDB.Driver" Version="2.23.1"/>
+        <PackageReference Include="MonoMod.RuntimeDetour.HookGen" Version="22.7.31.1"/>
+        <PackageReference Include="MonoMod.RuntimeDetour" Version="25.0.2"/>
 
-    <PackageReference Include="Serilog" Version="3.1.1"/>
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
-    <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3"/>
-  </ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+
+        <PackageReference Include="MongoDB.Driver" Version="2.23.1"/>
+
+        <PackageReference Include="Serilog" Version="3.1.1"/>
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
+        <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.3.3"/>
+    </ItemGroup>
 </Project>

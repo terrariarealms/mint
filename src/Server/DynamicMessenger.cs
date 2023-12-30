@@ -8,7 +8,7 @@ public class DynamicMessenger : PlayerMessenger
         OutputToConsole = outputToConsole;
     }
 
-    public string Name { get;}
+    public string Name { get; }
     public IReadOnlyList<DynamicMessage>? Messages => messages?.AsReadOnly();
     public bool OutputToConsole { get; set; }
 
@@ -29,12 +29,18 @@ public class DynamicMessenger : PlayerMessenger
         message = string.Format(message, objects);
 
         messages?.Add(new DynamicMessage(mark, source, message));
-        
+
         if (OutputToConsole)
             Log.Information("{Name}: {Text}", Name, $"{(source == null ? "" : "<" + source + "> ")}{message}");
     }
 
-    public override void Send(MessageMark mark, string? source, string message, params object?[] objects) => PrivateSend(mark, source, message, objects);
+    public override void Send(MessageMark mark, string? source, string message, params object?[] objects)
+    {
+        PrivateSend(mark, source, message, objects);
+    }
 
-    public override void CleanSend(MessageMark mark, string? source, string message, params object?[] objects) => PrivateSend(mark, source, message, objects);
+    public override void CleanSend(MessageMark mark, string? source, string message, params object?[] objects)
+    {
+        PrivateSend(mark, source, message, objects);
+    }
 }

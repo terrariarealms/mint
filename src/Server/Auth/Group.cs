@@ -10,9 +10,14 @@ public class Group : DatabaseObject
     /// </summary>
     /// <param name="name">Group name</param>
     /// <returns>Created group</returns>
-    public static Group CreateClean(string name) => new Group(name, false, null, new GroupPresence(null, null, null), new List<DatabaseObject>(), new List<string>());
+    public static Group CreateClean(string name)
+    {
+        return new Group(name, false, null, new GroupPresence(null, null, null), new List<DatabaseObject>(),
+            new List<string>());
+    }
 
-    public Group(string name, bool root, string? parent, GroupPresence presence, List<DatabaseObject> extensions, List<string> permissions) : base(name)
+    public Group(string name, bool root, string? parent, GroupPresence presence, List<DatabaseObject> extensions,
+        List<string> permissions) : base(name)
     {
         RootPermissions = root;
         ParentName = parent;
@@ -40,7 +45,7 @@ public class Group : DatabaseObject
         if (Permissions.Contains("!" + permission))
             return false;
 
-        foreach (string perm in Permissions)
+        foreach (var perm in Permissions)
         {
             if (perm == permission)
                 return true;
@@ -56,7 +61,7 @@ public class Group : DatabaseObject
     // this is parted permission check like "my", "cool", "perm".
     private bool HasPartedPermission(string[] array)
     {
-        foreach (string part in array)
+        foreach (var part in array)
         {
             // permissions like !my.cool.* will return false. 
             if (Permissions.Contains("!" + part + ".*"))
@@ -74,14 +79,17 @@ public class Group : DatabaseObject
     /// Get group's parent.
     /// </summary>
     /// <returns>Parent group</returns>
-    public Group? GetParent() => ParentName == null ? null : MintServer.GroupsCollection.Get(ParentName);
+    public Group? GetParent()
+    {
+        return ParentName == null ? null : MintServer.GroupsCollection.Get(ParentName);
+    }
 
     /// <summary>
     /// Save your changes.
     /// </summary>
     public void Save()
     {
-        MintServer.GroupsCollection.Push(this.Name, this);
+        MintServer.GroupsCollection.Push(Name, this);
     }
 
     /// <summary>

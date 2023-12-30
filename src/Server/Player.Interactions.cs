@@ -7,7 +7,7 @@ using Terraria.Localization;
 namespace Mint.Server;
 
 public partial class Player
-{    
+{
     /// <summary>
     /// Update player's name
     /// </summary>
@@ -38,7 +38,10 @@ public partial class Player
     /// Kick player.
     /// </summary>
     /// <param name="reason">Kick reason</param>
-    public virtual void Kick(string reason) => Kick(NetworkText.FromLiteral(reason));
+    public virtual void Kick(string reason)
+    {
+        Kick(NetworkText.FromLiteral(reason));
+    }
 
     /// <summary>
     /// Hurt player.
@@ -79,6 +82,6 @@ public partial class Player
                     .Build();
                     */
 
-        Terraria.Chat.ChatHelper.SendChatMessageToClient(Terraria.Localization.NetworkText.FromLiteral(text), color, Index);
+        ChatHelper.SendChatMessageToClient(NetworkText.FromLiteral(text), color, Index);
     }
 }

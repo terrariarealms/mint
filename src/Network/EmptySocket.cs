@@ -49,7 +49,7 @@ public class EmptySocket : ISocket
     {
     }
 
-    class LocalAddress : RemoteAddress
+    private class LocalAddress : RemoteAddress
     {
         public override string GetFriendlyName()
         {

@@ -1,12 +1,14 @@
 namespace Mint.Server;
 
 public interface ICharacter
-{    
+{
     /// <summary>
     /// Invokes when someone requests slot change operation.
     /// </summary>
     public static event CharacterSlotChangeEvent? OnSlotChange;
-    protected static void InvokeSlotChange(ICharacter character, ref int slot, ref NetItem item, CharacterOperation operationType, ref bool ignore)
+
+    protected static void InvokeSlotChange(ICharacter character, ref int slot, ref NetItem item,
+        CharacterOperation operationType, ref bool ignore)
     {
         if (character != character.BasePlayer.Character)
             return;
@@ -18,7 +20,9 @@ public interface ICharacter
     /// Invokes when someone requests stats change operation.
     /// </summary>
     public static event CharacterStatsChangeEvent? OnStatsChange;
-    protected static void InvokeStatsChange(ICharacter character, ref CharacterStats stats, CharacterOperation operationType, ref bool ignore)
+
+    protected static void InvokeStatsChange(ICharacter character, ref CharacterStats stats,
+        CharacterOperation operationType, ref bool ignore)
     {
         if (character != character.BasePlayer.Character)
             return;
@@ -30,7 +34,9 @@ public interface ICharacter
     /// Invokes when someone requests life change operation.
     /// </summary>
     public static event CharacterLifeChangeEvent? OnLifeChange;
-    protected static void InvokeLifeChange(ICharacter character, ref int life, CharacterOperation operationType, ref bool ignore)
+
+    protected static void InvokeLifeChange(ICharacter character, ref int life, CharacterOperation operationType,
+        ref bool ignore)
     {
         if (character != character.BasePlayer.Character)
             return;
@@ -42,7 +48,9 @@ public interface ICharacter
     /// Invokes when someone requests mana change operation.
     /// </summary>
     public static event CharacterManaChangeEvent? OnManaChange;
-    protected static void InvokeManaChange(ICharacter character, ref int mana, CharacterOperation operationType, ref bool ignore)
+
+    protected static void InvokeManaChange(ICharacter character, ref int mana, CharacterOperation operationType,
+        ref bool ignore)
     {
         if (character != character.BasePlayer.Character)
             return;
@@ -56,7 +64,7 @@ public interface ICharacter
     /// IEnumerable of slots.
     /// </summary>
     public IEnumerable<NetItem> Slots { get; }
-    
+
     /// <summary>
     /// Character stats. (difficulty, visuals and other)
     /// </summary>

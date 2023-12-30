@@ -5,30 +5,32 @@ namespace Mint.Network.Incoming;
 
 public static partial class IncomingHandlers
 {
-    static void OnPlayerPresence(Server.Player player, IncomingPacket packet, ref bool ignore)
+    private static void OnPlayerPresence(Server.Player player, IncomingPacket packet, ref bool ignore)
     {
-        BinaryReader reader = packet.GetReader();
+        var reader = packet.GetReader();
         reader.ReadByte();
 
-        byte skinVariant = reader.ReadByte();
-        byte hair = reader.ReadByte();
-        string name = reader.ReadString();
-        
+        var skinVariant = reader.ReadByte();
+        var hair = reader.ReadByte();
+        var name = reader.ReadString();
+
         if (!player.SentPackets[4])
-        player.SetName(name, true);
+            player.SetName(name, true);
 
         if (name.Length > 20)
         {
             player.Kick(MintServer.Localization.Translate("Your nickname is too long!"));
             return;
         }
+
         if (name.Length == 0)
         {
             player.Kick(MintServer.Localization.Translate("Invalid nickname!"));
             return;
         }
 
-        Predicate<Server.Player> sameNamePredicate = (p) => p != null && p.Index != player.Index && p.PlayerState == PlayerState.Left && p.Name == name;
+        Predicate<Server.Player> sameNamePredicate = (p) =>
+            p != null && p.Index != player.Index && p.PlayerState == PlayerState.Left && p.Name == name;
         if (MintServer.Players.First(sameNamePredicate) != null)
         {
             player.Kick(MintServer.Localization.Translate("Player with same nickname is playing on server!"));
@@ -36,18 +38,18 @@ public static partial class IncomingHandlers
         }
 
 
-        byte hairDye = reader.ReadByte();
-		ReadAccessoryVisibility(reader, player.TPlayer.hideVisibleAccessory);
-        byte hideMisc = reader.ReadByte();
-        Color hairColor = reader.ReadRGB();
-        Color skinColor = reader.ReadRGB();
-        Color eyeColor = reader.ReadRGB();
-        Color shirtColor = reader.ReadRGB();
-        Color ushirtColor = reader.ReadRGB();
-        Color pantsColor = reader.ReadRGB();
-        Color shoesColor = reader.ReadRGB();
+        var hairDye = reader.ReadByte();
+        ReadAccessoryVisibility(reader, player.TPlayer.hideVisibleAccessory);
+        var hideMisc = reader.ReadByte();
+        var hairColor = reader.ReadRGB();
+        var skinColor = reader.ReadRGB();
+        var eyeColor = reader.ReadRGB();
+        var shirtColor = reader.ReadRGB();
+        var ushirtColor = reader.ReadRGB();
+        var pantsColor = reader.ReadRGB();
+        var shoesColor = reader.ReadRGB();
 
-        CharacterVisuals visuals = new CharacterVisuals()
+        var visuals = new CharacterVisuals()
         {
             SkinVariant = skinVariant,
             Hair = hair,
@@ -63,16 +65,16 @@ public static partial class IncomingHandlers
             ShoesColor = shoesColor
         };
 
-        CharacterDifficulty difficulty = (CharacterDifficulty)reader.ReadByte();
-        CharacterExtraFirst extra1 = (CharacterExtraFirst)reader.ReadByte();
-        CharacterExtraSecond extra2 = (CharacterExtraSecond)reader.ReadByte();
+        var difficulty = (CharacterDifficulty)reader.ReadByte();
+        var extra1 = (CharacterExtraFirst)reader.ReadByte();
+        var extra2 = (CharacterExtraSecond)reader.ReadByte();
 
-        CharacterStats stats = new CharacterStats()
+        var stats = new CharacterStats()
         {
             Visuals = visuals,
             Difficulty = difficulty,
             ExtraFirst = extra1,
-            ExtraSecond = extra2,
+            ExtraSecond = extra2
         };
 
         if (difficulty.HasFlag(CharacterDifficulty.Journey) && Main.GameMode != 4)

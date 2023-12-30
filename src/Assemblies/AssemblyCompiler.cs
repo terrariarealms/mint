@@ -22,10 +22,10 @@ public class AssemblyCompiler
     /// <returns>Candidates</returns>
     public IEnumerable<CompilationInfo> FindCandidates()
     {
-        foreach (string directory in Directory.EnumerateDirectories(WorkingDirectory))
+        foreach (var directory in Directory.EnumerateDirectories(WorkingDirectory))
         {
             // gets name of module
-            string? name = directory.Replace('\\', '/').Split('/').Last();
+            var name = directory.Replace('\\', '/').Split('/').Last();
             if (name == null)
             {
                 Log.Error("AssemblyCompiler for {Directory}: name is null.", directory);
@@ -38,26 +38,31 @@ public class AssemblyCompiler
             if (_targets.SourceDirectory != null)
             {
                 srcPath = Path.Combine(directory, _targets.SourceDirectory);
-                if (!Directory.Exists(srcPath)) 
+                if (!Directory.Exists(srcPath))
                 {
-                    Log.Error("AssemblyCompiler for {Directory}: source code directory path not exists -> {Path}", directory, srcPath);
+                    Log.Error("AssemblyCompiler for {Directory}: source code directory path not exists -> {Path}",
+                        directory, srcPath);
                     continue;
                 }
 
                 // sets root/src directory as src directory (if target src directory is not null (else skip that))
             }
             // sets root directory as src directory
-            else srcPath = directory;
+            else
+            {
+                srcPath = directory;
+            }
 
             // check for existing .csproj file with name of directory.
-            string csprojPath = Path.Combine(srcPath, $"{name}.csproj");
+            var csprojPath = Path.Combine(srcPath, $"{name}.csproj");
             if (!File.Exists(csprojPath))
             {
-                Log.Error("AssemblyCompiler for {Directory}: .csproj file path not exists -> {Path}", directory, csprojPath);
+                Log.Error("AssemblyCompiler for {Directory}: .csproj file path not exists -> {Path}", directory,
+                    csprojPath);
                 continue;
             }
 
-            CompilationInfo compilationInfo = new CompilationInfo(name, directory, srcPath, _targets.BinaryDirectory);
+            var compilationInfo = new CompilationInfo(name, directory, srcPath, _targets.BinaryDirectory);
             yield return compilationInfo;
         }
     }
@@ -69,16 +74,16 @@ public class AssemblyCompiler
     /// <returns>Assembly path</returns>
     public string? CompileDll(CompilationInfo info)
     {
-        string binPath = Path.Combine(info.WorkingPath, info.BinaryDirectory);
-        string objPath = Path.Combine(info.WorkingPath, info.SourcePath, "obj");
+        var binPath = Path.Combine(info.WorkingPath, info.BinaryDirectory);
+        var objPath = Path.Combine(info.WorkingPath, info.SourcePath, "obj");
         if (Directory.Exists(binPath))
             Directory.Delete(binPath, true);
 
-        bool ignoreRestoring = Directory.Exists(objPath);
+        var ignoreRestoring = Directory.Exists(objPath);
 
-        string binFilePath = Path.Combine(binPath, info.Name + ".dll");
+        var binFilePath = Path.Combine(binPath, info.Name + ".dll");
 
-        string command = BuildCommand(info);
+        var command = BuildCommand(info);
         if (ignoreRestoring)
             command += "--no-restore";
 
@@ -86,11 +91,13 @@ public class AssemblyCompiler
         {
             if (File.Exists(binFilePath))
                 return binFilePath;
-            else Log.Error("AssemblyCompiler for {Directory}: binary files directory path not exists -> {Path}", info.WorkingPath, binFilePath);
+            else
+                Log.Error("AssemblyCompiler for {Directory}: binary files directory path not exists -> {Path}",
+                    info.WorkingPath, binFilePath);
         }
 
         return null;
-    } 
+    }
 
     /// <summary>
     /// Builds dotnet command.
@@ -99,9 +106,9 @@ public class AssemblyCompiler
     /// <returns>Dotnet command</returns>
     public string BuildCommand(CompilationInfo info)
     {
-        string binPath = Path.Combine(info.WorkingPath, info.BinaryDirectory);
+        var binPath = Path.Combine(info.WorkingPath, info.BinaryDirectory);
 
-        string command = $"build {info.SourcePath}/ -o {binPath}";
+        var command = $"build {info.SourcePath}/ -o {binPath}";
 
         if (_targets.Framework != null) command += $" -f " + _targets.Framework;
         if (_targets.CustomArguments != null) command += " " + _targets.CustomArguments;
@@ -119,11 +126,11 @@ public class AssemblyCompiler
     /// <returns>Command's running success</returns>
     public bool RunCommand(string command, bool redirectOutput = true)
     {
-        ProcessStartInfo startInfo = new ProcessStartInfo("dotnet", command)
+        var startInfo = new ProcessStartInfo("dotnet", command)
         {
             RedirectStandardOutput = redirectOutput
         };
-        Process? process = Process.Start(startInfo);
+        var process = Process.Start(startInfo);
         process?.WaitForExit();
 
         return process != null;

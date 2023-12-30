@@ -35,7 +35,7 @@ public struct MintConfig
             {
                 "Добро пожаловать на наш сервер!",
                 "Этот сервер использует ядро Mint с открытым исходным кодом, ссылка:",
-                "https://github.com/terrariarealms/mint",
+                "https://github.com/terrariarealms/mint"
             };
             StrippedDownMode = false;
             DisableItems = false;

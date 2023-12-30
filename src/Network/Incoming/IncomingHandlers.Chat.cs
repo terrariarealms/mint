@@ -2,12 +2,12 @@ namespace Mint.Network.Incoming;
 
 public static partial class IncomingHandlers
 {
-    static void OnChatNetModule(Player player, IncomingPacket packet, ref bool ignore)
+    private static void OnChatNetModule(Player player, IncomingPacket packet, ref bool ignore)
     {
-        BinaryReader reader = packet.GetReader();
+        var reader = packet.GetReader();
 
-        string command = reader.ReadString();
-        string text = reader.ReadString();
+        var command = reader.ReadString();
+        var text = reader.ReadString();
 
         if (text.Length > 300 && !player.IgnoreAnticheat)
         {
@@ -23,6 +23,7 @@ public static partial class IncomingHandlers
             return;
         }
 
-        MintServer.Chat.HandleMessage(new ChatMessage(player, command == "Say" ? text : $"/{command.ToLower()} {text}", DateTime.UtcNow));
+        MintServer.Chat.HandleMessage(new ChatMessage(player, command == "Say" ? text : $"/{command.ToLower()} {text}",
+            DateTime.UtcNow));
     }
 }

@@ -28,12 +28,12 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// <returns></returns>
     public T? Get(string name)
     {
-        T? value = _memCache.Get(name) as T;
-        if (value != null) return value; 
+        var value = _memCache.Get(name) as T;
+        if (value != null) return value;
 
         var result = _collection.Find((p) => p.Name == name).ToList();
         if (result.Count > 0 && result[0] != null)
-        {   
+        {
             var obj = result[0];
             _memCache.Push(name, obj);
             return obj;
@@ -49,7 +49,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     public List<T> GetAll()
     {
         var list = _collection.Find((p) => true).ToList();
-        foreach (T obj in list)
+        foreach (var obj in list)
             _memCache.Push(obj.Name, obj);
 
         return list;
@@ -64,7 +64,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     {
         var result = _collection.Find(filter).ToList();
         if (result.Count > 0 && result[0] != null)
-        {   
+        {
             var obj = result[0];
             _memCache.Push(obj.Name, obj);
             return obj;
@@ -86,7 +86,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// <param name="contents">Objects enumerable</param>
     public void Pop(IEnumerable<DatabaseObject> contents)
     {
-        foreach (DatabaseObject content in contents)
+        foreach (var content in contents)
             Pop(content.Name);
     }
 
@@ -96,7 +96,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// <param name="contents">Object names enumerable</param>
     public void Pop(IEnumerable<string> contents)
     {
-        foreach (string content in contents)
+        foreach (var content in contents)
             Pop(content);
     }
 
@@ -112,7 +112,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
             _collection.ReplaceOne((p) => p.Name == name, content);
             return;
         }
-        
+
         _collection.InsertOne(content);
         _memCache.Push(name, content);
     }
@@ -123,7 +123,7 @@ public class DatabaseStorage<T> : IObjectStorage<T> where T : DatabaseObject
     /// <param name="contents">Objects enumerable</param>
     public void Push(IEnumerable<T> contents)
     {
-        foreach (T content in contents)
+        foreach (var content in contents)
             Push(content.Name, content);
     }
 }

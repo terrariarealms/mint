@@ -6,8 +6,8 @@ public sealed class Config<T> where T : struct
 {
     internal static string GetPath()
     {
-        string dataName = typeof(T).Name;
-        string folder = "data";
+        var dataName = typeof(T).Name;
+        var folder = "data";
 
         return $"{folder}/{dataName}.json";
     }
@@ -18,7 +18,7 @@ public sealed class Config<T> where T : struct
     /// <returns>Config<T> reference</returns>
     public static Config<T> New()
     {
-        Config<T> config = new Config<T>(GetPath());
+        var config = new Config<T>(GetPath());
         return config;
     }
 
@@ -26,7 +26,10 @@ public sealed class Config<T> where T : struct
     /// Gets data of config.
     /// </summary>
     /// <returns>T</returns>
-    public static T GetData() => New().Load();
+    public static T GetData()
+    {
+        return New().Load();
+    }
 
     internal Config(string path)
     {

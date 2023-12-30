@@ -13,9 +13,10 @@ public static class CharacterUtils
     /// <param name="netItem">NetItem</param>
     /// <param name="remoteClient">Remote client</param>
     /// <param name="ignoreClient">Ignore client</param>
-    public static void SetSlot(Player player, int slot, NetItem netItem, bool quiet = false, int remoteClient = -1, int ignoreClient = -1)
+    public static void SetSlot(Player player, int slot, NetItem netItem, bool quiet = false, int remoteClient = -1,
+        int ignoreClient = -1)
     {
-        Item item = new Item();
+        var item = new Item();
         item.SetDefaults(netItem.ItemID);
         item.stack = netItem.ItemStack;
         item.prefix = netItem.ItemPrefix;
@@ -54,9 +55,9 @@ public static class CharacterUtils
             player.TPlayer.inventory[slot - PlayerItemSlotID.Inventory0] = item;
 
         if (!quiet)
-        Net.TrySendData(5, remoteClient, ignoreClient, NetworkText.FromLiteral(item.Name), player.Index,
-            slot,
-            item.prefix);
+            Net.TrySendData(5, remoteClient, ignoreClient, NetworkText.FromLiteral(item.Name), player.Index,
+                slot,
+                item.prefix);
     }
 
     /// <summary>
@@ -69,7 +70,7 @@ public static class CharacterUtils
         plr.TPlayer.statLifeMax2 = life;
 
         if (!quiet)
-        Net.SendData(16, -1, ignoreClient, NetworkText.Empty, plr.Index);
+            Net.SendData(16, -1, ignoreClient, NetworkText.Empty, plr.Index);
     }
 
     /// <summary>
@@ -82,7 +83,7 @@ public static class CharacterUtils
         plr.TPlayer.statManaMax = mana;
 
         if (!quiet)
-        Net.SendData(42, -1, ignoreClient, NetworkText.Empty, plr.Index);
+            Net.SendData(42, -1, ignoreClient, NetworkText.Empty, plr.Index);
     }
 
     /// <summary>
@@ -105,7 +106,7 @@ public static class CharacterUtils
         plr.TPlayer.shoeColor = visuals.ShoesColor;
 
         if (!quiet)
-        Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
+            Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
     }
 
     /// <summary>
@@ -126,7 +127,7 @@ public static class CharacterUtils
         plr.TPlayer.extraAccessory = flags.HasFlag(CharacterDifficulty.ExtraAccessory);
 
         if (!quiet)
-        Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
+            Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
     }
 
     /// <summary>
@@ -142,7 +143,7 @@ public static class CharacterUtils
         plr.TPlayer.enabledSuperCart = flags.HasFlag(CharacterExtraFirst.UsedSuperCart);
 
         if (!quiet)
-        Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
+            Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
     }
 
     /// <summary>
@@ -160,6 +161,6 @@ public static class CharacterUtils
         plr.TPlayer.ateArtisanBread = flags.HasFlag(CharacterExtraSecond.AteArtisanBread);
 
         if (!quiet)
-        Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
+            Net.SendData(4, -1, ignoreClient, NetworkText.Empty, plr.Index);
     }
 }

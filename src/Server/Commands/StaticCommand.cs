@@ -4,7 +4,8 @@ namespace Mint.Server.Commands;
 
 public class StaticCommand : ICommand
 {
-    internal StaticCommand(MethodInfo method, string name, string description, string? syntax, string? permission, CommandFlags flags)
+    internal StaticCommand(MethodInfo method, string name, string description, string? syntax, string? permission,
+        CommandFlags flags)
     {
         this.method = method;
         parameters = method.GetParameters();
@@ -31,29 +32,26 @@ public class StaticCommand : ICommand
 
     public void Invoke(CommandInvokeContext ctx)
     {
-        bool ignore = false;
+        var ignore = false;
         ICommand.InvokeOnCommand(ctx.Sender, this, ref ctx, ref ignore);
         if (ignore) return;
-        
+
         List<object>? invokeParameters = BuildParameters(ctx);
-        if (invokeParameters != null)
-        {
-            method.Invoke(null, invokeParameters.ToArray());
-        }
+        if (invokeParameters != null) method.Invoke(null, invokeParameters.ToArray());
     }
 
     private List<object>? BuildParameters(CommandInvokeContext ctx)
     {
-        List<object> invokeParameters = new List<object>(parameters.Length)
+        List<object> invokeParameters = new(parameters.Length)
         {
             ctx
         };
 
-        string commandSource = "/" + Name;
+        var commandSource = "/" + Name;
 
-        for (int i = 1; i < parameters.Length; i++)
+        for (var i = 1; i < parameters.Length; i++)
         {
-            ParameterInfo parameter = parameters[i];
+            var parameter = parameters[i];
 
             if (ctx.Parameters.Count < i)
             {
@@ -69,18 +67,20 @@ public class StaticCommand : ICommand
             }
 
             object value;
-            ParseResult result = MintServer.Commands.TryParse(parameter.ParameterType, ctx.Parameters[i - 1], out value);
-            
+            var result = MintServer.Commands.TryParse(parameter.ParameterType, ctx.Parameters[i - 1], out value);
+
             switch (result)
             {
                 case ParseResult.ParserNotFound:
                     ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot execute command (argument {0}): ", i);
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Parser for type {0} not found.", parameter.ParameterType.Name);
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Parser for type {0} not found.",
+                        parameter.ParameterType.Name);
                     break;
 
                 case ParseResult.InvalidArgument:
                     ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot execute command (argument {0}): ", i);
-                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot parse '{0}' into {1} ({2}).", ctx.Parameters[i - 1], parameter.Name, parameter.ParameterType.Name);
+                    ctx.Messenger.Send(MessageMark.Error, commandSource, "Cannot parse '{0}' into {1} ({2}).",
+                        ctx.Parameters[i - 1], parameter.Name, parameter.ParameterType.Name);
                     break;
 
                 case ParseResult.Success:
@@ -88,6 +88,7 @@ public class StaticCommand : ICommand
                     break;
             }
         }
+
         return invokeParameters;
     }
 }

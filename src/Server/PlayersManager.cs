@@ -12,31 +12,31 @@ public sealed class PlayersManager
     /// <summary>
     /// All active players that enabled PvP Mode.
     /// </summary>
-    public IEnumerable<Player> InPvP => 
+    public IEnumerable<Player> InPvP =>
         QuickWhere((p) => p.PlayerState == PlayerState.Joined && p.TPlayer.hostile);
 
     /// <summary>
     /// All active players that not enabled PvP Mode.
     /// </summary>
-    public IEnumerable<Player> NotInPvP => 
+    public IEnumerable<Player> NotInPvP =>
         QuickWhere((p) => p.PlayerState == PlayerState.Joined && !p.TPlayer.hostile);
 
     /// <summary>
     /// All active players that alive.
     /// </summary>
-    public IEnumerable<Player> Alive => 
+    public IEnumerable<Player> Alive =>
         QuickWhere((p) => p.PlayerState == PlayerState.Joined && !p.TPlayer.dead);
 
     /// <summary>
     /// All active players that alive.
     /// </summary>
-    public IEnumerable<Player> Dead => 
+    public IEnumerable<Player> Dead =>
         QuickWhere((p) => p.PlayerState == PlayerState.Joined && p.TPlayer.dead);
 
     /// <summary>
     /// All active players.
     /// </summary>
-    public IEnumerable<Player> Active => 
+    public IEnumerable<Player> Active =>
         QuickWhere((p) => p.PlayerState == PlayerState.Joined);
 
     public Player this[int index]
@@ -51,15 +51,15 @@ public sealed class PlayersManager
     /// <returns>Active players count.</returns>
     public int GetActivePlayersCount()
     {
-        if (MintServer.Players?.players == null) 
+        if (MintServer.Players?.players == null)
             return -1;
 
         byte count = 0;
 
-        for (int i = 0; i < 255; i++)
+        for (var i = 0; i < 255; i++)
         {
-            Player? player = MintServer.Players?.players[i];
-            if (player?.PlayerState == PlayerState.Joined) 
+            var player = MintServer.Players?.players[i];
+            if (player?.PlayerState == PlayerState.Joined)
                 count++;
         }
 
@@ -73,12 +73,12 @@ public sealed class PlayersManager
     /// <returns>Predicate result</returns>
     public IEnumerable<Player> QuickWhere(Predicate<Player> predicate)
     {
-        if (MintServer.Players?.players == null) 
+        if (MintServer.Players?.players == null)
             yield break;
 
-        for (int i = 0; i < 255; i++)
+        for (var i = 0; i < 255; i++)
         {
-            Player? player = MintServer.Players.players[i];
+            var player = MintServer.Players.players[i];
             if (player != null && predicate(player))
                 yield return player;
         }
@@ -91,12 +91,12 @@ public sealed class PlayersManager
     /// <returns>Predicate result</returns>
     public Player? First(Predicate<Player> predicate)
     {
-        if (MintServer.Players?.players == null) 
+        if (MintServer.Players?.players == null)
             return null;
 
-        for (int i = 0; i < 255; i++)
+        for (var i = 0; i < 255; i++)
         {
-            Player? player = MintServer.Players.players[i];
+            var player = MintServer.Players.players[i];
             if (player != null && predicate(player))
                 return player;
         }
@@ -110,12 +110,12 @@ public sealed class PlayersManager
     /// <param name="action">Target action</param>
     public void QuickForEach(Action<Player> action)
     {
-        if (MintServer.Players?.players == null) 
+        if (MintServer.Players?.players == null)
             return;
 
-        for (int i = 0; i < 255; i++)
+        for (var i = 0; i < 255; i++)
         {
-            Player? player = MintServer.Players?.players[i];
+            var player = MintServer.Players?.players[i];
             if (player != null)
                 action(player);
         }
@@ -133,62 +133,58 @@ public sealed class PlayersManager
 
     private void SyncOnePlayer(ModSend.orig_SyncOnePlayer orig, int plr, int toWho, int fromWho)
     {
-		int num = 0;
-		if (Main.player[plr].active)
-		{
-			num = 1;
-		}
-		if (Netplay.Clients[plr].State == 10)
-		{
-			Net.SendData(14, toWho, fromWho, NetworkText.Empty, plr, num);
-			Net.SendData(4, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(13, toWho, fromWho, NetworkText.Empty, plr);
-			if (Main.player[plr].statLife <= 0)
-			{
-				Net.SendData(135, toWho, fromWho, NetworkText.Empty, plr);
-			}
-			Net.SendData(16, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(30, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(45, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(42, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(50, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(80, toWho, fromWho, NetworkText.Empty, plr, Main.player[plr].chest);
-			Net.SendData(142, toWho, fromWho, NetworkText.Empty, plr);
-			Net.SendData(147, toWho, fromWho, NetworkText.Empty, plr, Main.player[plr].CurrentLoadoutIndex);
-			for (int i = 0; i < 59; i++)
-			{
-				Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Inventory0 + i, (int)Main.player[plr].inventory[i].prefix);
-			}
-			for (int j = 0; j < Main.player[plr].armor.Length; j++)
-			{
-				Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Armor0 + j, (int)Main.player[plr].armor[j].prefix);
-			}
-			for (int k = 0; k < Main.player[plr].dye.Length; k++)
-			{
-				Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Dye0 + k, (int)Main.player[plr].dye[k].prefix);
-			}
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscEquips, PlayerItemSlotID.Misc0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscDyes, PlayerItemSlotID.MiscDye0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Armor, PlayerItemSlotID.Loadout1_Armor_0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Dye, PlayerItemSlotID.Loadout1_Dye_0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Armor, PlayerItemSlotID.Loadout2_Armor_0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Dye, PlayerItemSlotID.Loadout2_Dye_0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Armor, PlayerItemSlotID.Loadout3_Armor_0);
-			Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Dye, PlayerItemSlotID.Loadout3_Dye_0);
-			if (!Netplay.Clients[plr].IsAnnouncementCompleted)
-			{
-				Netplay.Clients[plr].IsAnnouncementCompleted = true;
-			}
-			return;
-		}
-		num = 0;
-		Net.SendData(14, -1, plr, NetworkText.Empty, plr, num);
-		if (Netplay.Clients[plr].IsAnnouncementCompleted)
-		{
-			Netplay.Clients[plr].IsAnnouncementCompleted = false;
-			Netplay.Clients[plr].Name = "Anonymous";
-		}
-		TPlayer.Hooks.PlayerDisconnect(plr);
+        var num = 0;
+        if (Main.player[plr].active) num = 1;
+        if (Netplay.Clients[plr].State == 10)
+        {
+            Net.SendData(14, toWho, fromWho, NetworkText.Empty, plr, num);
+            Net.SendData(4, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(13, toWho, fromWho, NetworkText.Empty, plr);
+            if (Main.player[plr].statLife <= 0) Net.SendData(135, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(16, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(30, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(45, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(42, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(50, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(80, toWho, fromWho, NetworkText.Empty, plr, Main.player[plr].chest);
+            Net.SendData(142, toWho, fromWho, NetworkText.Empty, plr);
+            Net.SendData(147, toWho, fromWho, NetworkText.Empty, plr, Main.player[plr].CurrentLoadoutIndex);
+            for (var i = 0; i < 59; i++)
+                Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Inventory0 + i,
+                    (int)Main.player[plr].inventory[i].prefix);
+            for (var j = 0; j < Main.player[plr].armor.Length; j++)
+                Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Armor0 + j,
+                    (int)Main.player[plr].armor[j].prefix);
+            for (var k = 0; k < Main.player[plr].dye.Length; k++)
+                Net.SendData(5, toWho, fromWho, NetworkText.Empty, plr, PlayerItemSlotID.Dye0 + k,
+                    (int)Main.player[plr].dye[k].prefix);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscEquips, PlayerItemSlotID.Misc0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscDyes, PlayerItemSlotID.MiscDye0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Armor,
+                PlayerItemSlotID.Loadout1_Armor_0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Dye,
+                PlayerItemSlotID.Loadout1_Dye_0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Armor,
+                PlayerItemSlotID.Loadout2_Armor_0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Dye,
+                PlayerItemSlotID.Loadout2_Dye_0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Armor,
+                PlayerItemSlotID.Loadout3_Armor_0);
+            Net.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Dye,
+                PlayerItemSlotID.Loadout3_Dye_0);
+            if (!Netplay.Clients[plr].IsAnnouncementCompleted) Netplay.Clients[plr].IsAnnouncementCompleted = true;
+            return;
+        }
+
+        num = 0;
+        Net.SendData(14, -1, plr, NetworkText.Empty, plr, num);
+        if (Netplay.Clients[plr].IsAnnouncementCompleted)
+        {
+            Netplay.Clients[plr].IsAnnouncementCompleted = false;
+            Netplay.Clients[plr].Name = "Anonymous";
+        }
+
+        TPlayer.Hooks.PlayerDisconnect(plr);
     }
 
     public static event PlayerGreetEvent? OnPlayerGreet;
@@ -197,9 +193,10 @@ public sealed class PlayersManager
     private void OnGreetPlayer(ModSend.orig_greetPlayer orig, int plr)
     {
         players[plr].PlayerState = PlayerState.Joined;
-        MintServer.Chat.SystemBroadcast($"{players[plr].Name} {MintServer.Localization.Translate("has joined")}. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
+        MintServer.Chat.SystemBroadcast(
+            $"{players[plr].Name} {MintServer.Localization.Translate("has joined")}. [{GetActivePlayersCount()}/{Main.maxNetPlayers}]");
 
-        foreach (string line in MintServer.Config.Game.MOTD)
+        foreach (var line in MintServer.Config.Game.MOTD)
             players[plr].SendMessage(line, Color.White);
 
         OnPlayerGreet?.Invoke(players[plr]);
@@ -208,33 +205,34 @@ public sealed class PlayersManager
 
     private void OnConnectionAccepted(On.Terraria.Netplay.orig_OnConnectionAccepted orig, ISocket client)
     {
-		int num = Netplay.FindNextOpenClientSlot();
-		if (num != -1)
-		{
-			Netplay.Clients[num].Reset();
-			Netplay.Clients[num].Socket = client;
+        var num = Netplay.FindNextOpenClientSlot();
+        if (num != -1)
+        {
+            Netplay.Clients[num].Reset();
+            Netplay.Clients[num].Socket = client;
 
             HandleConnection(num);
-		}
-		else
-		{
-			lock (Netplay.fullBuffer)
-			{
-				Netplay.KickClient(client, NetworkText.FromKey("CLI.ServerIsFull"));
-			}
-		}
-		if (Netplay.FindNextOpenClientSlot() == -1)
-		{
-			Netplay.StopListening();
-			Netplay.IsListening = false;
-		}
+        }
+        else
+        {
+            lock (Netplay.fullBuffer)
+            {
+                Netplay.KickClient(client, NetworkText.FromKey("CLI.ServerIsFull"));
+            }
+        }
+
+        if (Netplay.FindNextOpenClientSlot() == -1)
+        {
+            Netplay.StopListening();
+            Netplay.IsListening = false;
+        }
     }
 
     private void SyncDisconnectedPlayer(On.Terraria.NetMessage.orig_SyncDisconnectedPlayer orig, int plr)
     {
         HandleDisconnect(plr);
-		Net.SyncOnePlayer(plr, -1, plr);
-		Net.EnsureLocalPlayerIsPresent();
+        Net.SyncOnePlayer(plr, -1, plr);
+        Net.EnsureLocalPlayerIsPresent();
     }
 
     /// <summary>
@@ -264,19 +262,18 @@ public sealed class PlayersManager
 
     private void HandleDisconnect(int index)
     {
-        if (players[index] == null) 
+        if (players[index] == null)
             return;
 
         if (players[index].PlayerState == PlayerState.Joined && players[index].Name != null)
-        {
-            MintServer.Chat.SystemBroadcast($"{players[index].Name} {MintServer.Localization.Translate("has left")}. [{GetActivePlayersCount() - 1}/{Main.maxNetPlayers}]");
-        }
+            MintServer.Chat.SystemBroadcast(
+                $"{players[index].Name} {MintServer.Localization.Translate("has left")}. [{GetActivePlayersCount() - 1}/{Main.maxNetPlayers}]");
 
         players[index].StopCommandHandler();
         players[index].StopPacketHandler();
         players[index].Socket.Close();
-        players[index].PlayerState = PlayerState.Left;        
-        
+        players[index].PlayerState = PlayerState.Left;
+
         Log.Information("Players: disconnected player on {Index} ({Name})", index, players[index].Name ?? "unknown");
 
         OnPlayerLeft?.Invoke(players[index]);
