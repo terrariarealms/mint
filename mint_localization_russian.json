@@ -77,5 +77,7 @@
   "Command is disabled.": "Команда отключена.",
   "You do not have permission for using this command.": "У вас недостаточно прав для использования этой команды.",
   "Command was failed!": "При выполнении этой команды произошла ошибка!",
-  "Command not found. Use /help for viewing all available commands.": "Команда не найдена. Используйте /help для просмотра списка команд."
+  "Command not found. Use /help for viewing all available commands.": "Команда не найдена. Используйте /help для просмотра списка команд.",
+
+  "You do not have permissions to perform this action.": "У вас недостаточно прав для осуществления этого действия."
 }
