@@ -334,7 +334,7 @@ internal static class CoreCommands
             return;
         }
 
-        var account = new Account(accountName, Guid.NewGuid().ToString(), group.Name, null, null, "*.*.*.*", null,
+        var account = new Account(accountName, Guid.NewGuid().ToString(), group.Name, null, null, "*.*.*.*", "",
             new Dictionary<string, string>());
         account.Save();
 

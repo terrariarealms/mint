@@ -5,7 +5,7 @@ namespace Mint.Server.Auth;
 [BsonIgnoreExtraElements]
 public class Account : DatabaseObject
 {
-    public Account(string name, string uid, string groupName, string? token, string? password, string ip, string? uuid,
+    public Account(string name, string uid, string groupName, string? token, string? password, string ip, string uuid,
         Dictionary<string, string> extensions) : base(name)
     {
         UID = uid;
@@ -107,7 +107,7 @@ public class Account : DatabaseObject
     /// <summary>
     /// UUID of player.
     /// </summary>
-    public string? UUID;
+    public string UUID;
 
     /// <summary>
     /// IP of account.

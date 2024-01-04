@@ -30,7 +30,7 @@ public static class MintServer
     public static LocalizationManager Localization { get; } = new();
 
     public static DynamicPlayer ServerPlayer { get; } = new("root",
-        new Account("root", "0", "root", null, null, "0.0.0.0", null, new Dictionary<string, string>()),
+        new Account("root", "0", "root", null, null, "0.0.0.0", "", new Dictionary<string, string>()),
         new DynamicMessenger("root", true));
 
     public static DatabaseStorage<Account> AccountsCollection { get; private set; }
