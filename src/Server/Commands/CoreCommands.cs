@@ -77,7 +77,7 @@ internal static class CoreCommands
             return;
         }
 
-        var newAccount = new Account(ctx.Sender.Name, Guid.NewGuid().ToString(), "user", null, null,
+        var newAccount = new Account(ctx.Sender.Name, Guid.NewGuid().ToString(), "user", null, null, ctx.Sender.IP, ctx.Sender.UUID
             new Dictionary<string, string>());
         newAccount.SetPassword(password);
         newAccount.SetToken(ctx.Sender.UUID, ctx.Sender.IP);
@@ -329,7 +329,7 @@ internal static class CoreCommands
             return;
         }
 
-        var account = new Account(accountName, Guid.NewGuid().ToString(), group.Name, null, null,
+        var account = new Account(accountName, Guid.NewGuid().ToString(), group.Name, null, null, "*.*.*.*", null,
             new Dictionary<string, string>());
         account.Save();
 
