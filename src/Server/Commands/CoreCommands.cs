@@ -114,6 +114,11 @@ internal static class CoreCommands
             return;
         }
 
+        foundAccount.IP = ctx.Sender.IP;
+        foundAccount.UUID = ctx.Sender.UUID;
+        foundAccount.SetToken(ctx.Sender.UUID, ctx.Sender.IP);
+        foundAccount.Save();
+
         ctx.Sender.Authorize(foundAccount);
 
         ctx.Messenger.Send(MessageMark.OK, "Account", "Welcome back, {0}!", foundAccount.Name);
