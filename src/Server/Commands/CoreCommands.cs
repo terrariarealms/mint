@@ -77,7 +77,7 @@ internal static class CoreCommands
             return;
         }
 
-        var newAccount = new Account(ctx.Sender.Name, Guid.NewGuid().ToString(), "user", null, null, ctx.Sender.IP, ctx.Sender.UUID
+        var newAccount = new Account(ctx.Sender.Name, Guid.NewGuid().ToString(), "user", null, null, ctx.Sender.IP, ctx.Sender.UUID,
             new Dictionary<string, string>());
         newAccount.SetPassword(password);
         newAccount.SetToken(ctx.Sender.UUID, ctx.Sender.IP);
